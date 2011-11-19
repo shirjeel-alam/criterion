@@ -36,4 +36,5 @@ end
 group :prouduction do
   gem 'heroku'
   gem 'pg'
+  gem 'faker'
 end
