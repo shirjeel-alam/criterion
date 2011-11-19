@@ -5,6 +5,7 @@ gem 'execjs'
 gem 'therubyracer'
 
 gem 'mysql2'
+gem 'faker'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -30,11 +31,9 @@ group :development, :test do
   gem 'ruby-debug19', :require => 'ruby-debug'
   gem 'turn', :require => false
   gem 'thin'
-  gem 'faker'
 end
 
 group :prouduction do
   gem 'heroku'
   gem 'pg'
-  gem 'faker'
 end
