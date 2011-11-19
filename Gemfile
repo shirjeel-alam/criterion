@@ -25,10 +25,9 @@ gem 'jquery-rails'
 # Deploy with Capistrano
 # gem 'capistrano'
 
-gem 'ruby-debug19', :require => 'ruby-debug'
-
 group :development, :test do
   # Pretty printed test output
+  gem 'ruby-debug19', :require => 'ruby-debug'
   gem 'turn', :require => false
   gem 'thin'
   gem 'faker'
