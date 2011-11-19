@@ -31,10 +31,10 @@ namespace :criterion do
 
     3.times do
       student = Student.create(:name => Faker::Name.name, :address => Faker::Address.street_address, :registration_fee => REGISTRATION_FEE[rand(REGISTRATION_FEE.length)], :fee_status => rand(2))
-      PhoneNumber.create(:number => Faker::PhoneNumber.phone_number, :category => rand(4), :contactable_id => student.id, :contactable_type => student.class.name)
+      PhoneNumber.create(:number => Faker::PhoneNumber.phone_number[0..10], :category => rand(4), :contactable_id => student.id, :contactable_type => student.class.name)
       
       teacher = Teacher.create(:name => Faker::Name.name, :share => SHARE[rand(SHARE.length)])
-      PhoneNumber.create(:number => Faker::PhoneNumber.phone_number, :category => rand(4), :contactable_id => teacher.id, :contactable_type => teacher.class.name)
+      PhoneNumber.create(:number => Faker::PhoneNumber.phone_number[0..10], :category => rand(4), :contactable_id => teacher.id, :contactable_type => teacher.class.name)
       
       Course.create(:name => COURSE_NAME[rand(COURSE_NAME.length)], :teacher_id => Teacher.all[rand(Teacher.count)].id, :session_id => Session.all[rand(Session.count)].id, :monthly_fee => MONTHLY_FEE[rand(MONTHLY_FEE.length)])
     end
