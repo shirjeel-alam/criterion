@@ -1,0 +1,9 @@
+<div class="enrollmentWrapper">
+  <div class="enrollment">
+    <div class="field">      
+      <%= f.label :course_id %><br />
+      <%= f.select :course_id, get_courses %>
+    </div>
+    <%= link_to_remove_fields "remove", f, "enrollment" %>
+  </div>
+</div>

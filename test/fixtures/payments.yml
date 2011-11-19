@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  payable_id: 1
+  payable_type: MyString
+  period: 2011-11-09
+  amount: 1
+  status: false
+  type: false
+
+two:
+  payable_id: 1
+  payable_type: MyString
+  period: 2011-11-09
+  amount: 1
+  status: false
+  type: false

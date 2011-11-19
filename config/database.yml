@@ -1,0 +1,14 @@
+defaults: &defaults
+  adapter: mysql2
+  encoding: utf8
+  username: root
+  password: aXe@r4zeR
+
+development:
+  <<: *defaults
+  database: criterion_development
+
+test:
+  <<: *defaults
+  database: criterion_test
+  

@@ -1,0 +1,47 @@
+<%= form_for(@course) do |f| %>
+  <% if @course.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@course.errors.count, "error") %> prohibited this course from being saved:</h2>
+
+      <ul>
+      <% @course.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </div>
+  
+  <div class="field">
+    <%= f.label :session %><br />
+    <%= f.select :session_id, get_sessions %>
+  </div>
+  
+  <div class="field">
+    <%= f.label :teacher %><br />
+    <%= f.select :teacher_id, get_teachers %>
+  </div>
+  
+  <div class="field">
+    <%= f.label :monthly_fee %><br />
+    <%= f.text_field :monthly_fee %>
+  </div>
+  
+  <div class="field">
+    <%= f.label :start_date %><br />
+    <%= f.date_select :start_date, :order => [:day, :month, :year], :include_blank => true, :start_year => Date.today.year %>
+  </div>
+  
+  <div class="field">
+    <%= f.label :end_date %><br />
+    <%= f.date_select :end_date, :order => [:day, :month, :year], :include_blank => true, :start_year => Date.today.year %>
+  </div>
+  
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

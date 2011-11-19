@@ -1,0 +1,13 @@
+<div class="phoneNumberWrapper">
+  <div class="phone_number">
+    <div class="field">
+      <%= f.label :number %><br />
+      <%= f.text_field :number %>
+    </div>
+    <div class="field">
+      <%= f.label :category %><br />
+      <%= f.select :category, get_phone_number_categories %>
+    </div>
+    <%= link_to_remove_fields "remove", f, "phone_number" %>
+  </div>
+</div>

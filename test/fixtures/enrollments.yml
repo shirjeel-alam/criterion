@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  student_id: 1
+  course_id: 1
+  first_month_fee: 1
+  subsequent_fee: 1
+  registration_fee: 1
+
+two:
+  student_id: 1
+  course_id: 1
+  first_month_fee: 1
+  subsequent_fee: 1
+  registration_fee: 1

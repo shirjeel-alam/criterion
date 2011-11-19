@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Criterion</title>
+    <%= stylesheet_link_tag    "application" %>
+    <%= javascript_include_tag "application" %>
+    <%= csrf_meta_tags %>
+  </head>
+  <div id="navLinks">
+    <%= link_to "Home", :root %>
+  </div>
+  <body>
+    <%= yield %>
+  </body>
+</html>
