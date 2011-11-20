@@ -6,18 +6,18 @@ class Enrollment < ActiveRecord::Base
   validates :student_id, :presence => true
   validates :course_id, :presence => true
   
-  def create_payments    
-    months = course.started? ? months_between(created_at.to_date, course.end_date) : months_between(course.start_date, course.end_date)
-    
-    # First month payment
-    Payment.create(:period => months.first, :amount => course.first_month_payment, :status => Payment::DUE, :payment_type => Payment::CREDIT, :payable_id => id, :payable_type => self.class.name)
-    months[1..(months.length - 1)].each do |date|
-      Payment.create(:period => date, :amount => course.monthly_fee, :status => Payment::DUE, :payment_type => Payment::CREDIT, :payable_id => id, :payable_type => self.class.name)
-    end
-  end
+  after_save :create_payments
   
-  def get_payment(month, year)
-    #payments.where(:period => Date.new)
+  def create_payments
+    if course.started?
+      months = course.start_date < created_at.to_date ? months_between(created_at.to_date, course.end_date) : months_between(course.start_date, course.end_date)
+      
+      # First month payment
+      Payment.create(:period => months.first, :amount => course.first_month_payment, :status => Payment::DUE, :payment_type => Payment::CREDIT, :payable_id => id, :payable_type => self.class.name)
+      months[1..(months.length - 1)].each do |date|
+        Payment.create(:period => date, :amount => course.monthly_fee, :status => Payment::DUE, :payment_type => Payment::CREDIT, :payable_id => id, :payable_type => self.class.name)
+      end
+    end
   end
   
   private
@@ -29,7 +29,7 @@ class Enrollment < ActiveRecord::Base
       months << ptr.beginning_of_month
       ptr = ptr >> 1
     end
-    months << end_date
+    months << end_date if start_date.beginning_of_month != end_date.beginning_of_month
     months      
   end
 

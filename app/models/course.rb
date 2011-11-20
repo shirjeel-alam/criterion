@@ -50,7 +50,7 @@ class Course < ActiveRecord::Base
   
   def calculate_month_revenue(date)
     revenue = 0
-    curr_payments = payments.where(:period => date.beginning_of_month..date.end_of_month)
+    curr_payments = payments.paid.where(:period => date.beginning_of_month..date.end_of_month)
     curr_payments.each do |payment|
       revenue += payment.amount
     end
@@ -58,7 +58,7 @@ class Course < ActiveRecord::Base
   end
   
   def started?
-    status == IN_PROGRESS 
+    status == IN_PROGRESS
   end
   
   private
@@ -70,7 +70,7 @@ class Course < ActiveRecord::Base
       months << ptr.beginning_of_month
       ptr = ptr >> 1
     end
-    months << end_date
+    months << end_date if start_date.beginning_of_month != end_date.beginning_of_month
     months      
   end
 end

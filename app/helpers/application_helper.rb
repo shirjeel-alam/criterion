@@ -94,4 +94,16 @@ module ApplicationHelper
   def payment_period_output(payment)
     payment.period.strftime('%B %Y')
   end
+  
+  def months_between(start_date, end_date)
+    months = []
+    months << start_date
+    ptr = start_date >> 1
+    while ptr < end_date do
+      months << ptr.beginning_of_month
+      ptr = ptr >> 1
+    end
+    months << end_date if start_date.beginning_of_month != end_date.beginning_of_month
+    months      
+  end
 end
