@@ -83,8 +83,13 @@ class CoursesController < ApplicationController
   
   def start
     @course = Course.find(params[:id])
-    @course.attributes = { :start_date => Date.today }
-    @course.save
+    @course.update_attribute(:start_date, Date.today)
     render :show
   end
+  
+  def revenue
+    debugger
+    puts "Hello"
+  end
+  
 end

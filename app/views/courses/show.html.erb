@@ -56,6 +56,6 @@
   <% end %>
 </table>
 
-<%= link_to 'Start Now', start_course_path(@course) %> |
+<%= link_to 'Start Now', start_course_path(@course) if @course.status == Course::NOT_STARTED %> |
 <%= link_to 'Edit', edit_course_path(@course) %> |
 <%= link_to 'Back', courses_path %>

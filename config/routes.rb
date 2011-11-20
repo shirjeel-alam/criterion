@@ -18,6 +18,7 @@ Criterion::Application.routes.draw do
   resources :courses do
     member do
       get :start
+      get :revenue
     end
   end
 

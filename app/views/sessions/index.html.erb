@@ -4,6 +4,7 @@
   <tr>
     <th>Period</th>
     <th>Year</th>
+    <th>Courses</th>
     <th></th>
     <th></th>
     <th></th>
@@ -11,8 +12,9 @@
 
 <% @sessions.each do |session| %>
   <tr>
-    <td><%= session.period %></td>
+    <td><%= session_period_output(session) %></td>
     <td><%= session.year %></td>
+    <td><%= session.courses.count %></td>
     <td><%= link_to 'Show', session %></td>
     <td><%= link_to 'Edit', edit_session_path(session) %></td>
     <td><%= link_to 'Destroy', session, confirm: 'Are you sure?', method: :delete %></td>

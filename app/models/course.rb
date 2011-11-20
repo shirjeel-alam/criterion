@@ -40,4 +40,37 @@ class Course < ActiveRecord::Base
   def first_month_payment
     ((start_date.end_of_month - start_date).to_f / (start_date.end_of_month - start_date.beginning_of_month).to_f * monthly_fee).to_i
   end
+  
+  def calculate_revenue
+    months = months_between(course.start_date, course.end_date)
+    months.each do |date|
+      calculate_month_revenue(date)
+    end
+  end
+  
+  def calculate_month_revenue(date)
+    revenue = 0
+    curr_payments = payments.where(:period => date.beginning_of_month..date.end_of_month)
+    curr_payments.each do |payment|
+      revenue += payment.amount
+    end
+    revenue
+  end
+  
+  def started?
+    status == IN_PROGRESS 
+  end
+  
+  private
+  def months_between(start_date, end_date)
+    months = []
+    months << start_date
+    ptr = start_date >> 1
+    while ptr < end_date do
+      months << ptr.beginning_of_month
+      ptr = ptr >> 1
+    end
+    months << end_date
+    months      
+  end
 end

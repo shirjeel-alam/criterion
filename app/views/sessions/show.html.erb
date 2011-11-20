@@ -2,7 +2,7 @@
 
 <p>
   <b>Period:</b>
-  <%= @session.period %>
+  <%= session_period_output(@session) %>
 </p>
 
 <p>
@@ -10,6 +10,30 @@
   <%= @session.year %>
 </p>
 
+<h3>Courses</h3>
+<table>
+  <tr>
+    <th>Course</th>
+    <th>Teacher</th>
+    <th>Enrollments</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+  <% @session.courses.each do |course| %>
+    <tr>
+      <td><%= course.name %></td>
+      <td><%= course.teacher.name %></td>
+      <td><%= course.enrollments.count %></td>
+      <td><%= link_to 'Show', course %></td>
+      <td><%= link_to 'Edit', edit_course_path(course) %></td>
+      <td><%= link_to 'Destroy', course, confirm: 'Are you sure?', method: :delete %></td>
+      <td><%#= link_To 'View Payments' %></td> 
+    </tr>
+  <% end %>
+</table>
 
 <%= link_to 'Edit', edit_session_path(@session) %> |
 <%= link_to 'Back', sessions_path %>

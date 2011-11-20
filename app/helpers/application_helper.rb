@@ -74,6 +74,15 @@ module ApplicationHelper
     result
   end
   
+  def session_period_output(session)
+    case session.period
+      when 0
+        'May/June'
+      when 1
+        'Oct/Nov'
+    end
+  end
+  
   def payment_status_output(payment)
     payment.status ? 'Paid' : 'Due'
   end
