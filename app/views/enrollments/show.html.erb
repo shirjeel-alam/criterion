@@ -26,6 +26,7 @@
     <th>Period</th>
     <th>Amount</th>
     <th>Status</th>
+    <th>Paid On</th>
     <th></th>
     <th></th>
     <th></th>
@@ -37,6 +38,7 @@
       <td><%= payment_period_output(payment) %></td>
       <td><%= payment.amount %></td>
       <td><%= payment_status_output(payment) %></td>
+      <td><%= payment_date_output(payment) %></td>
       <td><%= link_to 'Show', payment %></td>
       <td><%= link_to 'Edit', edit_payment_path(payment) %></td>
       <td><%= link_to 'Destroy', payment, confirm: 'Are you sure?', method: :delete %></td>

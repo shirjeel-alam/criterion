@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111113145401) do
+ActiveRecord::Schema.define(:version => 20111120194344) do
 
   create_table "courses", :force => true do |t|
     t.string   "name"
@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(:version => 20111113145401) do
     t.boolean  "payment_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.date     "paid_on"
   end
 
   create_table "phone_numbers", :force => true do |t|

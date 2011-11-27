@@ -84,6 +84,7 @@ class PaymentsController < ApplicationController
   def make_payment
     @payment = Payment.find(params[:id])
     @payment.update_attribute(:status, true) ? flash[:notice] = 'Payment successfully made.' : flash[:notice] = 'Error in processing payment.'
+    @payment.update_attribute(:paid_on, Date.today)
     redirect_to @payment.payable
   end
 end

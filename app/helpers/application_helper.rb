@@ -95,6 +95,10 @@ module ApplicationHelper
     payment.period.strftime('%B %Y')
   end
   
+  def payment_date_output(payment)
+    payment.paid_on.strftime('%d-%b-%Y') rescue nil
+  end
+  
   def months_between(start_date, end_date)
     months = []
     months << start_date
