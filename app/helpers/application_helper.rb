@@ -57,6 +57,19 @@ module ApplicationHelper
     end
   end
   
+  def course_status_tag(course)
+    case course.status
+      when 0
+        :warning
+      when 1
+        :ok
+      when 2
+        :ok
+      when 3
+        :error
+    end
+  end
+  
   def phone_number_output(phone_number)
     "#{phone_number.number} - #{phone_number.category}"
   end

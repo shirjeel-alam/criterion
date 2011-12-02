@@ -3,30 +3,30 @@ Criterion::Application.routes.draw do
 
   devise_for :admin_users, ActiveAdmin::Devise.config
 
-  get "home/switchboard"
-
-  resources :sessions
-
-  resources :phone_numbers
-
-  resources :payments do
-    member do
-      get :make_payment, :as => :paid
-    end
-  end
-
-  resources :enrollments
-
-  resources :students
-
-  resources :courses do
-    member do
-      get :start
-      get :revenue
-    end
-  end
-
-  resources :teachers
+  # get "home/switchboard"
+  # 
+  # resources :sessions
+  # 
+  # resources :phone_numbers
+  # 
+  # resources :payments do
+  #   member do
+  #     get :make_payment, :as => :paid
+  #   end
+  # end
+  # 
+  # resources :enrollments
+  # 
+  # resources :students
+  # 
+  # resources :courses do
+  #   member do
+  #     get :start
+  #     get :revenue
+  #   end
+  # end
+  # 
+  # resources :teachers
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

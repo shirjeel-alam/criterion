@@ -73,4 +73,8 @@ class Course < ActiveRecord::Base
     months << end_date if start_date.beginning_of_month != end_date.beginning_of_month
     months      
   end
+  
+  def self.get_courses_status
+    [['Not Started', 0], ['In Progress', 1], ['Completed', 2], ['Cancelled', 3]]
+  end
 end
