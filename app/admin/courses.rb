@@ -1,4 +1,5 @@
 ActiveAdmin.register Course do
+  filter :id
   filter :name
   filter :status, :as => :select, :collection => Course.get_courses_status
   filter :monthly_fee
@@ -19,10 +20,50 @@ ActiveAdmin.register Course do
       status_tag(course_status_output(course), course_status_tag(course))
     end
     column :start_date, :sortable => :start_date do |course|
-      course.start_date.present? ? course.start_date : 'N/A'
+      date_format(course.start_date)
     end
-    column :end_date
+    column :end_date, :sortable => :end_date do |course|
+      date_format(course.end_date)
+    end
     
     default_actions
+  end
+  
+  show :title => :title do
+    panel 'Course Details' do
+      attributes_table_for course do
+        row(:id) { course.id }
+        row(:name) { course.name }
+        row(:teacher) { course.teacher.name }
+        row(:session) { session_output(course.session) }
+        row(:monthly_fee) { course.monthly_fee }
+        row(:no_of_enrollments) { course.enrollments.count }
+        row(:status) { status_tag(course_status_output(course), course_status_tag(course)) }
+        row(:start_date) { date_format(course.start_date) }
+        row(:end_date) { date_format(course.end_date) }
+      end
+    end
+    
+    panel 'Course Enrollments' do
+      table_for course.enrollments do |t|
+        t.column(:id) { |enrollment| link_to(enrollment.id, admin_enrollment_path(enrollment)) }
+        t.column(:student) { |enrollment| link_to(enrollment.student.name, admin_student_path(enrollment.student)) }
+        t.column(:phone_number) { |enrollment| enrollment.student.phone_numbers.first.number rescue nil }
+      end
+    end
+  end
+  
+  form do |f|
+    f.inputs do
+      f.input :name, :required => true
+      f.input :session, :as => :select, :collection => Session.valid.collect { |session| [session.session_output, session] }, :include_blank => false, :required => true
+      f.input :teacher, :include_blank => false, :required => true
+      f.input :monthly_fee, :required => true
+      f.input :status, :as => :select, :collection => Course.get_courses_status, :include_blank => false
+      f.input :start_date, :as => :date, :order => [:day, :month, :year]
+      f.input :end_date, :as => :date, :order => [:day, :month, :year], :hint => 'Will be automatically set if left blank'
+      
+      f.buttons
+    end
   end
 end

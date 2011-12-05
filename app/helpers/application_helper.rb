@@ -123,4 +123,12 @@ module ApplicationHelper
     months << end_date if start_date.beginning_of_month != end_date.beginning_of_month
     months      
   end
+  
+  def date_format(date)
+    if date.present?
+      date.strftime('%d %b %Y')
+    else
+      'N/A'
+    end
+  end
 end

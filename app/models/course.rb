@@ -1,4 +1,6 @@
 class Course < ActiveRecord::Base
+  include ApplicationHelper
+  
   belongs_to :teacher
   belongs_to :session
   
@@ -8,6 +10,8 @@ class Course < ActiveRecord::Base
   
   before_save :update_status, :set_end_date
   after_save :create_payments
+  
+  validates_presence_of :name, :teacher, :session, :monthly_fee
   
   NOT_STARTED = 0
   IN_PROGRESS = 1
@@ -21,11 +25,13 @@ class Course < ActiveRecord::Base
   
   #Assuming that the end date will always coincide with the end of session
   def set_end_date
-    case session.period
+    if self.end_date.nil?
+      case session.period
       when 0
         self.end_date = Date.parse("May #{session.year}")
       when 1
         self.end_date = Date.parse("October #{session.year}")
+      end
     end
   end
   
@@ -59,6 +65,10 @@ class Course < ActiveRecord::Base
   
   def started?
     status == IN_PROGRESS
+  end
+  
+  def title
+    "#{self.name} #{session_output(session)}"
   end
   
   private

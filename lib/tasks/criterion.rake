@@ -5,12 +5,14 @@ namespace :criterion do
     MAY_JUNE = 0
     OCT_NOV = 1
     
+    REGISTRATION_FEE = [1000, 800, 1200]
+    
     args.with_defaults(:period => 50)
     
     args[:period].to_i.times do |i|
       curr_year = (Date.today + (i + 1).years).year
-      Session.find_or_create_by_period_and_year(MAY_JUNE, curr_year)
-      Session.find_or_create_by_period_and_year(OCT_NOV, curr_year)
+      Session.create(:period => MAY_JUNE, :year => curr_year, :registration_fee => REGISTRATION_FEE[rand(REGISTRATION_FEE.length)])
+      Session.create(:period => OCT_NOV, :year => curr_year, :registration_fee => REGISTRATION_FEE[rand(REGISTRATION_FEE.length)])
     end
   end
 
@@ -20,8 +22,7 @@ namespace :criterion do
     
     Rake::Task["db:migrate:reset"].reenable  
     Rake::Task["db:migrate:reset"].invoke  
-
-    REGISTRATION_FEE = [1000, 800, 1200]
+    
     SHARE = [0.6, 0.65, 0.7, 0.75, 0.8]
     MONTHLY_FEE = [1500, 2000, 2500, 3000]
     COURSE_NAME = ["Economics A-Level", "Accounting O-Level", "Physics A-Level", "Statistics O-Level", "Urdu O-Level", "Maths A-Levels"]
@@ -30,7 +31,7 @@ namespace :criterion do
     Rake::Task["criterion:generate_sessions"].invoke(3)  
 
     3.times do
-      student = Student.create(:name => Faker::Name.name, :address => Faker::Address.street_address, :registration_fee => REGISTRATION_FEE[rand(REGISTRATION_FEE.length)], :fee_status => rand(2))
+      student = Student.create(:name => Faker::Name.name, :address => Faker::Address.street_address)
       PhoneNumber.create(:number => Faker::PhoneNumber.phone_number[0..10], :category => rand(4), :contactable_id => student.id, :contactable_type => student.class.name)
       
       teacher = Teacher.create(:name => Faker::Name.name, :share => SHARE[rand(SHARE.length)])

@@ -7,6 +7,7 @@ class Enrollment < ActiveRecord::Base
   validates :course_id, :presence => true
   
   after_save :create_payments
+  after_create :associate_session
   
   def create_payments
     if course.started?
@@ -18,6 +19,10 @@ class Enrollment < ActiveRecord::Base
         Payment.create(:period => date, :amount => course.monthly_fee, :status => Payment::DUE, :payment_type => Payment::CREDIT, :payable_id => id, :payable_type => self.class.name)
       end
     end
+  end
+  
+  def associate_session
+    StudentRegistrationFee.create(:student => student, :session => course.session)
   end
   
   private

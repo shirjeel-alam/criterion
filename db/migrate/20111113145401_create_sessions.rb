@@ -3,6 +3,7 @@ class CreateSessions < ActiveRecord::Migration
     create_table :sessions do |t|
       t.integer :period
       t.integer :year
+      t.integer :registration_fee
 
       t.timestamps
     end
