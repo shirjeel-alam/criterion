@@ -1,6 +1,11 @@
 ActiveAdmin.register AdminUser do
+  filter :id
+  filter :email
+  
   index do
-    column :id
+    column 'ID' do |admin|
+      link_to(admin.id, admin_admin_user_path(admin))
+    end
     column :email
     column :current_sign_in_at
     column :last_sign_in_at
@@ -13,7 +18,6 @@ ActiveAdmin.register AdminUser do
     f.inputs "Admin Details" do
       f.input :email
       f.input :password, :type => :password
-      f.input :password_confirmation, :type => :password
     end
     
     f.buttons

@@ -15,7 +15,9 @@ ActiveAdmin.register Course do
     column :teacher do |course|
       course.teacher.present? ? course.teacher.name : 'N/A'
     end
-    column :monthly_fee
+    column :monthly_fee, :sortable => :monthly_fee do |course|
+      number_to_currency(course.monthly_fee, :unit => 'Rs. ', :precision => 0)
+    end
     column :status, :sortable => :status do |course|
       status_tag(course_status_output(course), course_status_tag(course))
     end

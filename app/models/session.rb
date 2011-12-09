@@ -13,6 +13,12 @@ class Session < ActiveRecord::Base
     (Date.today.year..(Date.today + 5.years).year).to_a
   end
   
+  ### View Helpers ###
+  
+  def title
+    session_output
+  end
+  
   def session_output
     result = ""
     case period
@@ -24,5 +30,14 @@ class Session < ActiveRecord::Base
     
     result << " #{year}"
     result
+  end
+  
+  def session_period_output
+    case period
+      when 0
+        'May/June'
+      when 1
+        'Oct/Nov'
+    end
   end
 end

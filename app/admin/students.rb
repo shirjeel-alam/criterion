@@ -29,4 +29,24 @@ ActiveAdmin.register Student do
       end
     end
   end
+    
+  form do |f|
+    f.inputs do
+      f.input :name
+      f.input :address
+      
+      f.has_many :phone_numbers do |fp|
+        fp.inputs 'Details' do
+          fp.input :number
+          fp.input :category, :as => :select, :collection => PhoneNumber.get_phone_number_categories, :include_blank => false
+        end
+      end
+    end
+  end    
+  
+  sidebar :actions, :only => :show do
+    ul do
+      li link_to('Add Enrollment', new_admin_enrollment_path(:student_id => student))
+    end
+  end
 end

@@ -71,7 +71,11 @@ class Course < ActiveRecord::Base
     "#{self.name} #{session_output(session)}"
   end
   
-  private
+  def course_output
+    "#{self.name} | #{self.teacher.name}"
+  end
+  
+  protected
   def months_between(start_date, end_date)
     months = []
     months << start_date
@@ -82,6 +86,10 @@ class Course < ActiveRecord::Base
     end
     months << end_date if start_date.beginning_of_month != end_date.beginning_of_month
     months      
+  end
+  
+  def self.get_courses
+    Course.all.collect { |c| [c.course_output, c.id] }
   end
   
   def self.get_courses_status

@@ -12,4 +12,9 @@ class Student < ActiveRecord::Base
   
   PAID = true
   DUE = false
+  
+  protected
+  def self.get_students
+    Student.all.collect { |s| [s.name, s.id] }
+  end
 end
