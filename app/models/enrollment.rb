@@ -1,9 +1,9 @@
 class Enrollment < ActiveRecord::Base
   belongs_to :course
   belongs_to :student
+  
   has_many :payments, :as => :payable, :dependent => :destroy
   
-  validates :student_id, :presence => true
   validates :course_id, :presence => true
   
   after_save :create_payments
@@ -25,7 +25,6 @@ class Enrollment < ActiveRecord::Base
     StudentRegistrationFee.create(:student => student, :session => course.session)
   end
   
-  private
   def months_between(start_date, end_date)
     months = []
     months << start_date
@@ -38,4 +37,9 @@ class Enrollment < ActiveRecord::Base
     months      
   end
 
+  ### View Helpers ###
+
+  def title
+    "#{student.name} - #{course.title}"
+  end
 end

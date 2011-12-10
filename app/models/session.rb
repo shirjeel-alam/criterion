@@ -1,25 +1,27 @@
 class Session < ActiveRecord::Base
   has_many :courses
   
-  scope :valid, lambda { where('year >= ?', Date.today.year) }
+  scope :active, lambda { where('year >= ?', Date.today.year) }
   
   validates :period, :uniqueness => { :scope => :year }
-  
-  def self.get_session_periods
+ 
+  ### Class Methods ###
+
+  def self.periods
     [["May/June", 0], ["Oct/Nov", 1]]
   end
   
-  def self.get_session_years
+  def self.years
     (Date.today.year..(Date.today + 5.years).year).to_a
   end
   
   ### View Helpers ###
   
   def title
-    session_output
+    label
   end
   
-  def session_output
+  def label
     result = ""
     case period
       when 0
@@ -32,7 +34,7 @@ class Session < ActiveRecord::Base
     result
   end
   
-  def session_period_output
+  def period_label
     case period
       when 0
         'May/June'

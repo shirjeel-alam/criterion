@@ -26,6 +26,7 @@ class StudentsController < ApplicationController
   def new
     @student = Student.new
     @student.phone_numbers.build
+    @student.enrollments.build
   
     respond_to do |format|
       format.html # new.html.erb

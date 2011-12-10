@@ -1,6 +1,4 @@
 class Course < ActiveRecord::Base
-  include ApplicationHelper
-  
   belongs_to :teacher
   belongs_to :session
   
@@ -67,15 +65,6 @@ class Course < ActiveRecord::Base
     status == IN_PROGRESS
   end
   
-  def title
-    "#{self.name} #{session_output(session)}"
-  end
-  
-  def course_output
-    "#{self.name} | #{self.teacher.name}"
-  end
-  
-  protected
   def months_between(start_date, end_date)
     months = []
     months << start_date
@@ -87,12 +76,54 @@ class Course < ActiveRecord::Base
     months << end_date if start_date.beginning_of_month != end_date.beginning_of_month
     months      
   end
+
+  ### Class Methods ###
   
-  def self.get_courses
+  def self.get_all
     Course.all.collect { |c| [c.course_output, c.id] }
   end
-  
-  def self.get_courses_status
+
+  def self.get_active
+    # Pending implementation
+  end
+ 
+  def self.statuses
     [['Not Started', 0], ['In Progress', 1], ['Completed', 2], ['Cancelled', 3]]
+  end
+
+  ### View Helpers ###
+
+  def label 
+    "#{self.name} | #{self.teacher.name}"
+  end
+
+  def title
+    "#{self.name} #{session.label}"
+  end
+
+  def status_label
+    case course.status
+      when 0
+        'Not Started'
+      when 1
+        'In Progress'
+      when 2
+        'Completed'
+      when 3
+        'Cancelled'
+    end
+  end
+
+  def status_tag
+    case course.status
+      when 0
+        :warning
+      when 1
+        :ok
+      when 2
+        :ok
+      when 3
+        :error
+    end
   end
 end
