@@ -11,6 +11,8 @@ class Course < ActiveRecord::Base
   
   validates_presence_of :name, :teacher, :session, :monthly_fee
   
+  scope :active, where(:session_id => Session.active.collect(&:id))
+  
   NOT_STARTED = 0
   IN_PROGRESS = 1
   COMPLETED = 2
@@ -23,7 +25,7 @@ class Course < ActiveRecord::Base
   
   #Assuming that the end date will always coincide with the end of session
   def set_end_date
-    if self.end_date.nil?
+    if end_date.nil?
       case session.period
       when 0
         self.end_date = Date.parse("May #{session.year}")
@@ -80,11 +82,11 @@ class Course < ActiveRecord::Base
   ### Class Methods ###
   
   def self.get_all
-    Course.all.collect { |c| [c.course_output, c.id] }
+    Course.all.collect { |c| [c.label, c.id] }
   end
 
   def self.get_active
-    # Pending implementation
+    Course.active.collect { |c| [c.label, c.id] }
   end
  
   def self.statuses
@@ -94,15 +96,15 @@ class Course < ActiveRecord::Base
   ### View Helpers ###
 
   def label 
-    "#{self.name} | #{self.teacher.name}"
+    "#{name} | #{teacher.name}"
   end
 
   def title
-    "#{self.name} #{session.label}"
+    "#{name} #{session.label}"
   end
 
   def status_label
-    case course.status
+    case status
       when 0
         'Not Started'
       when 1
@@ -115,7 +117,7 @@ class Course < ActiveRecord::Base
   end
 
   def status_tag
-    case course.status
+    case status
       when 0
         :warning
       when 1

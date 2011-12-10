@@ -15,6 +15,14 @@ class Session < ActiveRecord::Base
     (Date.today.year..(Date.today + 5.years).year).to_a
   end
   
+  def self.get_all
+    Session.all.collect { |s| [s.label, s.id] }
+  end
+
+  def self.get_active
+    Session.active.collect { |s| [s.label, s.id] } 
+  end
+  
   ### View Helpers ###
   
   def title

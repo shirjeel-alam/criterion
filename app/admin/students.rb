@@ -38,13 +38,13 @@ ActiveAdmin.register Student do
       f.has_many :phone_numbers do |fp|
         fp.inputs 'Contact Details' do
           fp.input :number
-          fp.input :category, :as => :select, :collection => PhoneNumber.get_phone_number_categories, :include_blank => false
+          fp.input :category, :as => :select, :collection => PhoneNumber.categories, :include_blank => false
         end
       end
       
       f.has_many :enrollments do |fe|
         fe.inputs 'Enrollment Details' do
-          fe.input :course_id, :as => :select, :include_blank => false, :collection => Course.get_courses
+          fe.input :course_id, :as => :select, :include_blank => false, :collection => Course.get_active
         end
       end
       

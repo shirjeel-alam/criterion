@@ -15,7 +15,7 @@ class Student < ActiveRecord::Base
  
   ### Class Methods ###
 
-  def self.students
+  def self.get_all
     Student.all.collect { |s| [s.name, s.id] }
   end
 end

@@ -1,7 +1,7 @@
 ActiveAdmin.register Course do
   filter :id
   filter :name
-  filter :status, :as => :select, :collection => Course.get_courses_status
+  filter :status, :as => :select, :collection => Course.statuses
   filter :monthly_fee
   
   index do
@@ -10,7 +10,7 @@ ActiveAdmin.register Course do
     end
     column :name
     column :session do |course|
-      session_output(course.session)
+      course.session.label
     end
     column :teacher do |course|
       course.teacher.present? ? course.teacher.name : 'N/A'
@@ -19,7 +19,7 @@ ActiveAdmin.register Course do
       number_to_currency(course.monthly_fee, :unit => 'Rs. ', :precision => 0)
     end
     column :status, :sortable => :status do |course|
-      status_tag(course_status_output(course), course_status_tag(course))
+      status_tag(course.status_label, course.status_tag)
     end
     column :start_date, :sortable => :start_date do |course|
       date_format(course.start_date)
@@ -37,10 +37,10 @@ ActiveAdmin.register Course do
         row(:id) { course.id }
         row(:name) { course.name }
         row(:teacher) { course.teacher.name }
-        row(:session) { session_output(course.session) }
+        row(:session) { course.session.label }
         row(:monthly_fee) { course.monthly_fee }
         row(:no_of_enrollments) { course.enrollments.count }
-        row(:status) { status_tag(course_status_output(course), course_status_tag(course)) }
+        row(:status) { status_tag(course.status_label, course.status_tag) }
         row(:start_date) { date_format(course.start_date) }
         row(:end_date) { date_format(course.end_date) }
       end
@@ -58,10 +58,10 @@ ActiveAdmin.register Course do
   form do |f|
     f.inputs do
       f.input :name, :required => true
-      f.input :session, :as => :select, :collection => Session.valid.collect { |session| [session.session_output, session] }, :include_blank => false, :required => true
-      f.input :teacher, :include_blank => false, :required => true
+      f.input :session, :as => :select, :collection => Session.get_active, :include_blank => false, :required => true
+      f.input :teacher, :as => :select, :collection => Teacher.get_all, :include_blank => false, :required => true
       f.input :monthly_fee, :required => true
-      f.input :status, :as => :select, :collection => Course.get_courses_status, :include_blank => false
+      f.input :status, :as => :select, :collection => Course.statuses, :include_blank => false
       f.input :start_date, :as => :date, :order => [:day, :month, :year]
       f.input :end_date, :as => :date, :order => [:day, :month, :year], :hint => 'Will be automatically set if left blank'
       

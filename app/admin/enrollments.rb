@@ -19,8 +19,8 @@ ActiveAdmin.register Enrollment do
   
   form do |f|
     f.inputs do
-      f.input :course_id, :as => :select, :include_blank => false, :collection => Course.get_courses
-      f.input :student_id, :as => :select, :include_blank => false, :collection => Student.get_students
+      f.input :course_id, :as => :select, :include_blank => false, :collection => Course.get_all
+      f.input :student_id, :as => :select, :include_blank => false, :collection => Student.get_all
       
       f.buttons
     end
@@ -35,14 +35,14 @@ ActiveAdmin.register Enrollment do
       end
     end
     
-    panel 'Payments' do
-      table_for enrollment.payments do |t|
-        t.column(:id) { |payment| }
-        t.column(:period) { |payment| }
-        t.column(:amount) { |payment| }
-        t.column(:status) { |payment| }
-        t.column(:paid_on) { |payment| }
-      end
-    end
+    # panel 'Payments' do
+    #   table_for enrollment.payments do |t|
+    #     t.column(:id) { |payment| }
+    #     t.column(:period) { |payment| }
+    #     t.column(:amount) { |payment| }
+    #     t.column(:status) { |payment| }
+    #     t.column(:paid_on) { |payment| }
+    #   end
+    # end
   end
 end

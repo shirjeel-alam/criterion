@@ -1,5 +1,5 @@
 ActiveAdmin.register Session do
-  filter :period, :as => :select, :collection => Session.get_session_periods
+  filter :period, :as => :select, :collection => Session.get_all
   filter :year
   filter :registration_fee
   
@@ -8,7 +8,7 @@ ActiveAdmin.register Session do
       link_to(session.id, admin_session_path(session))
     end
     column 'Period', :sortable => :period do |session|
-      session.session_period_output
+      session.period_label
     end
     column 'Registration Fee', :sortable => :registration_fee do |session|
       number_to_currency(session.registration_fee, :unit => 'Rs. ', :precision => 0)
@@ -21,7 +21,7 @@ ActiveAdmin.register Session do
     panel 'Session Details' do
       attributes_table_for session do
         row(:id) { session.id }
-        row(:period) { session.session_period_output }
+        row(:period) { session.period_label }
         row(:year) { session.year }
         row(:registration_fee) { number_to_currency(session.registration_fee, :unit => 'Rs. ', :precision => 0) }
       end

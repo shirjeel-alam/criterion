@@ -5,7 +5,7 @@ class Teacher < ActiveRecord::Base
 
   ### Class Methods ###
 
-  def self.teachers
+  def self.get_all
     Teacher.all.collect { |teacher| [teacher.name, teacher.id] }
   end
 end
