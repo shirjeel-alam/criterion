@@ -19,8 +19,15 @@ class Course < ActiveRecord::Base
   CANCELLED = 3
   
   def update_status
-    self.status = start_date.blank? ? NOT_STARTED : (start_date.future? ? NOT_STARTED : IN_PROGRESS)
-    self.status = end_date.future? ? IN_PROGRESS : COMPLETED unless end_date.blank?
+    if start_date.blank? || start_date.try(:future?)
+      self.status = NOT_STARTED
+    elsif end_date.try(:future?)
+      self.status = IN_PROGRESS
+    elsif end_date.try(:past?)
+      self.status = COMPLETED
+    else
+      self.status = CANCELLED
+    end
   end
   
   #Assuming that the end date will always coincide with the end of session
@@ -35,12 +42,10 @@ class Course < ActiveRecord::Base
     end
   end
   
-  def create_payments
-    if start_date.present? && end_date.present?
-      enrollments.each do |enrollment|
-        enrollment.create_payments
-      end
-    end
+  def create_payments    
+    enrollments.each do |enrollment|
+      enrollment.create_payments
+    end if started?      
   end
   
   def first_month_payment

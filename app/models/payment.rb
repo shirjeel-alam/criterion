@@ -1,7 +1,7 @@
 class Payment < ActiveRecord::Base
   belongs_to :payable, :polymorphic => :true
   
-  before_validation :check_payment
+  before_validation :check_payment, :on => :create
   
   PAID = true
   DUE = false
@@ -22,23 +22,30 @@ class Payment < ActiveRecord::Base
     status
   end
   
+  #TODO: Revise.. Currently not being used anywhere
   def get_payment(month, year)
     period.month == month && period.year == year ? amount : 0
   end
+  
+  ### View Helpers ###
 
   def status_label
-    payment.status ? 'Paid' : 'Due'
+    status ? 'Paid' : 'Due'
+  end
+  
+  def status_tag
+    status ? :ok : :error
   end
       
   def type_label
-    payment.payment_type ? 'Credit' : 'Debit'
+    payment_type ? 'Credit' : 'Debit'
   end
 
   def period_label
-    payment.period.strftime('%B %Y')
+    period.strftime('%B %Y')
   end
   
   def date_label
-    payment.paid_on.strftime('%d-%b-%Y') rescue nil
+    paid_on.present? ? paid_on.strftime('%d-%b-%Y') : 'N/A'
   end
 end

@@ -3,7 +3,7 @@ ActiveAdmin.register AdminUser do
   filter :email
   
   index do
-    column 'ID' do |admin|
+    column 'ID', :sortable => :id do |admin|
       link_to(admin.id, admin_admin_user_path(admin))
     end
     column :email

@@ -68,4 +68,25 @@ ActiveAdmin.register Course do
       f.buttons
     end
   end
+  
+  sidebar :actions, :only => :show do
+    ul do
+      li link_to('Start Course', start_admin_course_path(course), :method => :put) unless course.started?
+      li link_to('Reset Course', reset_admin_course_path(course), :method => :put) if course.started?
+    end
+  end
+  
+  member_action :start, :method => :put do
+    course = Course.find(params[:id])
+    course.update_attributes(:start_date => Date.today)
+    flash[:notice] = 'Course Started'
+    redirect_to :action => :show
+  end
+  
+  member_action :reset, :method => :put do
+    course = Course.find(params[:id])
+    course.update_attributes(:start_date => nil)
+    flash[:notice] = 'Course Reset'
+    redirect_to :action => :show
+  end
 end

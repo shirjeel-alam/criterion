@@ -35,14 +35,15 @@ ActiveAdmin.register Enrollment do
       end
     end
     
-    # panel 'Payments' do
-    #   table_for enrollment.payments do |t|
-    #     t.column(:id) { |payment| }
-    #     t.column(:period) { |payment| }
-    #     t.column(:amount) { |payment| }
-    #     t.column(:status) { |payment| }
-    #     t.column(:paid_on) { |payment| }
-    #   end
-    # end
+    panel 'Payments' do
+      table_for enrollment.payments do |t|
+        t.column(:id) { |payment| link_to(payment.id, admin_payment_path(payment)) }
+        t.column(:period) { |payment| payment.period_label}
+        t.column(:amount) { |payment| number_to_currency(payment.amount, :unit => 'Rs. ', :precision => 0) }
+        t.column(:status) { |payment| status_tag(payment.status_label, payment.status_tag) }
+        t.column(:paid_on) { |payment| payment.date_label }
+        t.column(:actions) { |payment| link_to('Make Payment', pay_admin_payment_path(payment), :method => :put) }
+      end
+    end
   end
 end

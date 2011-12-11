@@ -10,6 +10,7 @@ ActiveAdmin.register Session do
     column 'Period', :sortable => :period do |session|
       session.period_label
     end
+    column :year
     column 'Registration Fee', :sortable => :registration_fee do |session|
       number_to_currency(session.registration_fee, :unit => 'Rs. ', :precision => 0)
     end

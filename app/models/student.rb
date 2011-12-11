@@ -18,4 +18,10 @@ class Student < ActiveRecord::Base
   def self.get_all
     Student.all.collect { |s| [s.name, s.id] }
   end
+  
+  ### View Helpers ###
+  
+  def address_label
+    address.present? ? address : 'N/A'
+  end
 end

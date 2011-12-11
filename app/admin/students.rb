@@ -3,11 +3,13 @@ ActiveAdmin.register Student do
   filter :name
   
   index do
-    column 'ID' do |student|
+    column 'ID', :sortable => :id do |student|
       link_to(student.id, admin_student_path(student))
     end
     column :name
-    column :address
+    column 'Address', :sortable => :address do |student|
+      student.address_label
+    end
     
     default_actions
   end
@@ -25,6 +27,7 @@ ActiveAdmin.register Student do
       table_for student.enrollments do |t|
         t.column(:id) { |enrollment| link_to(enrollment.id, admin_enrollment_path(enrollment)) }
         t.column(:course) { |enrollment| link_to(enrollment.course.name, admin_course_path(enrollment.course)) }
+        t.column(:session) { |enrollment| enrollment.course.session.label }
         t.column(:teacher) { |enrollment| link_to(enrollment.course.teacher.name, admin_teacher_path(enrollment.course.teacher)) }
       end
     end
