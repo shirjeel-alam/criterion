@@ -1,5 +1,5 @@
 class Student < ActiveRecord::Base
-  has_many :enrollments
+  has_many :enrollments, :dependent => :destroy
   has_many :student_registration_fees
   has_many :courses, :through => :enrollments
   has_many :payments, :through => :enrollments

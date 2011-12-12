@@ -31,8 +31,8 @@ ActiveAdmin.register Session do
     panel 'Courses' do
       table_for session.courses do |t|
         t.column(:id) { |course| link_to(course.id, admin_course_path(course)) }
-        t.column(:name) { |course| link_to(course.name, admin_course_path(course)) }
-        t.column(:teacher) { |course| link_to(course.teacher.name, admin_teacher_path(course.teacher)) }
+        t.column(:name) { |course| link_to(course.name, admin_course_path(course)) rescue nil }
+        t.column(:teacher) { |course| link_to(course.teacher.name, admin_teacher_path(course.teacher)) rescue nil }
         t.column(:enrollments) { |course| course.enrollments.count }
       end
     end
