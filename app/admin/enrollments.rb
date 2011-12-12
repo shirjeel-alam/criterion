@@ -8,10 +8,10 @@ ActiveAdmin.register Enrollment do
       link_to(enrollment.id, admin_enrollment_path(enrollment))
     end
     column 'Student' do |enrollment|
-      link_to(enrollment.student.name, admin_student_path(enrollment.student))
+      link_to(enrollment.student.name, admin_student_path(enrollment.student)) rescue nil
     end
     column 'Course' do |enrollment|
-      link_to(enrollment.course.name, admin_course_path(enrollment.course))
+      link_to(enrollment.course.name, admin_course_path(enrollment.course)) rescue nil
     end
       
     default_actions
@@ -30,8 +30,8 @@ ActiveAdmin.register Enrollment do
     panel 'Enrollment Details' do
       attributes_table_for enrollment do
         row(:id) { enrollment.id }
-        row(:student) { link_to(enrollment.student.name, admin_student_path(enrollment.student)) }
-        row(:course) { link_to(enrollment.course.name, admin_course_path(enrollment.course)) }
+        row(:student) { link_to(enrollment.student.name, admin_student_path(enrollment.student)) rescue nil }
+        row(:course) { link_to(enrollment.course.name, admin_course_path(enrollment.course)) rescue nil }
       end
     end
     

@@ -40,6 +40,6 @@ class Enrollment < ActiveRecord::Base
   ### View Helpers ###
 
   def title
-    "#{student.name} - #{course.title}"
+    "#{student.name} - #{course.title}" rescue nil
   end
 end
