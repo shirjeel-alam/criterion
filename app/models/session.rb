@@ -16,11 +16,11 @@ class Session < ActiveRecord::Base
   end
   
   def self.get_all
-    Session.all.collect { |s| [s.label, s.id] }
+    #Session.all.collect { |s| [s.label, s.id] }
   end
 
   def self.get_active
-    Session.active.collect { |s| [s.label, s.id] } 
+    #Session.active.collect { |s| [s.label, s.id] } 
   end
   
   ### View Helpers ###
