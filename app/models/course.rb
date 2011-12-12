@@ -72,6 +72,10 @@ class Course < ActiveRecord::Base
     status == IN_PROGRESS
   end
   
+  def has_enrollment?(student)
+    enrollments.collect(&:id).include?(student.id)
+  end
+  
   def months_between(start_date, end_date)
     months = []
     months << start_date
@@ -82,6 +86,10 @@ class Course < ActiveRecord::Base
     end
     months << end_date if start_date.beginning_of_month != end_date.beginning_of_month
     months      
+  end
+  
+  def not_enrolled_students
+    Student.all.collect { |s| s unless self.has_enrollment?(s) }.compact.uniq
   end
 
   ### Class Methods ###

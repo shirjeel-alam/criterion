@@ -5,6 +5,7 @@ class Enrollment < ActiveRecord::Base
   has_many :payments, :as => :payable, :dependent => :destroy
   
   validates :course_id, :presence => true
+  validates :course_id, :uniqueness => { :scope => :student_id }
   
   after_save :create_payments
   after_create :associate_session

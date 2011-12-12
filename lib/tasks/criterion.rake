@@ -28,7 +28,7 @@ namespace :criterion do
     COURSE_NAME = ["Economics A-Level", "Accounting O-Level", "Physics A-Level", "Statistics O-Level", "Urdu O-Level", "Maths A-Levels"]
             
     Rake::Task["criterion:generate_sessions"].reenable  
-    Rake::Task["criterion:generate_sessions"].invoke(3)  
+    Rake::Task["criterion:generate_sessions"].invoke(2)  
 
     3.times do
       student = Student.create(:name => Faker::Name.name, :address => Faker::Address.street_address)

@@ -1,5 +1,5 @@
 ActiveAdmin.register Session do
-  filter :period, :as => :select, :collection => Session.get_all
+  filter :period, :as => :select, :collection => lambda { Session.get_all }
   filter :year
   filter :registration_fee
   

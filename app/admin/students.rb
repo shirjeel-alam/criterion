@@ -50,14 +50,12 @@ ActiveAdmin.register Student do
           fe.input :course_id, :as => :select, :include_blank => false, :collection => Course.get_active
         end
       end
-      
-      f.buttons      
     end
+    
+    f.buttons
   end    
-  
-  sidebar :actions, :only => :show do
-    ul do
-      li link_to('Add Enrollment', new_admin_enrollment_path(:enrollment => { :student_id => student }))
-    end
+    
+  action_item :only => :show do
+    link_to('Add Enrollment', new_admin_enrollment_path(:student_id => student))
   end
 end

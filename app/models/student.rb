@@ -12,6 +12,14 @@ class Student < ActiveRecord::Base
   
   PAID = true
   DUE = false
+  
+  def enrolled_courses
+    Course.active.collect { |c| c if c.has_enrollment?(self) }.compact.uniq
+  end
+  
+  def not_enrolled_courses
+    Course.active.collect { |c| c unless c.has_enrollment?(self) }.compact.uniq
+  end
  
   ### Class Methods ###
 

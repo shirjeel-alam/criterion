@@ -2,13 +2,21 @@ class Session < ActiveRecord::Base
   has_many :courses
   
   scope :active, lambda { where('year >= ?', Date.today.year) }
+  scope :completed, lambda { where('year < ?', Date.today.year) }
   
   validates :period, :uniqueness => { :scope => :year }
+  
+  JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER = Range.new(1, 12).to_a
+  MAY_JUNE, OCT_NOV = 0, 1
+  
+  def active?
+    self == Session.get_active
+  end
  
   ### Class Methods ###
 
   def self.periods
-    [["May/June", 0], ["Oct/Nov", 1]]
+    [["May/June", MAY_JUNE], ["Oct/Nov", OCT_NOV]]
   end
   
   def self.years
@@ -20,7 +28,20 @@ class Session < ActiveRecord::Base
   end
 
   def self.get_active
-    Session.active.collect { |s| [s.label, s.id] } 
+    #Session.active.collect { |s| [s.label, s.id] }
+    period, year = nil, nil
+    if Range.new(JANUARY..JULY).include?(Date.today.month)
+      period = MAY_JUNE
+      year = Date.today.year
+    elsif Range.new(AUGUST..NOVEMBER).include?(Date.today.month)
+      period = OCT_NOV
+      year = Date.today.year
+    else
+      period = MAY_JUNE
+      year = Date.today.year + 1
+    end
+    
+    Session.find_by_period_and_year(period, year)
   end
   
   ### View Helpers ###

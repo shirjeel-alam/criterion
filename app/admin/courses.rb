@@ -64,16 +64,9 @@ ActiveAdmin.register Course do
       f.input :status, :as => :select, :collection => Course.statuses, :include_blank => false
       f.input :start_date, :as => :date, :order => [:day, :month, :year]
       f.input :end_date, :as => :date, :order => [:day, :month, :year], :hint => 'Will be automatically set if left blank'
-      
-      f.buttons
     end
-  end
-  
-  sidebar :actions, :only => :show do
-    ul do
-      li link_to('Start Course', start_admin_course_path(course), :method => :put) unless course.started?
-      li link_to('Reset Course', reset_admin_course_path(course), :method => :put) if course.started?
-    end
+    
+    f.buttons
   end
   
   member_action :start, :method => :put do
@@ -88,5 +81,10 @@ ActiveAdmin.register Course do
     course.update_attributes(:start_date => nil)
     flash[:notice] = 'Course Reset'
     redirect_to :action => :show
+  end
+  
+  action_item :only => :show do
+    span link_to('Add Enrollment', new_admin_enrollment_path(:course_id => course))
+    span course.started? ? link_to('Reset Course', reset_admin_course_path(course), :method => :put) : link_to('Start Course', start_admin_course_path(course), :method => :put)
   end
 end

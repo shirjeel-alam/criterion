@@ -17,14 +17,7 @@ ActiveAdmin.register Enrollment do
     default_actions
   end
   
-  form do |f|
-    f.inputs do
-      f.input :course_id, :as => :select, :include_blank => false, :collection => Course.get_all
-      f.input :student_id, :as => :select, :include_blank => false, :collection => Student.get_all
-      
-      f.buttons
-    end
-  end
+  form :partial => 'form'
   
   show :title => :title do
     panel 'Enrollment Details' do
@@ -43,6 +36,24 @@ ActiveAdmin.register Enrollment do
         t.column(:status) { |payment| status_tag(payment.status_label, payment.status_tag) }
         t.column(:paid_on) { |payment| payment.date_label }
         t.column(:actions) { |payment| link_to('Make Payment', pay_admin_payment_path(payment), :method => :put) }
+      end
+    end
+  end
+  
+  controller do
+    def new
+      if params[:student_id]
+        @student = Student.find(params[:student_id])
+        @enrollment = @student.enrollments.build
+        @courses = @student.not_enrolled_courses
+      elsif params[:course_id]
+        @course = Course.find(params[:course_id])
+        @enrollment = @course.enrollments.build
+        @students = @course.not_enrolled_students
+      else
+        @enrollment = Enrollment.new
+        @courses = Course.get_active
+        @students = Student.get_all
       end
     end
   end
