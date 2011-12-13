@@ -1,4 +1,7 @@
 class Course < ActiveRecord::Base
+  
+  NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED = 0, 1, 2, 3
+  
   belongs_to :teacher
   belongs_to :session
   
@@ -11,12 +14,8 @@ class Course < ActiveRecord::Base
   
   validates_presence_of :name, :teacher, :session, :monthly_fee
   
+  #TODO: Change to SQL
   scope :active, where(:session_id => Session.active.collect(&:id))
-  
-  NOT_STARTED = 0
-  IN_PROGRESS = 1
-  COMPLETED = 2
-  CANCELLED = 3
   
   def update_status
     if start_date.blank? || start_date.try(:future?)
@@ -72,6 +71,10 @@ class Course < ActiveRecord::Base
     status == IN_PROGRESS
   end
   
+  def completed?
+    status == COMPLETED
+  end
+  
   def has_enrollment?(student)
     enrollments.collect(&:id).include?(student.id)
   end
@@ -118,26 +121,26 @@ class Course < ActiveRecord::Base
 
   def status_label
     case status
-      when 0
+      when NOT_STARTED
         'Not Started'
-      when 1
+      when IN_PROGRESS
         'In Progress'
-      when 2
+      when COMPLETED
         'Completed'
-      when 3
+      when CANCELLED
         'Cancelled'
     end
   end
 
   def status_tag
     case status
-      when 0
+      when NOT_STARTED
         :warning
-      when 1
+      when IN_PROGRESS
         :ok
-      when 2
+      when COMPLETED
         :ok
-      when 3
+      when CANCELLED
         :error
     end
   end

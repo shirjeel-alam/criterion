@@ -3,6 +3,10 @@ ActiveAdmin.register Enrollment do
   filter :course
   filter :student
   
+  action_item :only => :show do
+    link_to('Cancel Enrollment', '#', :confirm => 'Are you sure?')
+  end
+  
   index do
     column 'ID' do |enrollment|
       link_to(enrollment.id, admin_enrollment_path(enrollment))
@@ -25,6 +29,7 @@ ActiveAdmin.register Enrollment do
         row(:id) { enrollment.id }
         row(:student) { link_to(enrollment.student.name, admin_student_path(enrollment.student)) rescue nil }
         row(:course) { link_to(enrollment.course.name, admin_course_path(enrollment.course)) rescue nil }
+        row(:status) { status_tag(enrollment.status_label, enrollment.status_tag) }
       end
     end
     

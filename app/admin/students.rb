@@ -23,14 +23,45 @@ ActiveAdmin.register Student do
       end
     end
     
-    panel 'Student Enrollments' do
-      table_for student.enrollments do |t|
+    panel 'Student Enrollments (In Progress)' do
+      table_for student.enrollments.in_progress do |t|
         t.column(:id) { |enrollment| link_to(enrollment.id, admin_enrollment_path(enrollment)) }
         t.column(:course) { |enrollment| link_to(enrollment.course.name, admin_course_path(enrollment.course)) }
         t.column(:session) { |enrollment| enrollment.course.session.label }
         t.column(:teacher) { |enrollment| link_to(enrollment.course.teacher.name, admin_teacher_path(enrollment.course.teacher)) }
-      end
-    end
+        t.column(:status) { |enrollment| status_tag(enrollment.status_label, enrollment.status_tag) }
+      end 
+    end if student.enrollments.in_progress.present?
+    
+    panel 'Student Enrollments (Not Started)' do
+      table_for student.enrollments.not_started do |t|
+        t.column(:id) { |enrollment| link_to(enrollment.id, admin_enrollment_path(enrollment)) }
+        t.column(:course) { |enrollment| link_to(enrollment.course.name, admin_course_path(enrollment.course)) }
+        t.column(:session) { |enrollment| enrollment.course.session.label }
+        t.column(:teacher) { |enrollment| link_to(enrollment.course.teacher.name, admin_teacher_path(enrollment.course.teacher)) }
+        t.column(:status) { |enrollment| status_tag(enrollment.status_label, enrollment.status_tag) }
+      end 
+    end if student.enrollments.not_started.present?
+    
+    panel 'Student Enrollments (Completed)' do
+      table_for student.enrollments.completed do |t|
+        t.column(:id) { |enrollment| link_to(enrollment.id, admin_enrollment_path(enrollment)) }
+        t.column(:course) { |enrollment| link_to(enrollment.course.name, admin_course_path(enrollment.course)) }
+        t.column(:session) { |enrollment| enrollment.course.session.label }
+        t.column(:teacher) { |enrollment| link_to(enrollment.course.teacher.name, admin_teacher_path(enrollment.course.teacher)) }
+        t.column(:status) { |enrollment| status_tag(enrollment.status_label, enrollment.status_tag) }
+      end      
+    end if student.enrollments.completed.present?
+    
+    panel 'Student Enrollments (Cancelled)' do
+      table_for student.enrollments.cancelled do |t|
+        t.column(:id) { |enrollment| link_to(enrollment.id, admin_enrollment_path(enrollment)) }
+        t.column(:course) { |enrollment| link_to(enrollment.course.name, admin_course_path(enrollment.course)) }
+        t.column(:session) { |enrollment| enrollment.course.session.label }
+        t.column(:teacher) { |enrollment| link_to(enrollment.course.teacher.name, admin_teacher_path(enrollment.course.teacher)) }
+        t.column(:status) { |enrollment| status_tag(enrollment.status_label, enrollment.status_tag) }
+      end 
+    end if student.enrollments.cancelled.present?
   end
     
   form do |f|

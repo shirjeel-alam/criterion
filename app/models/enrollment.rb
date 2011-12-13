@@ -1,4 +1,7 @@
 class Enrollment < ActiveRecord::Base
+  
+  NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED = 0, 1, 2, 3
+  
   belongs_to :course
   belongs_to :student
   
@@ -7,8 +10,23 @@ class Enrollment < ActiveRecord::Base
   validates :course_id, :presence => true
   validates :course_id, :uniqueness => { :scope => :student_id }
   
+  before_save :set_status
   after_save :create_payments
   after_create :associate_session
+  
+  scope :not_started, where(:status => NOT_STARTED)
+  scope :in_progress, where(:status => IN_PROGRESS)
+  scope :completed, where(:status => COMPLETED)
+  scope :cancelled, where(:status => CANCELLED)
+  
+  def set_status
+    self.status = course.started? ? IN_PROGRESS : NOT_STARTED
+  end
+  
+  #NOTE: Do not change status if COMPLETED OR CANCELLED
+  def update_status
+    self.update_attribute(:status, course.status) unless [COMPLETED, CANCELLED].include?(status)
+  end
   
   def create_payments
     if course.started?
@@ -42,5 +60,31 @@ class Enrollment < ActiveRecord::Base
 
   def title
     "#{student.name} - #{course.title}" rescue nil
+  end
+  
+  def status_label
+    case status
+      when NOT_STARTED
+        'Not Started'
+      when IN_PROGRESS
+        'In Progress'
+      when COMPLETED
+        'Completed'
+      when CANCELLED
+        'Cancelled'
+    end
+  end
+
+  def status_tag
+    case status
+      when NOT_STARTED
+        :warning
+      when IN_PROGRESS
+        :ok
+      when COMPLETED
+        :ok
+      when CANCELLED
+        :error
+    end
   end
 end
