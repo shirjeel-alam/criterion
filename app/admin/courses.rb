@@ -1,7 +1,7 @@
 ActiveAdmin.register Course do
   filter :id
   filter :name
-  filter :status, :as => :select, :collection => Course.statuses
+  filter :status, :as => :select, :collection => lambda { Course.statuses }
   filter :monthly_fee
   
   index do
@@ -51,6 +51,7 @@ ActiveAdmin.register Course do
         t.column(:id) { |enrollment| link_to(enrollment.id, admin_enrollment_path(enrollment)) }
         t.column(:student) { |enrollment| link_to(enrollment.student.name, admin_student_path(enrollment.student)) }
         t.column(:phone_number) { |enrollment| enrollment.student.phone_numbers.first.number rescue nil }
+        t.column(:status) { |enrollment| status_tag(enrollment.status_label, enrollment.status_tag) }
       end
     end
   end
@@ -71,20 +72,49 @@ ActiveAdmin.register Course do
   
   member_action :start, :method => :put do
     course = Course.find(params[:id])
-    course.update_attributes(:start_date => Date.today)
-    flash[:notice] = 'Course Started'
+    course.attributes = { :start_date => Date.today }
+    if course.save
+      course.enrollments_update_status
+      flash[:notice] = 'Course Started'
+    else
+      flash[:error] = 'Error Starting Course'
+    end
     redirect_to :action => :show
   end
   
   member_action :reset, :method => :put do
     course = Course.find(params[:id])
-    course.update_attributes(:start_date => nil)
-    flash[:notice] = 'Course Reset'
+    course.attributes = { :start_date => nil }
+    if course.save
+      course.enrollments_update_status
+      flash[:notice] = 'Course Reset'
+    else
+      flash[:error] = 'Error Restarting Course'
+    end
+    redirect_to :action => :show
+  end
+  
+  member_action :finish, :method => :put do
+    course = Course.find(params[:id])
+    course.attributes = { :status => Course::COMPLETED, :course_date => Date.today, :course_date_for => Course::COMPLETION }
+    if course.save
+      course.enrollments_update_status
+      flash[:error] = 'Course Finished'
+    else
+      flash[:error] = 'Error Finishing Course'
+    end
     redirect_to :action => :show
   end
   
   action_item :only => :show do
     span link_to('Add Enrollment', new_admin_enrollment_path(:course_id => course))
-    span course.started? ? link_to('Reset Course', reset_admin_course_path(course), :method => :put) : link_to('Start Course', start_admin_course_path(course), :method => :put)
+    span do
+      if course.started?
+        span link_to('Reset Course', reset_admin_course_path(course), :method => :put)
+        span link_to('Finish Course', finish_admin_course_path(course), :method => :put)
+      else
+        link_to('Start Course', start_admin_course_path(course), :method => :put)
+      end
+    end
   end
 end

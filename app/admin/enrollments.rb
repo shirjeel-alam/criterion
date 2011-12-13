@@ -3,10 +3,6 @@ ActiveAdmin.register Enrollment do
   filter :course
   filter :student
   
-  action_item :only => :show do
-    link_to('Cancel Enrollment', '#', :confirm => 'Are you sure?')
-  end
-  
   index do
     column 'ID' do |enrollment|
       link_to(enrollment.id, admin_enrollment_path(enrollment))
@@ -50,16 +46,31 @@ ActiveAdmin.register Enrollment do
       if params[:student_id]
         @student = Student.find(params[:student_id])
         @enrollment = @student.enrollments.build
-        @courses = @student.not_enrolled_courses
+        @courses = @student.not_enrolled_courses.collect { |c| [c.label, c.id] }
       elsif params[:course_id]
         @course = Course.find(params[:course_id])
         @enrollment = @course.enrollments.build
-        @students = @course.not_enrolled_students
+        @students = @course.not_enrolled_students.collect { |s| [s.name, s.id] }
       else
         @enrollment = Enrollment.new
         @courses = Course.get_active
         @students = Student.get_all
       end
     end
+  end
+  
+  member_action :cancel, :method => :put do
+    enrollment = Enrollment.find(params[:id])
+    enrollment.attributes = { :status => Enrollment::CANCELLED, :enrollment_date => Date.today, :enrollment_date_for => Enrollment::CANCELLATION }
+    if enrollment.save
+      flash[:error] = 'Enrollment Cancelled'
+    else
+      flash[:error] = 'Error Cancelling Enrollment'
+    end
+    redirect_to :action => :show
+  end
+  
+  action_item :only => :show do
+    link_to('Cancel Enrollment', cancel_admin_enrollment_path(enrollment), :method => :put, :confirm => 'Are you sure?') unless [Enrollment::CANCELLED, Enrollment::COMPLETED].include?(enrollment.status)
   end
 end

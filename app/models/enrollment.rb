@@ -1,6 +1,7 @@
 class Enrollment < ActiveRecord::Base
   
   NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED = 0, 1, 2, 3
+  CANCELLATION, COMPLETION = 0, 1
   
   belongs_to :course
   belongs_to :student
@@ -10,9 +11,10 @@ class Enrollment < ActiveRecord::Base
   validates :course_id, :presence => true
   validates :course_id, :uniqueness => { :scope => :student_id }
   
-  before_save :set_status
-  after_save :create_payments
+  before_create :set_status
   after_create :associate_session
+  
+  after_save :create_payments
   
   scope :not_started, where(:status => NOT_STARTED)
   scope :in_progress, where(:status => IN_PROGRESS)

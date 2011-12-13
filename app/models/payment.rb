@@ -1,13 +1,11 @@
 class Payment < ActiveRecord::Base
+  
+  PAID, DUE = true, false
+  CREDIT, DEBIT = true, false
+  
   belongs_to :payable, :polymorphic => :true
   
   before_validation :check_payment, :on => :create
-  
-  PAID = true
-  DUE = false
-  
-  CREDIT = true
-  DEBIT = false
   
   scope :paid, where(:status => PAID)
   scope :due, where(:status => DUE)

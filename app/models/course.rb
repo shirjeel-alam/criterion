@@ -1,6 +1,7 @@
 class Course < ActiveRecord::Base
   
   NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED = 0, 1, 2, 3
+  CANCELLATION, COMPLETION = 0, 1
   
   belongs_to :teacher
   belongs_to :session
@@ -29,22 +30,24 @@ class Course < ActiveRecord::Base
     end
   end
   
+  def enrollments_update_status
+    enrollments.map(&:update_status)
+  end
+  
   #Assuming that the end date will always coincide with the end of session
-  def set_end_date
-    if end_date.nil?
-      case session.period
-      when 0
-        self.end_date = Date.parse("May #{session.year}")
-      when 1
-        self.end_date = Date.parse("October #{session.year}")
-      end
-    end
+  def set_end_date    
+    case session.period
+    when Session::MAY_JUNE
+      self.end_date = Date.parse("May #{session.year}")
+    when Session::OCT_NOV
+      self.end_date = Date.parse("October #{session.year}")
+    end unless end_date.present?      
   end
   
   def create_payments    
     enrollments.each do |enrollment|
       enrollment.create_payments
-    end if started?      
+    end if started?
   end
   
   def first_month_payment

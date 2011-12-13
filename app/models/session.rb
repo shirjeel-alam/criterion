@@ -53,9 +53,9 @@ class Session < ActiveRecord::Base
   def label
     result = ""
     case period
-      when 0
+      when MAY_JUNE
         result << 'May/June'
-      when 1
+      when OCT_NOV
         result << 'Oct/Nov'
     end
     
@@ -65,9 +65,9 @@ class Session < ActiveRecord::Base
   
   def period_label
     case period
-      when 0
+      when MAY_JUNE
         'May/June'
-      when 1
+      when OCT_NOV
         'Oct/Nov'
     end
   end
