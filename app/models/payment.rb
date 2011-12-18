@@ -19,6 +19,16 @@ class Payment < ActiveRecord::Base
   def paid?
     status
   end
+
+  def +(payment)
+    if payment.is_a?(Payment)
+      Payment.new(:amount => (self.amount + payment.amount))
+    elsif payment.is_a?(Fixnum)
+      Payment.new(:amount => (self.amount + payment))
+    else
+      raise payment.inspect
+    end
+  end
   
   #TODO: Revise.. Currently not being used anywhere
   def get_payment(month, year)

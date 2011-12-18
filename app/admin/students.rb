@@ -10,6 +10,9 @@ ActiveAdmin.register Student do
     column 'Address', :sortable => :address do |student|
       student.address_label
     end
+    column 'Contact Number' do |student|
+      student.phone_numbers.each { |number| div number.label }
+    end
     
     default_actions
   end
@@ -21,6 +24,61 @@ ActiveAdmin.register Student do
         row(:name) { student.name }
         row(:address) { student.address }
       end
+    end
+    
+    panel 'Payments' do
+      temp_payments = student.payments.collect do |payment|
+        payment.period = payment.period.beginning_of_month
+        payment
+      end
+      result = temp_payments.group_by(&:period)
+      
+      table do
+        thead do
+          tr do
+            th 'ID'
+            th 'Period'
+            th 'Course'
+            th 'Amount'
+            th 'Status'
+            th nil
+          end
+        end
+        
+        tbody do
+          flip = true
+          result.each do |cumulative_payment|
+            #tr :class => 'rand(1) ? odd : even header' do
+            tr :class => "#{flip ? 'odd' : 'even'} header" do
+              cumulative_amount = cumulative_payment.second.sum { |p| p.status ? 0 : p.amount }
+
+              td image_tag('down_arrow.png')
+              td cumulative_payment.first.strftime('%B %Y')
+              td nil
+              td number_to_currency(cumulative_amount, :unit => 'Rs. ', :precision => 0)
+              td status_tag(cumulative_amount > 0 ? 'Due' : 'Paid', cumulative_amount > 0 ? :error : :ok)
+              td link_to('Make Payment (Cumulative)', pay_cumulative_admin_payments_path(:payments => cumulative_payment.second), :method => :put)
+            end
+            
+            flip = !flip
+            cumulative_payment.second.each do |payment|
+              tr :class => "#{flip ? 'odd' : 'even'} content" do
+                td link_to(payment.id, admin_payment_path(payment))
+                td payment.period_label
+                td link_to(payment.payable.course.name, admin_course_path(payment.payable.course))
+                td number_to_currency(payment.amount, :unit => 'Rs. ', :precision => 0)
+                td status_tag(payment.status_label, payment.status_tag)
+                td link_to('Make Payment', pay_admin_payment_path(payment), :method => :put)
+              end
+            end
+          end
+        end
+      end
+      
+      # table_for student.payments.select('period, amount').group(:period).sum(:amount) do |t|
+      #   t.column(:period) { |payment| payment.first.strftime('%b %Y') }
+      #   t.column(:amount) { |payment| number_to_currency(payment.second, :unit => 'Rs. ', :precision => 0) }
+      # end
     end
     
     panel 'Student Enrollments (In Progress)' do

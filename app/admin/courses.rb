@@ -84,7 +84,7 @@ ActiveAdmin.register Course do
   
   member_action :reset, :method => :put do
     course = Course.find(params[:id])
-    course.attributes = { :start_date => nil }
+    course.attributes = { :start_date => nil, :end_date => nil }
     if course.save
       course.enrollments_update_status
       flash[:notice] = 'Course Reset'
@@ -96,24 +96,26 @@ ActiveAdmin.register Course do
   
   member_action :finish, :method => :put do
     course = Course.find(params[:id])
-    course.attributes = { :status => Course::COMPLETED, :course_date => Date.today, :course_date_for => Course::COMPLETION }
+    course.attributes = { :status => Course::COMPLETED, :end_date => Date.today, :course_date => Date.today, :course_date_for => Course::COMPLETION }
     if course.save
       course.enrollments_update_status
-      flash[:error] = 'Course Finished'
+      flash[:notice] = 'Course Finished'
     else
       flash[:error] = 'Error Finishing Course'
     end
     redirect_to :action => :show
   end
   
+  #NOTE: Reset Course only for development purposes
   action_item :only => :show do
     span link_to('Add Enrollment', new_admin_enrollment_path(:course_id => course))
     span do
       if course.started?
-        span link_to('Reset Course', reset_admin_course_path(course), :method => :put)
-        span link_to('Finish Course', finish_admin_course_path(course), :method => :put)
+        span link_to('Reset Course', reset_admin_course_path(course), :method => :put, :confirm => 'Are you sure?')
+        span link_to('Finish Course', finish_admin_course_path(course), :method => :put, :confirm => 'Are you sure?')
       else
-        link_to('Start Course', start_admin_course_path(course), :method => :put)
+        span link_to('Reset Course', reset_admin_course_path(course), :method => :put, :confirm => 'Are you sure?')
+        span link_to('Start Course', start_admin_course_path(course), :method => :put, :confirm => 'Are you sure?')
       end
     end
   end

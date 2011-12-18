@@ -10,13 +10,13 @@ class Course < ActiveRecord::Base
   has_many :payments, :through => :enrollments
   has_many :students, :through => :enrollments
   
-  before_save :update_status, :set_end_date
+  before_save :set_end_date, :update_status
   after_save :create_payments
   
   validates_presence_of :name, :teacher, :session, :monthly_fee
   
   #TODO: Change to SQL
-  scope :active, where(:session_id => Session.active.collect(&:id))
+  scope :active, where(:status => [NOT_STARTED, IN_PROGRESS])
   
   def update_status
     if start_date.blank? || start_date.try(:future?)
