@@ -30,10 +30,10 @@ class Session < ActiveRecord::Base
   def self.get_active
     #Session.active.collect { |s| [s.label, s.id] }
     period, year = nil, nil
-    if Range.new(JANUARY..JULY).include?(Date.today.month)
+    if Range.new(JANUARY, JULY).include?(Date.today.month)
       period = MAY_JUNE
       year = Date.today.year
-    elsif Range.new(AUGUST..NOVEMBER).include?(Date.today.month)
+    elsif Range.new(AUGUST, NOVEMBER).include?(Date.today.month)
       period = OCT_NOV
       year = Date.today.year
     else
@@ -41,7 +41,7 @@ class Session < ActiveRecord::Base
       year = Date.today.year + 1
     end
     
-    Session.find_by_period_and_year(period, year)
+    Session.find_or_create_by_period_and_year(period, year)
   end
   
   ### View Helpers ###

@@ -59,7 +59,7 @@ ActiveAdmin.register Course do
   form do |f|
     f.inputs do
       f.input :name, :required => true
-      f.input :session, :as => :select, :collection => Session.get_active, :include_blank => false, :required => true
+      f.input :session, :as => :select, :collection => [Session.get_active], :include_blank => false, :required => true
       f.input :teacher, :as => :select, :collection => Teacher.get_all, :include_blank => false, :required => true
       f.input :monthly_fee, :required => true
       f.input :status, :as => :select, :collection => Course.statuses, :include_blank => false
