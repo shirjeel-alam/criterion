@@ -1,5 +1,7 @@
 ActiveAdmin.register Payment do
-  menu false
+  # menu false
+
+  form :partial => 'form'
   
   member_action :pay, :method => :put do
     payment = Payment.find(params[:id])
@@ -18,5 +20,27 @@ ActiveAdmin.register Payment do
   	end
   	flash[:notice] = "#{count} payment(s) successfully made."
   	redirect_to :back
+  end
+
+  controller do
+    def new
+      if params[:teacher_id]
+        @teacher = Teacher.find(params[:teacher_id])
+        @payment = @teacher.withdrawals.build(:payment_type => Payment::DEBIT, :status => Payment::PAID, :paid_on => Date.today)
+      else
+        @payment = Payment.new  
+      end
+    end
+
+    def create
+      @payment = Payment.new(params[:payment])
+      
+      if @payment.save
+        flash[:notice] = 'Withdrawal successfully created'
+        redirect_to admin_teacher_path(@payment.payable)
+      else
+        render :new
+      end
+    end
   end
 end

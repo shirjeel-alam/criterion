@@ -5,7 +5,11 @@ class Payment < ActiveRecord::Base
   
   belongs_to :payable, :polymorphic => :true
   
-  before_validation :check_payment, :on => :create
+  before_validation :check_payment, :on => :create, :if => "payable_type == 'Enrollment'"
+
+  validates :amount, :presence => true, :numericality => { :greater_than => 0 }
+  validates :status, :presence => true
+  validates :payment_type, :inclusion => [CREDIT, DEBIT]
   
   scope :paid, where(:status => PAID)
   scope :due, where(:status => DUE)
@@ -13,7 +17,7 @@ class Payment < ActiveRecord::Base
   scope :debit, where(:payment_type => DEBIT)
   
   def check_payment
-    errors.add(:duplicate, "Entry already exists") if Payment.where(:period => period.beginning_of_month..period.end_of_month, :payable_id => payable_id, :payable_type => payable_type).present?
+    errors.add(:duplicate, "Entry already exists") if Payment.where(:period => period.beginning_of_month..period.end_of_month, :payable_id => payable_id, :payable_type => payable_type, :payment_type => payment_type).present?
   end
   
   def paid?
@@ -35,6 +39,16 @@ class Payment < ActiveRecord::Base
     period.month == month && period.year == year ? amount : 0
   end
   
+  ### Class Methods ###
+
+  def self.statuses
+    [['Paid', PAID], ['Due', DUE]]
+  end
+
+  def self.payment_types
+    [['Credit', CREDIT], ['Debit', DEBIT]]
+  end
+
   ### View Helpers ###
 
   def status_label

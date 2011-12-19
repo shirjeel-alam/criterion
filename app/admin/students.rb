@@ -25,6 +25,16 @@ ActiveAdmin.register Student do
         row(:address) { student.address }
       end
     end
+
+    panel 'Payment (Registration Fees)' do
+      table_for student.student_registration_fees.each do |t|
+        t.column(:id) { |registration_fee| registration_fee.id.to_s }
+        t.column(:session) { |registration_fee| registration_fee.session.label }
+        t.column(:amount) { |registration_fee| number_to_currency(registration_fee.amount, :unit => 'Rs. ', :precision => 0) }
+        t.column(:status) { |registration_fee| status_tag(registration_fee.status_label, registration_fee.status_tag) }
+        t.column { |registration_fee| link_to('Make Payment', pay_admin_student_registration_fee_path(registration_fee), :method => :put) }
+      end
+    end
     
     panel 'Payments' do
       temp_payments = student.payments.collect do |payment|
@@ -48,7 +58,6 @@ ActiveAdmin.register Student do
         tbody do
           flip = true
           result.each do |cumulative_payment|
-            #tr :class => 'rand(1) ? odd : even header' do
             tr :class => "#{flip ? 'odd' : 'even'} header" do
               cumulative_amount = cumulative_payment.second.sum { |p| p.status ? 0 : p.amount }
 
@@ -74,11 +83,6 @@ ActiveAdmin.register Student do
           end
         end
       end
-      
-      # table_for student.payments.select('period, amount').group(:period).sum(:amount) do |t|
-      #   t.column(:period) { |payment| payment.first.strftime('%b %Y') }
-      #   t.column(:amount) { |payment| number_to_currency(payment.second, :unit => 'Rs. ', :precision => 0) }
-      # end
     end
     
     panel 'Student Enrollments (In Progress)' do

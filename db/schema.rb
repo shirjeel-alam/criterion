@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111213214219) do
+ActiveRecord::Schema.define(:version => 20111219203613) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.integer  "resource_id",   :null => false
@@ -82,6 +82,26 @@ ActiveRecord::Schema.define(:version => 20111213214219) do
     t.date     "paid_on"
   end
 
+  create_table "pfeed_deliveries", :force => true do |t|
+    t.integer  "pfeed_receiver_id"
+    t.string   "pfeed_receiver_type"
+    t.integer  "pfeed_item_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "pfeed_items", :force => true do |t|
+    t.string   "type"
+    t.integer  "originator_id"
+    t.string   "originator_type"
+    t.integer  "participant_id"
+    t.string   "participant_type"
+    t.text     "data"
+    t.datetime "expiry"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "phone_numbers", :force => true do |t|
     t.string   "number"
     t.integer  "category"
@@ -105,6 +125,7 @@ ActiveRecord::Schema.define(:version => 20111213214219) do
     t.boolean  "status",     :default => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.date     "paid_on"
   end
 
   create_table "students", :force => true do |t|

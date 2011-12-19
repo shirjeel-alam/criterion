@@ -31,10 +31,24 @@ ActiveAdmin.register Session do
     panel 'Courses' do
       table_for session.courses do |t|
         t.column(:id) { |course| link_to(course.id, admin_course_path(course)) }
-        t.column(:name) { |course| link_to(course.name, admin_course_path(course)) rescue nil }
-        t.column(:teacher) { |course| link_to(course.teacher.name, admin_teacher_path(course.teacher)) rescue nil }
-        t.column(:enrollments) { |course| course.enrollments.count rescue nil}
+        t.column(:name) { |course| link_to(course.name, admin_course_path(course)) }
+        t.column(:teacher) { |course| link_to(course.teacher.name, admin_teacher_path(course.teacher)) }
+        t.column(:enrollments) { |course| course.enrollments.count.to_s }
       end
     end
+
+    panel 'Payment (Registration Fees)' do
+      table_for session.student_registration_fees.each do |t|
+        t.column(:id) { |registration_fee| registration_fee.id.to_s }
+        t.column(:student) { |registration_fee| link_to(registration_fee.student.name, admin_student_path(registration_fee.student)) }
+        t.column(:amount) { |registration_fee| number_to_currency(registration_fee.amount, :unit => 'Rs. ', :precision => 0) }
+        t.column(:status) { |registration_fee| status_tag(registration_fee.status_label, registration_fee.status_tag) }
+        t.column { |registration_fee| link_to('Make Payment', pay_admin_student_registration_fee_path(registration_fee), :method => :put) }
+      end
+    end
+  end
+
+  action_item :only => :show do
+    link_to('Add Course', new_admin_course_path(:course => { :session_id => session }))
   end
 end
