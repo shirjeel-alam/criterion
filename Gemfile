@@ -6,6 +6,7 @@ gem 'therubyracer'
 
 gem 'mysql2'
 gem 'faker'
+gem 'airbrake'
 
 gem 'activeadmin'
 gem 'sass-rails'
