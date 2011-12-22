@@ -1,16 +1,16 @@
-<%= semantic_form_for [:admin, @enrollment] do |f| %>
-  <%= f.inputs do %>
-    <% if params[:student_id] %>
-      <%= f.input :course_id, :as => :select, :include_blank => false, :collection => @courses %>
-      <%= f.input :student_id, :as => :hidden %>
-    <% elsif params[:course_id] %>
-      <%= f.input :student_id, :as => :select, :include_blank => false, :collection => @students %>
-      <%= f.input :course_id, :as => :hidden %>
-    <% else %>
-      <%= f.input :course_id, :as => :select, :include_blank => false, :collection => @courses %>
-      <%= f.input :student_id, :as => :select, :include_blank => false, :collection => @students %>
-    <% end %>
-  <% end %>
+<%= semantic_form_for [:admin, @enrollment], :builder => ActiveAdmin::FormBuilder do |f|
+  f.inputs do
+    if params[:student_id]
+      f.input :course_id, :as => :select, :include_blank => false, :collection => @courses
+      f.input :student_id, :as => :hidden
+    elsif params[:course_id]
+      f.input :student_id, :as => :select, :include_blank => false, :collection => @students
+      f.input :course_id, :as => :hidden
+    else
+      f.input :course_id, :as => :select, :include_blank => false, :collection => @courses
+      f.input :student_id, :as => :select, :include_blank => false, :collection => @students
+    end
+  end
   
-  <%= f.buttons %>
-<% end %>
+  f.buttons
+end %>

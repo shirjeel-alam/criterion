@@ -1,13 +1,13 @@
-<%= semantic_form_for [:admin, @payment] do |f| %>
-  <%= f.inputs do %>
-    <%= f.input :period, :as => :datepicker %>
-    <%= f.input :amount %>
-    <%= f.input :status, :as => :radio, :collection => Payment.statuses %>
-    <%= f.input :payment_type, :as => :radio, :collection => Payment.payment_types %>
-    <%= f.input :paid_on, :as => :datepicker, :value => Date.today %>
-    <%= f.input :payable_id, :as => :hidden %>
-    <%= f.input :payable_type, :as => :hidden %>
-  <% end %>
+<%= semantic_form_for [:admin, @payment], :builder => ActiveAdmin::FormBuilder do |f|
+  f.inputs do
+    f.input :period, :as => :datepicker
+    f.input :amount
+    f.input :status, :as => :radio, :collection => Payment.statuses
+    f.input :payment_type, :as => :radio, :collection => Payment.payment_types
+    f.input :paid_on, :as => :datepicker, :value => Date.today
+    f.input :payable_id, :as => :hidden
+    f.input :payable_type, :as => :hidden
+  end
   
-  <%= f.buttons %>
-<% end %>
+  f.buttons
+end %>

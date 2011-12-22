@@ -13,6 +13,9 @@ ActiveAdmin.register Enrollment do
     column 'Course' do |enrollment|
       link_to(enrollment.course.name, admin_course_path(enrollment.course)) rescue nil
     end
+    column 'Status' do |enrollment|
+      status_tag(enrollment.status_label, enrollment.status_tag)
+    end
       
     default_actions
   end
