@@ -31,6 +31,9 @@ gem 'jquery-rails'
 # Deploy with Capistrano
 # gem 'capistrano'
 
+# For heroku db:push and db:pull
+gem 'taps'
+
 group :development, :test do
   # Pretty printed test output
   gem 'ruby-debug19', :require => 'ruby-debug'
