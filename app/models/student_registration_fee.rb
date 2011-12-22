@@ -2,10 +2,13 @@ class StudentRegistrationFee < ActiveRecord::Base
   belongs_to :student
   belongs_to :session
   
+  PAID, DUE = true, false
+
   validates :student_id, :uniqueness => { :scope => :session_id }
   
   validates :student_id, :presence => true
   validates :session_id, :presence => true
+  validates :status, :presence => true, :inclusion => { :in => [PAID, DUE] }
 
   def amount
   	session.registration_fee

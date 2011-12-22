@@ -7,9 +7,10 @@ class Payment < ActiveRecord::Base
   
   before_validation :check_payment, :on => :create, :if => "payable_type == 'Enrollment'"
 
-  validates :amount, :presence => true, :numericality => { :greater_than => 0 }
-  validates :status, :presence => true
-  validates :payment_type, :inclusion => [CREDIT, DEBIT]
+  validates :amount, :presence => true, :numericality => { :only_integer => true, :greater_than => 0 }
+  validates :status, :presence => true, :inclusion => { :in => [PAID, DUE] }
+  validates :payment_type, :presence => true, :inclusion => [CREDIT, DEBIT]
+  validates :paid_on, :timeliness => { :type => :date }
   
   scope :paid, where(:status => PAID)
   scope :due, where(:status => DUE)

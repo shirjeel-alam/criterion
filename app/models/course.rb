@@ -14,7 +14,13 @@ class Course < ActiveRecord::Base
   after_save :create_payments
   
   validates_presence_of :name, :teacher, :session, :monthly_fee
-  
+  validates :name, :presence => true
+  validates :teacher, :presence => true, :inclusion => { :in => lambda { Teacher.all } }
+  validates :session, :presence => true, :inclusion => { :in => lambda { Session.all } }
+  validates :monthly_fee, :presence => true, :numericality => { :only_integer => true, :greater_than => 0 }
+  validates :start_date, :timeliness => { :type => :date, :before => lambda { end_date } } 
+  validates :end_date, :timeliness => { :type => :date, :after => lambda { start_date }, :if => lambda { start_date.present? } }
+
   #TODO: Change to SQL
   scope :active, where(:status => [NOT_STARTED, IN_PROGRESS])
   

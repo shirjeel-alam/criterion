@@ -1,12 +1,13 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.1.1'
+gem 'rails'
 gem 'execjs'
 gem 'therubyracer'
 
 gem 'mysql2'
 gem 'faker'
 gem 'airbrake'
+gem 'validates_timeliness'
 
 gem 'activeadmin'
 gem 'sass-rails'

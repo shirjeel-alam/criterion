@@ -4,6 +4,9 @@ class Teacher < ActiveRecord::Base
   has_many :withdrawals, :as => :payable, :class_name => 'Payment', :dependent => :destroy
   has_many :phone_numbers, :as => :contactable, :dependent => :destroy
 
+  validates :name, :presence => true
+  validates :share, :presence => true, :numericality => { :greater_than => 0, :less_than_or_equal_to => 1 }
+
   def balance
   	(payments.credit.sum(:amount) * share) - withdrawals.sum(:amount) 
   end

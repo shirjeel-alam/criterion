@@ -10,9 +10,6 @@ class Student < ActiveRecord::Base
   
   validates :name, :presence => true
   
-  PAID = true
-  DUE = false
-  
   def enrolled_courses
     Course.active.collect { |c| c if c.has_enrollment?(self) }.compact.uniq
   end

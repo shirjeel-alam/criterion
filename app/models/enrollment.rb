@@ -8,8 +8,11 @@ class Enrollment < ActiveRecord::Base
   
   has_many :payments, :as => :payable, :dependent => :destroy
   
-  validates :course_id, :presence => true
   validates :course_id, :uniqueness => { :scope => :student_id }
+  validates :status, :presence => true, :inclusion => { :in => [NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED] }
+  validates :enrollment_date, :timeliness => { :type => :date }
+  validates :enrollment_date_for, :inclusion => { :in => [CANCELLATION, COMPLETION] }
+  
   
   before_create :set_status
   after_create :associate_session

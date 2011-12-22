@@ -4,15 +4,15 @@ class Session < ActiveRecord::Base
 
   accepts_nested_attributes_for :courses
 
+  JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER = Range.new(1, 12).to_a
+  MAY_JUNE, OCT_NOV = 0, 1
+
   scope :active, lambda { where('year >= ?', Date.today.year) }
   scope :completed, lambda { where('year < ?', Date.today.year) }
   
-  validates :period, :presence => true, :uniqueness => { :scope => :year }
-  validates :year, :presence => true
+  validates :period, :presence => true, :inclusion => { :in => [MAY_JUNE, OCT_NOV] }, :uniqueness => { :scope => :year }
+  validates :year, :presence => true, :numericality => { :only_integer => true }
   validates :registration_fee, :presence => true, :numericality => { :only_integer => true, :greater_than => 0 }
-  
-  JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER = Range.new(1, 12).to_a
-  MAY_JUNE, OCT_NOV = 0, 1
   
   def active?
     year >= Date.today.year
