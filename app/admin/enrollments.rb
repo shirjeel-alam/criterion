@@ -91,4 +91,8 @@ ActiveAdmin.register Enrollment do
     span link_to('Refresh Enrollment', refresh_admin_enrollment_path(enrollment), :method => :put)
     span link_to('Cancel Enrollment', cancel_admin_enrollment_path(enrollment), :method => :put, :confirm => 'Are you sure?') unless [Enrollment::CANCELLED, Enrollment::COMPLETED].include?(enrollment.status)
   end
+
+  action_item :only => :index do
+    link_to('New Enrollment', new_admin_enrollment_path)
+  end
 end
