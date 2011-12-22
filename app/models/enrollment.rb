@@ -10,9 +10,8 @@ class Enrollment < ActiveRecord::Base
   
   validates :course_id, :uniqueness => { :scope => :student_id }
   validates :status, :presence => true, :inclusion => { :in => [NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED] }
-  validates :enrollment_date, :timeliness => { :type => :date }
-  validates :enrollment_date_for, :inclusion => { :in => [CANCELLATION, COMPLETION] }
-  
+  validates :enrollment_date, :timeliness => { :type => :date }, :allow_blank => true
+  validates :enrollment_date_for, :inclusion => { :in => [CANCELLATION, COMPLETION] }, :allow_blank => true  
   
   before_create :set_status
   after_create :associate_session

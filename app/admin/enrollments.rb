@@ -42,6 +42,8 @@ ActiveAdmin.register Enrollment do
   end
   
   controller do
+    active_admin_config.clear_action_items!
+
     def new
       if params[:student_id]
         @student = Student.find(params[:student_id])
@@ -57,6 +59,12 @@ ActiveAdmin.register Enrollment do
         @students = Student.get_all
       end
     end
+
+    def edit
+      @enrollment = Enrollment.find(params[:id])
+      @courses = Course.get_active
+      @students = Student.get_all
+    end
   end
   
   member_action :cancel, :method => :put do
@@ -69,8 +77,15 @@ ActiveAdmin.register Enrollment do
     end
     redirect_to :action => :show
   end
+
+  member_action :refresh, :method => :put do
+    enrollment = Enrollment.find(params[:id])
+    enrollment.create_payments
+    redirect_to :action => :show
+  end
   
   action_item :only => :show do
-    link_to('Cancel Enrollment', cancel_admin_enrollment_path(enrollment), :method => :put, :confirm => 'Are you sure?') unless [Enrollment::CANCELLED, Enrollment::COMPLETED].include?(enrollment.status)
+    span link_to('Refresh Enrollment', refresh_admin_enrollment_path(enrollment), :method => :put)
+    span link_to('Cancel Enrollment', cancel_admin_enrollment_path(enrollment), :method => :put, :confirm => 'Are you sure?') unless [Enrollment::CANCELLED, Enrollment::COMPLETED].include?(enrollment.status)
   end
 end
