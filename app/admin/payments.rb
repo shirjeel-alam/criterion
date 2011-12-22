@@ -1,5 +1,5 @@
 ActiveAdmin.register Payment do
-  # menu false
+  menu false
 
   form :partial => 'form'
   

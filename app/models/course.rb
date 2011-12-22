@@ -41,7 +41,7 @@ class Course < ActiveRecord::Base
       self.end_date = Date.parse("May #{session.year}")
     when Session::OCT_NOV
       self.end_date = Date.parse("October #{session.year}")
-    end unless end_date.present?      
+    end unless [COMPLETED, CANCELLED].include?(status)   
   end
   
   def create_payments    

@@ -63,8 +63,8 @@ ActiveAdmin.register Course do
       f.input :teacher, :as => :select, :collection => Teacher.get_all, :include_blank => false, :required => true
       f.input :monthly_fee, :required => true
       f.input :status, :as => :select, :collection => Course.statuses, :include_blank => false
-      f.input :start_date, :as => :date, :order => [:day, :month, :year]
-      f.input :end_date, :as => :date, :order => [:day, :month, :year], :hint => 'Will be automatically set if left blank'
+      f.input :start_date, :as => :datepicker, :order => [:day, :month, :year]
+      f.input :end_date, :as => :datepicker, :order => [:day, :month, :year], :hint => 'Will be automatically set if left blank'
     end
     
     f.buttons

@@ -2,10 +2,14 @@ class Session < ActiveRecord::Base
   has_many :courses
   has_many :student_registration_fees
 
+  accepts_nested_attributes_for :courses
+
   scope :active, lambda { where('year >= ?', Date.today.year) }
   scope :completed, lambda { where('year < ?', Date.today.year) }
   
-  validates :period, :uniqueness => { :scope => :year }
+  validates :period, :presence => true, :uniqueness => { :scope => :year }
+  validates :year, :presence => true
+  validates :registration_fee, :presence => true, :numericality => { :only_integer => true, :greater_than => 0 }
   
   JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER = Range.new(1, 12).to_a
   MAY_JUNE, OCT_NOV = 0, 1

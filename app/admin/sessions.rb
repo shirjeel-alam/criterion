@@ -17,6 +17,16 @@ ActiveAdmin.register Session do
     
     default_actions
   end
+
+  form do |f|
+    f.inputs do
+      f.input :period, :as => :select, :collection => Session.periods, :include_blank => false
+      f.input :year, :as => :select, :collection => Session.years, :include_blank => false
+      f.input :registration_fee
+    end
+
+    f.buttons
+  end
   
   show :title => :title do
     panel 'Session Details' do
