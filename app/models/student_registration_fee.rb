@@ -8,7 +8,7 @@ class StudentRegistrationFee < ActiveRecord::Base
   
   validates :student_id, :presence => true
   validates :session_id, :presence => true
-  validates :status, :presence => true, :inclusion => { :in => [PAID, DUE] }
+  validates :status, :inclusion => { :in => [PAID, DUE] }
 
   def amount
   	session.registration_fee
