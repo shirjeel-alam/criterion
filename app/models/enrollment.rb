@@ -16,13 +16,17 @@ class Enrollment < ActiveRecord::Base
   before_create :set_status
   after_create :associate_session
   
-  after_save :create_payments
+  after_save :create_payments, :evaluate_discount
   
   scope :not_started, where(:status => NOT_STARTED)
   scope :in_progress, where(:status => IN_PROGRESS)
   scope :completed, where(:status => COMPLETED)
   scope :cancelled, where(:status => CANCELLED)
   
+  def session
+    course.session
+  end
+
   def set_status
     self.status = course.started? ? IN_PROGRESS : NOT_STARTED
   end
@@ -41,6 +45,19 @@ class Enrollment < ActiveRecord::Base
       months[1..(months.length - 1)].each do |date|
         Payment.create(:period => date, :amount => course.monthly_fee, :status => Payment::DUE, :payment_type => Payment::CREDIT, :payable_id => id, :payable_type => self.class.name)
       end
+
+      evaluate_discount
+    end
+  end
+
+  def evaluate_discount
+    student.evaluate_discount(session)
+  end
+
+  def apply_discount(discount)
+    discountable_payments = payments.collect { |payment| payment if payment.period.future? }.compact
+    discountable_payments.each do |payment|
+      payment.update_attribute(:discount, discount)
     end
   end
   

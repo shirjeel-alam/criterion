@@ -32,7 +32,7 @@ ActiveAdmin.register Student do
         t.column(:session) { |registration_fee| registration_fee.session.label }
         t.column(:amount) { |registration_fee| number_to_currency(registration_fee.amount, :unit => 'Rs. ', :precision => 0) }
         t.column(:status) { |registration_fee| status_tag(registration_fee.status_label, registration_fee.status_tag) }
-        t.column { |registration_fee| link_to('Make Payment', pay_admin_student_registration_fee_path(registration_fee), :method => :put) }
+        t.column { |registration_fee| link_to('Make Payment', pay_admin_student_registration_fee_path(registration_fee), :method => :put) unless registration_fee.status }
       end
     end
     
@@ -59,14 +59,14 @@ ActiveAdmin.register Student do
           flip = true
           result.each do |cumulative_payment|
             tr :class => "#{flip ? 'odd' : 'even'} header" do
-              cumulative_amount = cumulative_payment.second.sum { |p| p.status ? 0 : p.amount }
+              cumulative_amount = cumulative_payment.second.sum { |p| p.status ? 0 : p.net_amount }
 
               td image_tag('down_arrow.png')
               td cumulative_payment.first.strftime('%B %Y')
               td nil
               td number_to_currency(cumulative_amount, :unit => 'Rs. ', :precision => 0)
               td status_tag(cumulative_amount > 0 ? 'Due' : 'Paid', cumulative_amount > 0 ? :error : :ok)
-              td link_to('Make Payment (Cumulative)', pay_cumulative_admin_payments_path(:payments => cumulative_payment.second), :method => :put)
+              td cumulative_amount > 0 ? link_to('Make Payment (Cumulative)', pay_cumulative_admin_payments_path(:payments => cumulative_payment.second), :method => :put) : nil
             end
             
             flip = !flip
@@ -75,9 +75,9 @@ ActiveAdmin.register Student do
                 td link_to(payment.id, admin_payment_path(payment))
                 td payment.period_label
                 td link_to(payment.payable.course.name, admin_course_path(payment.payable.course))
-                td number_to_currency(payment.amount, :unit => 'Rs. ', :precision => 0)
+                td number_to_currency(payment.net_amount, :unit => 'Rs. ', :precision => 0)
                 td status_tag(payment.status_label, payment.status_tag)
-                td link_to('Make Payment', pay_admin_payment_path(payment), :method => :put)
+                td payment.status ? nil : link_to('Make Payment', pay_admin_payment_path(payment), :method => :put)
               end
             end
           end

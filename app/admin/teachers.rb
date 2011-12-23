@@ -50,7 +50,7 @@ ActiveAdmin.register Teacher do
           result.each do |cumulative_payment|
             tr :class => "#{flip ? 'odd' : 'even'} header" do
               #cumulative_amount = cumulative_payment.second.sum { |p| p.status ? 0 : p.amount } * teacher.share
-              cumulative_amount = cumulative_payment.second.sum(&:amount)
+              cumulative_amount = cumulative_payment.second.sum(&:net_amount)
 
               td image_tag('down_arrow.png')
               td cumulative_payment.first.strftime('%B %Y')

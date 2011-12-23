@@ -1,6 +1,7 @@
 class Session < ActiveRecord::Base
   has_many :courses
   has_many :student_registration_fees
+  has_many :students, :through => :student_registration_fees
 
   accepts_nested_attributes_for :courses
 

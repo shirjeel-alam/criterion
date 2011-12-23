@@ -11,6 +11,7 @@ class Payment < ActiveRecord::Base
   validates :status, :inclusion => { :in => [PAID, DUE] }
   validates :payment_type, :inclusion => { :in => [CREDIT, DEBIT] }
   validates :paid_on, :timeliness => { :type => :date }, :allow_blank => true
+  validates :discount, :numericality => { :only_integer => true, :greater_than => 0 }, :allow_blank => true
   
   scope :paid, where(:status => PAID)
   scope :due, where(:status => DUE)
@@ -35,9 +36,8 @@ class Payment < ActiveRecord::Base
     end
   end
   
-  #TODO: Revise.. Currently not being used anywhere
-  def get_payment(month, year)
-    period.month == month && period.year == year ? amount : 0
+  def net_amount
+    discount.present? ? (amount - discount) : amount
   end
   
   ### Class Methods ###

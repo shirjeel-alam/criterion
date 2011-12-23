@@ -17,6 +17,27 @@ class Student < ActiveRecord::Base
   def not_enrolled_courses
     Course.active.collect { |c| c unless c.has_enrollment?(self) }.compact.uniq
   end
+
+  def evaluate_discount(session)
+    session_courses = courses.where(:session_id => session.id)
+    enrollment_count = session_courses.count
+
+    discount = case enrollment_count
+    when 0, 1
+      nil
+    when 2
+      500 # 250 / course
+    when 3
+      900 # 300 / course
+    else
+      1400 # 350 / course
+    end
+
+    session_enrollments = enrollments.where(:course_id => session_courses.collect(&:id))
+    session_enrollments.each do |enrollment|
+      enrollment.apply_discount(discount)
+    end
+  end
  
   ### Class Methods ###
 
