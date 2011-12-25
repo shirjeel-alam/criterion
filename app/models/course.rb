@@ -6,7 +6,7 @@ class Course < ActiveRecord::Base
   belongs_to :teacher
   belongs_to :session
   
-  has_many :enrollments
+  has_many :enrollments, :dependent => :destroy
   has_many :payments, :through => :enrollments
   has_many :students, :through => :enrollments
   

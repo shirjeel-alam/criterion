@@ -11,7 +11,7 @@ class StudentRegistrationFee < ActiveRecord::Base
   validates :status, :inclusion => { :in => [PAID, DUE] }
 
   def amount
-  	session.registration_fee
+  	session.registration_fee rescue nil
   end
 
   ### View Helpers ###
