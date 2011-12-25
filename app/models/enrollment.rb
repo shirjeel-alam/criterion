@@ -13,7 +13,7 @@ class Enrollment < ActiveRecord::Base
   validates :enrollment_date, :timeliness => { :type => :date }, :allow_blank => true
   validates :enrollment_date_for, :inclusion => { :in => [CANCELLATION, COMPLETION] }, :allow_blank => true  
   
-  before_create :set_status
+  before_validation :set_status
   after_create :associate_session
   
   after_save :create_payments, :evaluate_discount
@@ -28,7 +28,9 @@ class Enrollment < ActiveRecord::Base
   end
 
   def set_status
-    self.status = course.started? ? IN_PROGRESS : NOT_STARTED
+    unless [COMPLETED, CANCELLED].include?(status)
+      self.status = course.started? ? IN_PROGRESS : NOT_STARTED
+    end
   end
   
   #NOTE: Do not change status if COMPLETED OR CANCELLED
