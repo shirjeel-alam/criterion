@@ -16,4 +16,10 @@ class Teacher < ActiveRecord::Base
   def self.get_all
     Teacher.all.collect { |teacher| [teacher.name, teacher.id] }
   end
+
+  ### View Helpers ###
+
+  def balance_tag
+    balance >= 0 ? :ok : :error
+  end
 end

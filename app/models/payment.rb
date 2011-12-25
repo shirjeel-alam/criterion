@@ -64,6 +64,10 @@ class Payment < ActiveRecord::Base
     payment_type ? 'Credit' : 'Debit'
   end
 
+  def type_tag
+    payment_type ? :ok : :warning
+  end
+
   def period_label
     period.strftime('%B %Y')
   end

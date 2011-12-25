@@ -2,6 +2,20 @@ ActiveAdmin.register Payment do
   menu false
 
   form :partial => 'form'
+
+  show do
+    attributes_table_for payment do
+      row(:id) { payment.id }
+      row(:payable) { payment.payable }
+      row(:payable_type) { payment.payable_type }
+      row(:period) { payment.period_label }
+      row(:amount) { number_to_currency(payment.net_amount, :unit => 'Rs. ', :precision => 0) }
+      row(:status) { status_tag(payment.status_label, payment.status_tag) }
+      row(:payment_type) { status_tag(payment.type_label, payment.type_tag) }
+      row(:paid_on) { payment.date_label }
+      row(:discount) { number_to_currency(payment.discount, :unit => 'Rs. ', :precision => 0) }
+    end
+  end
   
   member_action :pay, :method => :put do
     payment = Payment.find(params[:id])

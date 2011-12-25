@@ -12,7 +12,7 @@ ActiveAdmin.register Teacher do
       number_to_percentage(teacher.share * 100, :precision => 0)
     end
     column 'Balance', :sortable => :balance do |teacher|
-      number_to_currency(teacher.balance, :unit => 'Rs. ', :precision => 0)
+      status_tag(number_to_currency(teacher.balance, :unit => 'Rs. ', :precision => 0), teacher.balance_tag)
     end
 
     default_actions
@@ -24,7 +24,7 @@ ActiveAdmin.register Teacher do
         row(:id) { teacher.id }
         row(:name) { teacher.name }
         row(:share) { number_to_percentage(teacher.share * 100, :precision => 0) }
-        row(:balance) { number_to_currency(teacher.balance, :unit => 'Rs. ', :precision => 0) }
+        row(:balance) { status_tag(number_to_currency(teacher.balance, :unit => 'Rs. ', :precision => 0), teacher.balance_tag) }
       end
     end
 
@@ -52,7 +52,6 @@ ActiveAdmin.register Teacher do
           flip = true
           result.each do |cumulative_payment|
             tr :class => "#{flip ? 'odd' : 'even'} header" do
-              #cumulative_amount = cumulative_payment.second.sum { |p| p.status ? 0 : p.amount } * teacher.share
               cumulative_amount = cumulative_payment.second.sum(&:net_amount)
 
               td image_tag('down_arrow.png')
@@ -62,7 +61,6 @@ ActiveAdmin.register Teacher do
               td status_tag(number_to_currency(cumulative_amount, :unit => 'Rs. ', :precision => 0), :ok)
               td status_tag(cumulative_amount > 0 ? 'Due' : 'Paid', cumulative_amount > 0 ? :error : :ok)
               td status_tag(number_to_currency(cumulative_amount  * teacher.share, :unit => 'Rs. ', :precision => 0), :warning)
-              #td link_to('Make Payment (Cumulative)', pay_cumulative_admin_payments_path(:payments => cumulative_payment.second), :method => :put)
             end
             
             flip = !flip
@@ -75,7 +73,6 @@ ActiveAdmin.register Teacher do
                 td number_to_currency(payment.amount, :unit => 'Rs. ', :precision => 0)
                 td status_tag(payment.status_label, payment.status_tag)
                 td number_to_currency(payment.amount * teacher.share, :unit => 'Rs. ', :precision => 0)
-                #td link_to('Make Payment', pay_admin_payment_path(payment), :method => :put)
               end
             end
           end
