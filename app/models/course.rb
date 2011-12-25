@@ -125,7 +125,7 @@ class Course < ActiveRecord::Base
   end
 
   def title
-    "#{name} #{session.label}"
+    "#{name} #{session.label rescue nil}"
   end
 
   def status_label

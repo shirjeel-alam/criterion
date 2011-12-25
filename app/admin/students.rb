@@ -29,7 +29,7 @@ ActiveAdmin.register Student do
     panel 'Payment (Registration Fees)' do
       table_for student.student_registration_fees.each do |t|
         t.column(:id) { |registration_fee| registration_fee.id.to_s }
-        t.column(:session) { |registration_fee| registration_fee.session.label }
+        t.column(:session) { |registration_fee| registration_fee.session.label rescue nil }
         t.column(:amount) { |registration_fee| number_to_currency(registration_fee.amount, :unit => 'Rs. ', :precision => 0) }
         t.column(:status) { |registration_fee| status_tag(registration_fee.status_label, registration_fee.status_tag) }
         t.column { |registration_fee| link_to('Make Payment', pay_admin_student_registration_fee_path(registration_fee), :method => :put) unless registration_fee.status }
@@ -89,7 +89,7 @@ ActiveAdmin.register Student do
       table_for student.enrollments.in_progress do |t|
         t.column(:id) { |enrollment| link_to(enrollment.id, admin_enrollment_path(enrollment)) }
         t.column(:course) { |enrollment| link_to(enrollment.course.name, admin_course_path(enrollment.course)) }
-        t.column(:session) { |enrollment| enrollment.course.session.label }
+        t.column(:session) { |enrollment| enrollment.course.session.label rescue nil }
         t.column(:teacher) { |enrollment| link_to(enrollment.course.teacher.name, admin_teacher_path(enrollment.course.teacher)) }
         t.column(:status) { |enrollment| status_tag(enrollment.status_label, enrollment.status_tag) }
       end 
@@ -99,7 +99,7 @@ ActiveAdmin.register Student do
       table_for student.enrollments.not_started do |t|
         t.column(:id) { |enrollment| link_to(enrollment.id, admin_enrollment_path(enrollment)) }
         t.column(:course) { |enrollment| link_to(enrollment.course.name, admin_course_path(enrollment.course)) }
-        t.column(:session) { |enrollment| enrollment.course.session.label }
+        t.column(:session) { |enrollment| enrollment.course.session.label rescue nil }
         t.column(:teacher) { |enrollment| link_to(enrollment.course.teacher.name, admin_teacher_path(enrollment.course.teacher)) }
         t.column(:status) { |enrollment| status_tag(enrollment.status_label, enrollment.status_tag) }
       end 
@@ -109,7 +109,7 @@ ActiveAdmin.register Student do
       table_for student.enrollments.completed do |t|
         t.column(:id) { |enrollment| link_to(enrollment.id, admin_enrollment_path(enrollment)) }
         t.column(:course) { |enrollment| link_to(enrollment.course.name, admin_course_path(enrollment.course)) }
-        t.column(:session) { |enrollment| enrollment.course.session.label }
+        t.column(:session) { |enrollment| enrollment.course.session.label rescue nil }
         t.column(:teacher) { |enrollment| link_to(enrollment.course.teacher.name, admin_teacher_path(enrollment.course.teacher)) }
         t.column(:status) { |enrollment| status_tag(enrollment.status_label, enrollment.status_tag) }
       end      
@@ -119,7 +119,7 @@ ActiveAdmin.register Student do
       table_for student.enrollments.cancelled do |t|
         t.column(:id) { |enrollment| link_to(enrollment.id, admin_enrollment_path(enrollment)) }
         t.column(:course) { |enrollment| link_to(enrollment.course.name, admin_course_path(enrollment.course)) }
-        t.column(:session) { |enrollment| enrollment.course.session.label }
+        t.column(:session) { |enrollment| enrollment.course.session.label rescue nil }
         t.column(:teacher) { |enrollment| link_to(enrollment.course.teacher.name, admin_teacher_path(enrollment.course.teacher)) }
         t.column(:status) { |enrollment| status_tag(enrollment.status_label, enrollment.status_tag) }
       end 

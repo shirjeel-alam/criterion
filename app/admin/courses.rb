@@ -10,7 +10,7 @@ ActiveAdmin.register Course do
     end
     column :name
     column :session do |course|
-      course.session.label
+      course.session.label rescue nil
     end
     column :teacher do |course|
       course.teacher.present? ? course.teacher.name : 'N/A'
@@ -37,7 +37,7 @@ ActiveAdmin.register Course do
         row(:id) { course.id }
         row(:name) { course.name }
         row(:teacher) { course.teacher.name }
-        row(:session) { course.session.label }
+        row(:session) { course.session.label rescue nil }
         row(:monthly_fee) { course.monthly_fee }
         row(:no_of_enrollments) { course.enrollments.count }
         row(:status) { status_tag(course.status_label, course.status_tag) }
