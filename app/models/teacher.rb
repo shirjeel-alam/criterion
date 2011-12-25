@@ -8,7 +8,7 @@ class Teacher < ActiveRecord::Base
   validates :share, :presence => true, :numericality => { :greater_than => 0, :less_than_or_equal_to => 1 }
 
   def balance
-  	(payments.credit.sum(:amount) * share) - withdrawals.sum(:amount) 
+  	(payments.credit.paid.sum(:amount) * share) - withdrawals.sum(:amount) 
   end
 
   ### Class Methods ###

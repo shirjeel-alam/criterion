@@ -11,6 +11,9 @@ ActiveAdmin.register Teacher do
     column 'Share', :sortable => :share do |teacher|
       number_to_percentage(teacher.share * 100, :precision => 0)
     end
+    column 'Balance', :sortable => :balance do |teacher|
+      number_to_currency(teacher.balance, :unit => 'Rs. ', :precision => 0)
+    end
 
     default_actions
   end
@@ -40,8 +43,8 @@ ActiveAdmin.register Teacher do
             th 'Student'
             th 'Course'
             th 'Gross Amount'
+            th 'Status'
             th 'Net Amount'
-            #th 'Status'
           end
         end
         
@@ -57,8 +60,8 @@ ActiveAdmin.register Teacher do
               td nil
               td nil
               td status_tag(number_to_currency(cumulative_amount, :unit => 'Rs. ', :precision => 0), :ok)
+              td status_tag(cumulative_amount > 0 ? 'Due' : 'Paid', cumulative_amount > 0 ? :error : :ok)
               td status_tag(number_to_currency(cumulative_amount  * teacher.share, :unit => 'Rs. ', :precision => 0), :warning)
-              #td status_tag(cumulative_amount > 0 ? 'Due' : 'Paid', cumulative_amount > 0 ? :error : :ok)
               #td link_to('Make Payment (Cumulative)', pay_cumulative_admin_payments_path(:payments => cumulative_payment.second), :method => :put)
             end
             
@@ -70,8 +73,8 @@ ActiveAdmin.register Teacher do
                 td link_to(payment.payable.student.name, admin_course_path(payment.payable.student))
                 td link_to(payment.payable.course.name, admin_course_path(payment.payable.course))
                 td number_to_currency(payment.amount, :unit => 'Rs. ', :precision => 0)
+                td status_tag(payment.status_label, payment.status_tag)
                 td number_to_currency(payment.amount * teacher.share, :unit => 'Rs. ', :precision => 0)
-                #td status_tag(payment.status_label, payment.status_tag)
                 #td link_to('Make Payment', pay_admin_payment_path(payment), :method => :put)
               end
             end
