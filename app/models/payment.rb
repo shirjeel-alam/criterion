@@ -69,7 +69,7 @@ class Payment < ActiveRecord::Base
   end
 
   def period_label
-    period.strftime('%B %Y')
+    period.present? ? period.strftime('%B %Y') : 'N/A'
   end
   
   def date_label

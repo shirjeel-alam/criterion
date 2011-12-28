@@ -28,7 +28,7 @@ ActiveAdmin.register Student do
 
     panel 'Payment (Registration Fees)' do
       table_for student.student_registration_fees.each do |t|
-        t.column(:id) { |registration_fee| link_to(registration_fee.id, admin_student_registration_fee(registration_fee)) }
+        t.column(:id) { |registration_fee| link_to(registration_fee.id, admin_student_registration_fee_path(registration_fee)) }
         t.column(:session) { |registration_fee| registration_fee.session.label rescue nil }
         t.column(:amount) { |registration_fee| number_to_currency(registration_fee.amount, :unit => 'Rs. ', :precision => 0) }
         t.column(:status) { |registration_fee| status_tag(registration_fee.status_label, registration_fee.status_tag) }
