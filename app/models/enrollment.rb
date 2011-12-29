@@ -1,7 +1,7 @@
 class Enrollment < ActiveRecord::Base
   
   NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED = 0, 1, 2, 3
-  CANCELLATION, COMPLETION = 0, 1
+  COMPLETION, CANCELLATION = true, false
   
   belongs_to :course
   belongs_to :student
@@ -40,16 +40,20 @@ class Enrollment < ActiveRecord::Base
   
   def create_payments
     if course.started?
-      months = course.start_date < created_at.to_date ? months_between(created_at.to_date, course.end_date) : months_between(course.start_date, course.end_date)
+      months = course.start_date > created_at.to_date ? months_between(course.start_date, course.end_date) : months_between(created_at.to_date, course.end_date)
       
       # First month payment
-      Payment.create(:period => months.first, :amount => course.first_month_payment, :status => Payment::DUE, :payment_type => Payment::CREDIT, :payable_id => id, :payable_type => self.class.name)
-      months[1..(months.length - 1)].each do |date|
+      Payment.create(:period => months.first, :amount => first_month_payment, :status => Payment::DUE, :payment_type => Payment::CREDIT, :payable_id => id, :payable_type => self.class.name)
+      months[1...months.length].each do |date|
         Payment.create(:period => date, :amount => course.monthly_fee, :status => Payment::DUE, :payment_type => Payment::CREDIT, :payable_id => id, :payable_type => self.class.name)
       end
 
       evaluate_discount
     end
+  end
+
+  def first_month_payment
+    course.start_date > created_at.to_date ? (((course.start_date.end_of_month - course.start_date).to_f / (course.start_date.end_of_month - course.start_date.beginning_of_month).to_f * course.monthly_fee).to_i) : (((created_at.to_date.end_of_month - created_at.to_date).to_f / (created_at.to_date.end_of_month - created_at.to_date.beginning_of_month).to_f * course.monthly_fee).to_i)
   end
 
   def evaluate_discount

@@ -2,6 +2,7 @@ ActiveAdmin.register Course do
   filter :id
   filter :name
   filter :status, :as => :select, :collection => lambda { Course.statuses }
+  filter :level, :as => :select, :collection => lambda { Course.levels }
   filter :monthly_fee
   
   index do
@@ -9,6 +10,9 @@ ActiveAdmin.register Course do
       link_to(course.id, admin_course_path(course))
     end
     column :name
+    column :level, :sortable => :level do |course|
+      course.level_label
+    end
     column :session do |course|
       course.session.label rescue nil
     end
@@ -36,6 +40,7 @@ ActiveAdmin.register Course do
       attributes_table_for course do
         row(:id) { course.id }
         row(:name) { course.name }
+        row(:level) { course.level_label }
         row(:teacher) { course.teacher.name }
         row(:session) { course.session.label rescue nil }
         row(:monthly_fee) { course.monthly_fee }
@@ -43,6 +48,8 @@ ActiveAdmin.register Course do
         row(:status) { status_tag(course.status_label, course.status_tag) }
         row(:start_date) { date_format(course.start_date) }
         row(:end_date) { date_format(course.end_date) }
+        row(:action) { status_tag(course.course_date_for_label, course.course_date_for_tag) }
+        row(:action_date) { date_format(course.course_date) }
       end
     end
     
@@ -59,6 +66,7 @@ ActiveAdmin.register Course do
   form do |f|
     f.inputs do
       f.input :name, :required => true
+      f.input :level, :as => :radio, :collection => Course.levels, :required => true
       f.input :session, :as => :select, :collection => Session.get_active, :include_blank => false, :required => true
       f.input :teacher, :as => :select, :collection => Teacher.get_all, :include_blank => false, :required => true
       f.input :monthly_fee, :required => true
@@ -93,10 +101,22 @@ ActiveAdmin.register Course do
     end
     redirect_to :action => :show
   end
+
+  member_action :cancel, :method => :put do
+    course = Course.find(params[:id])
+    course.attributes = { :status => Course::CANCELLED, :course_date => Date.today, :course_date_for => Course::CANCELLATION }
+    if course.save
+      course.enrollments_update_status
+      flash[:notice] = 'Course Cancelled'
+    else
+      flash[:error] = 'Error Cancelling Course'
+    end
+    redirect_to :action => :show
+  end
   
   member_action :finish, :method => :put do
     course = Course.find(params[:id])
-    course.attributes = { :status => Course::COMPLETED, :end_date => Date.today, :course_date => Date.today, :course_date_for => Course::COMPLETION }
+    course.attributes = { :status => Course::COMPLETED, :course_date => Date.today, :course_date_for => Course::COMPLETION }
     if course.save
       course.enrollments_update_status
       flash[:notice] = 'Course Finished'
@@ -108,14 +128,15 @@ ActiveAdmin.register Course do
   
   #NOTE: Reset Course only for development purposes
   action_item :only => :show do
-    span link_to('Add Enrollment', new_admin_enrollment_path(:course_id => course))
+    span link_to('Add Enrollment', new_admin_enrollment_path(:course_id => course)) unless (course.completed? || course.cancelled?)
     span do
-      if course.started?
-        span link_to('Reset Course', reset_admin_course_path(course), :method => :put, :confirm => 'Are you sure?')
-        span link_to('Finish Course', finish_admin_course_path(course), :method => :put, :confirm => 'Are you sure?')
-      else
+      if course.not_started?
         span link_to('Reset Course', reset_admin_course_path(course), :method => :put, :confirm => 'Are you sure?')
         span link_to('Start Course', start_admin_course_path(course), :method => :put, :confirm => 'Are you sure?')
+      elsif course.started?
+        span link_to('Reset Course', reset_admin_course_path(course), :method => :put, :confirm => 'Are you sure?')
+        span link_to('Cancel Course', cancel_admin_course_path(course), :method => :put, :confirm => 'Are you sure?')
+        span link_to('Finish Course', finish_admin_course_path(course), :method => :put, :confirm => 'Are you sure?')  
       end
     end
   end

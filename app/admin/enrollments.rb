@@ -33,7 +33,7 @@ ActiveAdmin.register Enrollment do
     end
     
     panel 'Payments' do
-      table_for enrollment.payments do |t|
+      table_for enrollment.payments.order(:id) do |t|
         t.column(:id) { |payment| link_to(payment.id, admin_payment_path(payment)) }
         t.column(:period) { |payment| payment.period_label}
         t.column(:gross_amount) { |payment| number_to_currency(payment.amount, :unit => 'Rs. ', :precision => 0) }

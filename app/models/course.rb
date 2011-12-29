@@ -1,7 +1,8 @@
 class Course < ActiveRecord::Base
   
   NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED = 0, 1, 2, 3
-  CANCELLATION, COMPLETION = 0, 1
+  COMPLETION, CANCELLATION = true, false
+  O_LEVEL, AS_LEVEL, A2_LEVEL = 0, 1, 2
   
   belongs_to :teacher
   belongs_to :session
@@ -10,8 +11,10 @@ class Course < ActiveRecord::Base
   has_many :payments, :through => :enrollments
   has_many :students, :through => :enrollments
   
-  before_save :set_end_date, :update_status
+  before_save :update_status
   after_save :create_payments
+
+  before_create :set_end_date
   
   validates :name, :presence => true
   validates :teacher_id, :presence => true
@@ -20,8 +23,8 @@ class Course < ActiveRecord::Base
   validates :monthly_fee, :presence => true, :numericality => { :only_integer => true, :greater_than => 0 }
   validates :start_date, :timeliness => { :type => :date, :before => lambda { end_date }, :allow_blank => true } 
   validates :end_date, :timeliness => { :type => :date, :allow_blank => true }
+  validates :level, :presence => true, :inclusion => { :in => [O_LEVEL, AS_LEVEL, A2_LEVEL] }
 
-  #TODO: Change to SQL
   scope :active, where(:status => [NOT_STARTED, IN_PROGRESS])
   
   def update_status
@@ -29,35 +32,30 @@ class Course < ActiveRecord::Base
       self.status = NOT_STARTED
     elsif end_date.try(:future?)
       self.status = IN_PROGRESS
-    elsif end_date.try(:past?)
+    elsif end_date.try(:past?) || end_date == Date.today
       self.status = COMPLETED
     else
       self.status = CANCELLED
-    end
+    end unless (completed? || cancelled?)
   end
   
   def enrollments_update_status
     enrollments.map(&:update_status)
   end
-  
-  #Assuming that the end date will always coincide with the end of session
+
   def set_end_date    
     case session.period
-    when Session::MAY_JUNE
-      self.end_date = Date.parse("May #{session.year}")
-    when Session::OCT_NOV
-      self.end_date = Date.parse("October #{session.year}")
-    end unless [COMPLETED, CANCELLED].include?(status)   
+      when Session::MAY_JUNE
+        self.end_date = Date.parse("May #{session.year}")
+      when Session::OCT_NOV
+        self.end_date = Date.parse("October #{session.year}")
+    end
   end
   
   def create_payments    
     enrollments.each do |enrollment|
       enrollment.create_payments
     end if started?
-  end
-  
-  def first_month_payment
-    ((start_date.end_of_month - start_date).to_f / (start_date.end_of_month - start_date.beginning_of_month).to_f * monthly_fee).to_i
   end
   
   def calculate_revenue
@@ -76,12 +74,20 @@ class Course < ActiveRecord::Base
     revenue
   end
   
+  def not_started?
+    status == NOT_STARTED
+  end
+
   def started?
     status == IN_PROGRESS
   end
   
   def completed?
     status == COMPLETED
+  end
+
+  def cancelled?
+    status == CANCELLED
   end
   
   def has_enrollment?(student)
@@ -113,9 +119,13 @@ class Course < ActiveRecord::Base
   def self.get_active
     Course.active.collect { |c| [c.label, c.id] }
   end
- 
+
   def self.statuses
-    [['Not Started', 0], ['In Progress', 1], ['Completed', 2], ['Cancelled', 3]]
+    [['Not Started', NOT_STARTED], ['In Progress', IN_PROGRESS], ['Completed', COMPLETED], ['Cancelled', CANCELLED]]
+  end
+
+  def self.levels
+    [['O-Level', O_LEVEL], ['AS-Level', AS_LEVEL], ['A2-Level', A2_LEVEL]]
   end
 
   ### View Helpers ###
@@ -126,6 +136,17 @@ class Course < ActiveRecord::Base
 
   def title
     "#{name} #{session.label rescue nil}"
+  end
+
+  def level_label
+    case level
+      when O_LEVEL
+        'O-Level'
+      when AS_LEVEL
+        'AS-Level'
+      when A2_LEVEL
+        'A2-Level'
+    end
   end
 
   def status_label
@@ -151,6 +172,28 @@ class Course < ActiveRecord::Base
         :ok
       when CANCELLED
         :error
+    end
+  end
+
+  def course_date_for_label
+    return 'N/A' if course_date_for.nil?
+     
+    case course_date_for
+      when CANCELLATION
+        'Cancellation'
+      when COMPLETION
+        'Completion'
+    end 
+  end
+
+  def course_date_for_tag
+    return :warning if course_date_for.nil?
+    
+    case course_date_for
+      when CANCELLATION
+        :error
+      when COMPLETION
+        :ok
     end
   end
 end
