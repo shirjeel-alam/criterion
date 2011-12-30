@@ -8,6 +8,7 @@ gem 'mysql2'
 gem 'faker'
 gem 'airbrake'
 gem 'validates_timeliness'
+gem 'best_in_place'
 
 gem 'activeadmin'
 gem 'sass-rails'
