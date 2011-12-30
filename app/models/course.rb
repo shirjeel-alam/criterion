@@ -11,10 +11,9 @@ class Course < ActiveRecord::Base
   has_many :payments, :through => :enrollments
   has_many :students, :through => :enrollments
   
+  before_create :set_end_date
   before_save :update_status
   after_save :create_payments
-
-  before_create :set_end_date
   
   validates :name, :presence => true
   validates :teacher_id, :presence => true
@@ -30,7 +29,7 @@ class Course < ActiveRecord::Base
   def update_status
     if start_date.blank? || start_date.try(:future?)
       self.status = NOT_STARTED
-    elsif end_date.try(:future?)
+    elsif start_date.try(:past?) || end_date.try(:future?)
       self.status = IN_PROGRESS
     elsif end_date.try(:past?) || end_date == Date.today
       self.status = COMPLETED
