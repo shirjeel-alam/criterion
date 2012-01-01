@@ -8,7 +8,6 @@ gem 'mysql2'
 gem 'faker'
 gem 'airbrake'
 gem 'validates_timeliness'
-gem 'best_in_place'
 
 gem 'activeadmin'
 gem 'sass-rails'
@@ -22,6 +21,7 @@ group :assets do
 end
 
 gem 'jquery-rails'
+gem 'best_in_place'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'

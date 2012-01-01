@@ -75,7 +75,7 @@ ActiveAdmin.register Student do
                 td link_to(payment.id, admin_payment_path(payment))
                 td payment.period_label
                 td link_to(payment.payable.course.name, admin_course_path(payment.payable.course))
-                td number_to_currency(payment.net_amount, :unit => 'Rs. ', :precision => 0)
+                td number_to_currency(best_in_place(payment, :amount, :type => :input, :path => [:admin, payment]), :unit => 'Rs. ', :precision => 0)
                 td status_tag(payment.status_label, payment.status_tag)
                 td payment.status ? nil : link_to('Make Payment', pay_admin_payment_path(payment), :method => :put)
               end
