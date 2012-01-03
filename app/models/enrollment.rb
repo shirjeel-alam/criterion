@@ -53,7 +53,15 @@ class Enrollment < ActiveRecord::Base
   end
 
   def first_month_payment
-    course.start_date > created_at.to_date ? (((course.start_date.end_of_month - course.start_date).to_f / (course.start_date.end_of_month - course.start_date.beginning_of_month).to_f * course.monthly_fee).to_i) : (((created_at.to_date.end_of_month - created_at.to_date).to_f / (created_at.to_date.end_of_month - created_at.to_date.beginning_of_month).to_f * course.monthly_fee).to_i)
+    user_date = course.start_date > created_at.to_date ? course.start_date : created_at.to_date
+
+    if (user_date - user_date.beginning_of_month).to_i < 10
+      course.monthly_fee
+    elsif (user_date.end_of_month - user_date).to_i < 10
+      0
+    else
+      ((user_date.end_of_month - user_date).to_f / (user_date.end_of_month - user_date.beginning_of_month).to_f * course.monthly_fee).to_i
+    end
   end
 
   def evaluate_discount

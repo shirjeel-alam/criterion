@@ -41,8 +41,8 @@ ActiveAdmin.register Course do
         row(:id) { course.id }
         row(:name) { course.name }
         row(:level) { course.level_label }
-        row(:teacher) { course.teacher.name }
-        row(:session) { course.session.label rescue nil }
+        row(:teacher) { link_to(course.teacher.name, admin_teacher_path(course.teacher)) }
+        row(:session) { link_to(course.session.label, admin_session_path(course.session)) rescue nil }
         row(:monthly_fee) { course.monthly_fee }
         row(:no_of_enrollments) { course.enrollments.count }
         row(:status) { status_tag(course.status_label, course.status_tag) }

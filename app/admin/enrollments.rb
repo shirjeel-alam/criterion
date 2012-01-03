@@ -8,10 +8,16 @@ ActiveAdmin.register Enrollment do
       link_to(enrollment.id, admin_enrollment_path(enrollment))
     end
     column 'Student' do |enrollment|
-      link_to(enrollment.student.name, admin_student_path(enrollment.student)) rescue nil
+      enrollment.student.name rescue nil
     end
     column 'Course' do |enrollment|
-      link_to(enrollment.course.name, admin_course_path(enrollment.course)) rescue nil
+      enrollment.course.name rescue nil
+    end
+    column 'Teacher' do |enrollment|
+      enrollment.course.teacher.name
+    end
+    column 'Session' do |enrollment|
+      enrollment.course.session.label rescue nil
     end
     column 'Status' do |enrollment|
       status_tag(enrollment.status_label, enrollment.status_tag)
@@ -28,6 +34,8 @@ ActiveAdmin.register Enrollment do
         row(:id) { enrollment.id }
         row(:student) { link_to(enrollment.student.name, admin_student_path(enrollment.student)) rescue nil }
         row(:course) { link_to(enrollment.course.name, admin_course_path(enrollment.course)) rescue nil }
+        row(:teacher) { link_to(enrollment.course.teacher.name, admin_teacher_path(enrollment.course.teacher)) }
+        row(:session) { link_to(enrollment.course.session.label, admin_session_path(enrollment.course.session)) rescue nil }
         row(:status) { status_tag(enrollment.status_label, enrollment.status_tag) }
       end
     end

@@ -14,7 +14,7 @@ module ApplicationHelper
   
   def date_format(date)
     if date.present?
-      date.strftime('%d %b %Y')
+      date.strftime('%d %B, %Y')
     else
       'N/A'
     end

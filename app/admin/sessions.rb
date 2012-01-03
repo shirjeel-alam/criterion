@@ -35,6 +35,7 @@ ActiveAdmin.register Session do
         row(:period) { session.period_label }
         row(:year) { session.year }
         row(:registration_fee) { number_to_currency(session.registration_fee, :unit => 'Rs. ', :precision => 0) }
+        row(:courses) { session.courses.count.to_s }
       end
     end
     
@@ -53,7 +54,7 @@ ActiveAdmin.register Session do
         t.column(:student) { |registration_fee| link_to(registration_fee.student.name, admin_student_path(registration_fee.student)) }
         t.column(:amount) { |registration_fee| number_to_currency(registration_fee.amount, :unit => 'Rs. ', :precision => 0) }
         t.column(:status) { |registration_fee| status_tag(registration_fee.status_label, registration_fee.status_tag) }
-        t.column { |registration_fee| link_to('Make Payment', pay_admin_student_registration_fee_path(registration_fee), :method => :put) }
+        t.column { |registration_fee| link_to('Make Payment', pay_admin_student_registration_fee_path(registration_fee), :method => :put) unless registration_fee.status }
       end
     end
   end
