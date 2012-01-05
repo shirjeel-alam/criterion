@@ -8,6 +8,7 @@ ActiveAdmin.register Teacher do
       link_to(teacher.id, admin_teacher_path(teacher))
     end
     column :name
+    column :email
     column 'Share', :sortable => :share do |teacher|
       number_to_percentage(teacher.share * 100, :precision => 0)
     end
@@ -23,6 +24,7 @@ ActiveAdmin.register Teacher do
       attributes_table_for teacher do
         row(:id) { teacher.id }
         row(:name) { teacher.name }
+        row(:email) { teacher.email }
         row(:share) { number_to_percentage(teacher.share * 100, :precision => 0) }
         row(:balance) { status_tag(number_to_currency(teacher.balance, :unit => 'Rs. ', :precision => 0), teacher.balance_tag) }
       end

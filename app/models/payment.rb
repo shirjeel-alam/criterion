@@ -1,5 +1,4 @@
 class Payment < ActiveRecord::Base
-  
   DUE, PAID, VOID = 0, 1, 2
   CREDIT, DEBIT = true, false
   
@@ -8,7 +7,7 @@ class Payment < ActiveRecord::Base
   before_validation :check_payment, :on => :create, :if => "payable_type == 'Enrollment'"
 
   validates :amount, :presence => true, :numericality => { :only_integer => true, :greater_than => 0 }
-  validates :status, :inclusion => { :in => [DUE, PAID, VOID] }
+  validates :status, :presence => true, :inclusion => { :in => [DUE, PAID, VOID] }
   validates :payment_type, :inclusion => { :in => [CREDIT, DEBIT] }
   validates :paid_on, :timeliness => { :type => :date }, :allow_blank => true
   validates :discount, :numericality => { :only_integer => true, :greater_than => 0 }, :allow_blank => true

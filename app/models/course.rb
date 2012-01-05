@@ -1,5 +1,4 @@
 class Course < ActiveRecord::Base
-  
   NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED = 0, 1, 2, 3
   COMPLETION, CANCELLATION = true, false
   O_LEVEL, AS_LEVEL, A2_LEVEL = 0, 1, 2
@@ -11,7 +10,8 @@ class Course < ActiveRecord::Base
   has_many :payments, :through => :enrollments
   has_many :students, :through => :enrollments
   
-  before_create :set_end_date
+  before_validation :set_end_date
+  
   before_save :update_status
   after_save :create_payments
   
@@ -48,7 +48,7 @@ class Course < ActiveRecord::Base
         self.end_date = Date.parse("May #{session.year}")
       when Session::OCT_NOV
         self.end_date = Date.parse("October #{session.year}")
-    end
+    end unless end_date.present?
   end
   
   def create_payments    

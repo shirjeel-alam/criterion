@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120104235311) do
+ActiveRecord::Schema.define(:version => 20120105093212) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.integer  "resource_id",   :null => false
@@ -29,8 +29,8 @@ ActiveRecord::Schema.define(:version => 20120104235311) do
   add_index "active_admin_comments", ["resource_type", "resource_id"], :name => "index_admin_notes_on_resource_type_and_resource_id"
 
   create_table "admin_users", :force => true do |t|
-    t.string   "email",                                 :default => "", :null => false
-    t.string   "encrypted_password",     :limit => 128, :default => "", :null => false
+    t.string   "email",                                 :default => "",   :null => false
+    t.string   "encrypted_password",     :limit => 128, :default => "",   :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
@@ -41,6 +41,10 @@ ActiveRecord::Schema.define(:version => 20120104235311) do
     t.string   "last_sign_in_ip"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "role"
+    t.integer  "user_id"
+    t.string   "user_type"
+    t.boolean  "status",                                :default => true
   end
 
   add_index "admin_users", ["email"], :name => "index_admin_users_on_email", :unique => true
@@ -85,26 +89,6 @@ ActiveRecord::Schema.define(:version => 20120104235311) do
     t.integer  "discount"
   end
 
-  create_table "pfeed_deliveries", :force => true do |t|
-    t.integer  "pfeed_receiver_id"
-    t.string   "pfeed_receiver_type"
-    t.integer  "pfeed_item_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "pfeed_items", :force => true do |t|
-    t.string   "type"
-    t.integer  "originator_id"
-    t.string   "originator_type"
-    t.integer  "participant_id"
-    t.string   "participant_type"
-    t.text     "data"
-    t.datetime "expiry"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "phone_numbers", :force => true do |t|
     t.string   "number"
     t.integer  "category"
@@ -133,6 +117,7 @@ ActiveRecord::Schema.define(:version => 20120104235311) do
 
   create_table "students", :force => true do |t|
     t.string   "name"
+    t.string   "email"
     t.string   "address"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -140,6 +125,7 @@ ActiveRecord::Schema.define(:version => 20120104235311) do
 
   create_table "teachers", :force => true do |t|
     t.string   "name"
+    t.string   "email"
     t.float    "share"
     t.datetime "created_at"
     t.datetime "updated_at"
