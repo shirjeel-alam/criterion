@@ -8,6 +8,7 @@ class Teacher < ActiveRecord::Base
   after_create :create_admin_user
 
   validates :name, :presence => true
+  validates :email, :presence => true
   validates :share, :presence => true, :numericality => { :greater_than => 0, :less_than_or_equal_to => 1 }
 
   def balance

@@ -11,6 +11,7 @@ class Student < ActiveRecord::Base
   before_validation :set_email
 
   validates :name, :presence => true
+  validates :email, :presence => true
   
   def enrolled_courses
     Course.active.collect { |c| c if c.has_enrollment?(self) }.compact.uniq
