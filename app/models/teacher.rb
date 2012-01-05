@@ -4,8 +4,8 @@ class Teacher < ActiveRecord::Base
   has_many :withdrawals, :as => :payable, :class_name => 'Payment', :dependent => :destroy
   has_many :phone_numbers, :as => :contactable, :dependent => :destroy
 
-  before_validation :set_email
   after_create :create_admin_user
+  before_save :set_email
 
   validates :name, :presence => true
   validates :email, :presence => true

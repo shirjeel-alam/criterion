@@ -8,7 +8,7 @@ class Student < ActiveRecord::Base
   accepts_nested_attributes_for :enrollments
   accepts_nested_attributes_for :phone_numbers
   
-  before_validation :set_email
+  before_save :set_email
 
   validates :name, :presence => true
   

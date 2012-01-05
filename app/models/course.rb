@@ -10,9 +10,7 @@ class Course < ActiveRecord::Base
   has_many :payments, :through => :enrollments
   has_many :students, :through => :enrollments
   
-  before_validation :set_end_date
-  
-  before_save :update_status
+  before_save :set_end_date, :update_status
   after_save :create_payments
   
   validates :name, :presence => true

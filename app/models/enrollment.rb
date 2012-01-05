@@ -14,9 +14,9 @@ class Enrollment < ActiveRecord::Base
   validates :enrollment_date, :timeliness => { :type => :date }, :allow_blank => true
   validates :enrollment_date_for, :inclusion => { :in => [CANCELLATION, COMPLETION] }, :allow_blank => true  
   
-  before_validation :set_status, :set_start_date
   after_create :associate_session
-  
+
+  before_save :set_status, :set_start_date
   after_save :update_status, :create_payments, :evaluate_discount
   
   scope :not_started, where(:status => NOT_STARTED)
@@ -35,7 +35,9 @@ class Enrollment < ActiveRecord::Base
   end
 
   def set_start_date
+    debugger
     self.start_date = Date.today unless start_date.present? 
+    debugger
   end
   
   #NOTE: Do not change status if COMPLETED OR CANCELLED
@@ -93,6 +95,7 @@ class Enrollment < ActiveRecord::Base
   end
   
   def associate_session
+    debugger
     StudentRegistrationFee.create(:student => student, :session => course.session)
   end
   

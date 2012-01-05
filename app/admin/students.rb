@@ -151,9 +151,10 @@ ActiveAdmin.register Student do
       
       f.has_many :enrollments do |fe|
         fe.inputs 'Enrollment Details' do
-          fe.input :course_id, :as => :select, :include_blank => false, :collection => Course.get_active
-          fe.input :start_date, :as => :datepicker, :required => true
+          
         end
+        fe.input :course_id, :as => :select, :include_blank => false, :collection => Course.get_active
+        fe.input :start_date, :as => :date
       end
     end
     
