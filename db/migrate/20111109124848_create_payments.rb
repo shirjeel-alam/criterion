@@ -5,7 +5,7 @@ class CreatePayments < ActiveRecord::Migration
       t.string :payable_type
       t.date :period
       t.integer :amount
-      t.boolean :status
+      t.integer :status
       t.boolean :payment_type
 
       t.timestamps
