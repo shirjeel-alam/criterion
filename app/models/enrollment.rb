@@ -10,13 +10,14 @@ class Enrollment < ActiveRecord::Base
   
   validates :course_id, :uniqueness => { :scope => :student_id }
   validates :status, :presence => true, :inclusion => { :in => [NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED] }
+  validates :start_date, :timeliness => { :type => :date }
   validates :enrollment_date, :timeliness => { :type => :date }, :allow_blank => true
   validates :enrollment_date_for, :inclusion => { :in => [CANCELLATION, COMPLETION] }, :allow_blank => true  
   
-  before_validation :set_status
+  before_validation :set_status, :set_start_date
   after_create :associate_session
   
-  after_save :create_payments, :evaluate_discount
+  after_save :update_status, :create_payments, :evaluate_discount
   
   scope :not_started, where(:status => NOT_STARTED)
   scope :in_progress, where(:status => IN_PROGRESS)
@@ -32,12 +33,32 @@ class Enrollment < ActiveRecord::Base
       self.status = course.started? ? IN_PROGRESS : NOT_STARTED
     end
   end
+
+  def set_start_date
+    self.start_date = Date.today unless start_date.present? 
+  end
   
   #NOTE: Do not change status if COMPLETED OR CANCELLED
   def update_status
-    self.update_attribute(:status, course.status) unless [COMPLETED, CANCELLED].include?(status)
+    if [Course::COMPLETED, Course::CANCELLED].include?(course.status)
+      self.update_attribute(:status, course.status) 
+    else
+      self.update_attribute(:status, (start_date.future? ? NOT_STARTED : IN_PROGRESS)) unless [COMPLETED, CANCELLED].include?(status)
+    end
   end
   
+  def first_month_payment
+    user_date = course.start_date > created_at.to_date ? course.start_date : created_at.to_date
+
+    if (user_date - user_date.beginning_of_month).to_i < 10
+      course.monthly_fee
+    elsif (user_date.end_of_month - user_date).to_i < 10
+      0
+    else
+      ((user_date.end_of_month - user_date).to_f / (user_date.end_of_month - user_date.beginning_of_month).to_f * course.monthly_fee).to_i
+    end
+  end
+
   def create_payments
     if course.started?
       months = course.start_date > created_at.to_date ? months_between(course.start_date, course.end_date) : months_between(created_at.to_date, course.end_date)
@@ -52,15 +73,11 @@ class Enrollment < ActiveRecord::Base
     end
   end
 
-  def first_month_payment
-    user_date = course.start_date > created_at.to_date ? course.start_date : created_at.to_date
-
-    if (user_date - user_date.beginning_of_month).to_i < 10
-      course.monthly_fee
-    elsif (user_date.end_of_month - user_date).to_i < 10
-      0
-    else
-      ((user_date.end_of_month - user_date).to_f / (user_date.end_of_month - user_date.beginning_of_month).to_f * course.monthly_fee).to_i
+  def void_payments
+    payments_to_be_void = payments.due.collect { |payment| payment if payment.period.future? }.compact
+    payments_to_be_void << payments.due.detect { |payment| payment if payment.period.beginning_of_month == Date.today.beginning_of_month } if (Date.today - Date.today.beginning_of_month).to_i < 10
+    payments_to_be_void.each do |payment|
+      payment.update_attribute(:status, Payment::VOID)
     end
   end
 

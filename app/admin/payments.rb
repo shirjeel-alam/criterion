@@ -27,7 +27,7 @@ ActiveAdmin.register Payment do
   	payments = Payment.find(params[:payments])
   	count = 0
   	payments.each do |payment|
-  		unless payment.status
+  		unless payment.paid?
   			payment.update_attributes(:status => true, :paid_on => Date.today) 
   			count += 1
   		end

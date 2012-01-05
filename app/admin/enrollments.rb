@@ -4,22 +4,25 @@ ActiveAdmin.register Enrollment do
   filter :student
   
   index do
-    column 'ID' do |enrollment|
+    column 'ID', :sortable => :id do |enrollment|
       link_to(enrollment.id, admin_enrollment_path(enrollment))
     end
-    column 'Student' do |enrollment|
+    column :student do |enrollment|
       enrollment.student.name rescue nil
     end
-    column 'Course' do |enrollment|
+    column :course do |enrollment|
       enrollment.course.name rescue nil
     end
-    column 'Teacher' do |enrollment|
+    column :teacher do |enrollment|
       enrollment.course.teacher.name
     end
-    column 'Session' do |enrollment|
+    column :session do |enrollment|
       enrollment.course.session.label rescue nil
     end
-    column 'Status' do |enrollment|
+    column :start_date, :sortable => :start_date do |enrollment|
+      date_format(enrollment.start_date)
+    end
+    column :status, :sortable => :status do |enrollment|
       status_tag(enrollment.status_label, enrollment.status_tag)
     end
       
@@ -36,6 +39,7 @@ ActiveAdmin.register Enrollment do
         row(:course) { link_to(enrollment.course.name, admin_course_path(enrollment.course)) rescue nil }
         row(:teacher) { link_to(enrollment.course.teacher.name, admin_teacher_path(enrollment.course.teacher)) }
         row(:session) { link_to(enrollment.course.session.label, admin_session_path(enrollment.course.session)) rescue nil }
+        row(:start_date) { date_format(enrollment.start_date) }
         row(:status) { status_tag(enrollment.status_label, enrollment.status_tag) }
       end
     end
@@ -49,7 +53,7 @@ ActiveAdmin.register Enrollment do
         t.column(:net_amount) { |payment| number_to_currency(payment.net_amount, :unit => 'Rs. ', :precision => 0) }
         t.column(:status) { |payment| status_tag(payment.status_label, payment.status_tag) }
         t.column(:paid_on) { |payment| payment.date_label }
-        t.column(:actions) { |payment| link_to('Make Payment', pay_admin_payment_path(payment), :method => :put) unless payment.status }
+        t.column(:actions) { |payment| link_to('Make Payment', pay_admin_payment_path(payment), :method => :put) unless payment.paid? }
       end
     end
   end
@@ -84,6 +88,7 @@ ActiveAdmin.register Enrollment do
     enrollment = Enrollment.find(params[:id])
     enrollment.attributes = { :status => Enrollment::CANCELLED, :enrollment_date => Date.today, :enrollment_date_for => Enrollment::CANCELLATION }
     if enrollment.save
+      enrollment.void_payments
       flash[:error] = 'Enrollment Cancelled'
     else
       flash[:error] = 'Error Cancelling Enrollment'
@@ -93,6 +98,7 @@ ActiveAdmin.register Enrollment do
 
   member_action :refresh, :method => :put do
     enrollment = Enrollment.find(params[:id])
+    enrollment.update_status
     enrollment.create_payments
     redirect_to :action => :show
   end
@@ -100,9 +106,5 @@ ActiveAdmin.register Enrollment do
   action_item :only => :show do
     span link_to('Refresh Enrollment', refresh_admin_enrollment_path(enrollment), :method => :put)
     span link_to('Cancel Enrollment', cancel_admin_enrollment_path(enrollment), :method => :put, :confirm => 'Are you sure?') unless [Enrollment::CANCELLED, Enrollment::COMPLETED].include?(enrollment.status)
-  end
-
-  action_item :only => :index do
-    link_to('New Enrollment', new_admin_enrollment_path)
   end
 end

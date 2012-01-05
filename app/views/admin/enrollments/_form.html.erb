@@ -1,14 +1,17 @@
 <%= semantic_form_for [:admin, @enrollment], :builder => ActiveAdmin::FormBuilder do |f|
   f.inputs do
     if params[:student_id]
-      f.input :course_id, :as => :select, :include_blank => false, :collection => @courses
-      f.input :student_id, :as => :hidden
+      f.input :course_id, :as => :select, :required => true, :include_blank => false, :collection => @courses
+      f.input :student_id, :as => :hidden, :required => true
+      f.input :start_date, :as => :datepicker, :required => true
     elsif params[:course_id]
-      f.input :student_id, :as => :select, :include_blank => false, :collection => @students
-      f.input :course_id, :as => :hidden
+      f.input :student_id, :as => :select, :required => true, :include_blank => false, :collection => @students
+      f.input :course_id, :as => :hidden, :required => true
+      f.input :start_date, :as => :datepicker, :required => true
     else
-      f.input :course_id, :as => :select, :include_blank => false, :collection => @courses
-      f.input :student_id, :as => :select, :include_blank => false, :collection => @students
+      f.input :course_id, :as => :select, :required => true, :include_blank => false, :collection => @courses
+      f.input :student_id, :as => :select, :required => true, :include_blank => false, :collection => @students
+      f.input :start_date, :as => :datepicker, :required => true
     end
   end
   

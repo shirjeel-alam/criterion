@@ -1,6 +1,6 @@
 class Payment < ActiveRecord::Base
   
-  PAID, DUE = true, false
+  DUE, PAID, VOID = 0, 1, 2
   CREDIT, DEBIT = true, false
   
   belongs_to :payable, :polymorphic => :true
@@ -8,13 +8,14 @@ class Payment < ActiveRecord::Base
   before_validation :check_payment, :on => :create, :if => "payable_type == 'Enrollment'"
 
   validates :amount, :presence => true, :numericality => { :only_integer => true, :greater_than => 0 }
-  validates :status, :inclusion => { :in => [PAID, DUE] }
+  validates :status, :inclusion => { :in => [DUE, PAID, VOID] }
   validates :payment_type, :inclusion => { :in => [CREDIT, DEBIT] }
   validates :paid_on, :timeliness => { :type => :date }, :allow_blank => true
   validates :discount, :numericality => { :only_integer => true, :greater_than => 0 }, :allow_blank => true
   
   scope :paid, where(:status => PAID)
   scope :due, where(:status => DUE)
+  scope :void, where(:status => VOID)
   scope :credit, where(:payment_type => CREDIT)
   scope :debit, where(:payment_type => DEBIT)
   
@@ -22,8 +23,16 @@ class Payment < ActiveRecord::Base
     errors.add(:duplicate, "Entry already exists") if Payment.where(:period => period.beginning_of_month..period.end_of_month, :payable_id => payable_id, :payable_type => payable_type, :payment_type => payment_type).present?
   end
   
+  def due?
+    status == DUE
+  end
+
   def paid?
-    status
+    status == PAID
+  end
+
+  def void?
+    status == VOID
   end
 
   def +(payment)
@@ -43,7 +52,7 @@ class Payment < ActiveRecord::Base
   ### Class Methods ###
 
   def self.statuses
-    [['Paid', PAID], ['Due', DUE]]
+    [['Due', DUE], ['Paid', PAID], ['Void', VOID]]
   end
 
   def self.payment_types
@@ -53,11 +62,25 @@ class Payment < ActiveRecord::Base
   ### View Helpers ###
 
   def status_label
-    status ? 'Paid' : 'Due'
+    case status
+      when DUE
+        'Due'
+      when PAID
+        'Paid'
+      when VOID
+        'Void'
+    end
   end
   
   def status_tag
-    status ? :ok : :error
+    case status
+      when DUE
+        :error
+      when PAID
+        :ok
+      when VOID
+        :warning
+    end
   end
       
   def type_label
