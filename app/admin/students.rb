@@ -7,6 +7,7 @@ ActiveAdmin.register Student do
       link_to(student.id, admin_student_path(student))
     end
     column :name
+    column :email
     column 'Address', :sortable => :address do |student|
       student.address_label
     end
@@ -22,6 +23,7 @@ ActiveAdmin.register Student do
       attributes_table_for student do
         row(:id) { student.id }
         row(:name) { student.name }
+        row(:email) { student.email }
         row(:address) { student.address }
       end
     end
@@ -136,7 +138,8 @@ ActiveAdmin.register Student do
     
   form do |f|
     f.inputs do
-      f.input :name
+      f.input :name, :required => true
+      f.input :email
       f.input :address
       
       f.has_many :phone_numbers do |fp|

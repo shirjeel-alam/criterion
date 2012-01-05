@@ -8,6 +8,8 @@ class Student < ActiveRecord::Base
   accepts_nested_attributes_for :enrollments
   accepts_nested_attributes_for :phone_numbers
   
+  before_validation :set_email
+
   validates :name, :presence => true
   
   def enrolled_courses
@@ -37,6 +39,10 @@ class Student < ActiveRecord::Base
     session_enrollments.each do |enrollment|
       enrollment.apply_discount(discount)
     end
+  end
+
+  def set_email
+    self.email = "#{name.strip.gsub(' ', '.').downcase}@criterion.com" unless email.present?
   end
  
   ### Class Methods ###
