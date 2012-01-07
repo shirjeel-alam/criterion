@@ -2,13 +2,13 @@
   f.inputs do
     f.inputs do
   		f.input :from, :required => true
-  		f.input :to, :as => :check_boxes, :collection => @mail.to, :required => true, :include_blank => false
-  		f.input :cc, :hint => 'Semicolon separated list of email addresses'
-  		f.input :bcc, :hint => 'Semicolon separated list of email addresses'
+  		f.input :to, :as => :check_boxes, :collection => @course.emails, :required => true, :include_blank => false
+  		f.input :cc, :hint => 'Comma separated list of email addresses'
+  		f.input :bcc, :hint => 'Comma separated list of email addresses'
   		f.input :subject
-  		f.input :body, :required => true
+  		f.input :body, :input_html => { :id => :mail_body }, :required => true
   	end
-  	
-  	f.buttons
   end
+
+  f.buttons
 end %>
