@@ -53,7 +53,16 @@ ActiveAdmin.register Enrollment do
         t.column(:net_amount) { |payment| number_to_currency(payment.net_amount, :unit => 'Rs. ', :precision => 0) }
         t.column(:status) { |payment| status_tag(payment.status_label, payment.status_tag) }
         t.column(:paid_on) { |payment| payment.date_label }
-        t.column(:actions) { |payment| link_to('Make Payment', pay_admin_payment_path(payment), :method => :put) unless payment.paid? }
+        t.column(:actions) do |payment| 
+          ul do
+            if payment.paid?
+              li span link_to('Refund Payment', refund_admin_payment_path(payment), :method => :put)
+            else
+              li span link_to('Make Payment', pay_admin_payment_path(payment), :method => :put)
+              li span link_to('Void Payment', void_admin_payment_path(payment), :method => :put)
+            end
+          end
+        end
       end
     end
   end

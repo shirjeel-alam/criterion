@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120105093212) do
+ActiveRecord::Schema.define(:version => 20120107203008) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.integer  "resource_id",   :null => false
@@ -65,6 +65,19 @@ ActiveRecord::Schema.define(:version => 20120105093212) do
     t.integer  "level"
   end
 
+  create_table "criterion_mails", :force => true do |t|
+    t.string   "from"
+    t.string   "to"
+    t.string   "cc"
+    t.string   "bcc"
+    t.string   "subject"
+    t.text     "body"
+    t.integer  "mailable_id"
+    t.string   "mailable_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "enrollments", :force => true do |t|
     t.integer  "student_id"
     t.integer  "course_id"
@@ -87,6 +100,7 @@ ActiveRecord::Schema.define(:version => 20120105093212) do
     t.datetime "updated_at"
     t.date     "paid_on"
     t.integer  "discount"
+    t.date     "refunded_on"
   end
 
   create_table "phone_numbers", :force => true do |t|

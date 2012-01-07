@@ -1,5 +1,5 @@
 class Payment < ActiveRecord::Base
-  DUE, PAID, VOID = 0, 1, 2
+  DUE, PAID, VOID, REFUNDED = 0, 1, 2, 3
   CREDIT, DEBIT = true, false
   
   belongs_to :payable, :polymorphic => :true
@@ -7,9 +7,9 @@ class Payment < ActiveRecord::Base
   before_validation :check_payment, :on => :create, :if => "payable_type == 'Enrollment'"
 
   validates :amount, :presence => true, :numericality => { :only_integer => true, :greater_than => 0 }
-  validates :status, :presence => true, :inclusion => { :in => [DUE, PAID, VOID] }
-  validates :payment_type, :inclusion => { :in => [CREDIT, DEBIT] }
+  validates :status, :presence => true, :inclusion => { :in => [DUE, PAID, VOID, REFUNDED] }
   validates :paid_on, :timeliness => { :type => :date }, :allow_blank => true
+  validates :refunded_on, :timeliness => { :type => :date }, :allow_blank => true
   validates :discount, :numericality => { :only_integer => true, :greater_than => 0 }, :allow_blank => true
   
   scope :paid, where(:status => PAID)
@@ -34,6 +34,10 @@ class Payment < ActiveRecord::Base
     status == VOID
   end
 
+  def refunded?
+    status == REFUNDED
+  end
+
   def +(payment)
     if payment.is_a?(Payment)
       Payment.new(:amount => (self.amount + payment.amount))
@@ -51,7 +55,7 @@ class Payment < ActiveRecord::Base
   ### Class Methods ###
 
   def self.statuses
-    [['Due', DUE], ['Paid', PAID], ['Void', VOID]]
+    [['Due', DUE], ['Paid', PAID], ['Void', VOID], ['Refunded', REFUNDED]]
   end
 
   def self.payment_types
@@ -68,6 +72,8 @@ class Payment < ActiveRecord::Base
         'Paid'
       when VOID
         'Void'
+      when REFUNDED
+        'Refunded'
     end
   end
   
@@ -77,7 +83,7 @@ class Payment < ActiveRecord::Base
         :error
       when PAID
         :ok
-      when VOID
+      when VOID, REFUNDED
         :warning
     end
   end
