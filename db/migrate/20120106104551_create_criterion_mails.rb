@@ -1,6 +1,6 @@
-class CreateMails < ActiveRecord::Migration
+class CreateCriterionMails < ActiveRecord::Migration
   def change
-    create_table :mails do |t|
+    create_table :criterion_mails do |t|
       t.string :from
       t.string :to
       t.string :cc

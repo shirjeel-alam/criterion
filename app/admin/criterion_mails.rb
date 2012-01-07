@@ -17,32 +17,32 @@ ActiveAdmin.register CriterionMail do
       if params[:course].present?
         session[:course] = params[:course]
         @course = Course.find(params[:course])
-        @criterion_mail = CriterionMail.new(:from => current_admin_user.email, :to => @course.emails)
+        @mail = Mail.new(:from => current_admin_user.email, :to => @course.emails)
       else
         super
       end
     end
 
     def create
-      receipients = params[:criterion_mail][:to].reject!(&:blank?)
-      params[:criterion_mail][:to] = params[:criterion_mail][:to].join(',').gsub(/ /,'')
-      params[:criterion_mail][:cc] = params[:criterion_mail][:cc].gsub(/ /,'')
-      params[:criterion_mail][:bcc] = params[:criterion_mail][:bcc].gsub(/ /,'')
+      receipients = params[:mail][:to].reject!(&:blank?)
+      params[:mail][:to] = params[:mail][:to].join(',').gsub(/ /,'')
+      params[:mail][:cc] = params[:mail][:cc].gsub(/ /,'')
+      params[:mail][:bcc] = params[:mail][:bcc].gsub(/ /,'')
 
       if current_admin_user.user.present?
-        @criterion_mail = current_admin_user.user.mails.build(params[:criterion_mail])
+        @mail = current_admin_user.user.mails.build(params[:mail])
       else
-        @criterion_mail = current_admin_user.mails.build(params[:criterion_mail])
+        @mail = current_admin_user.mails.build(params[:mail])
       end
 
-      if @criterion_mail.save
+      if @mail.save
         session.delete :course if session[:course].present?
-        CriterionMailer.course_mail(@criterion_mail).deliver
+        CriterionMailer.course_mail(@mail).deliver
         flash[:notice] = 'Mail sent successfully'
         redirect_to :back
       else
         @course = Course.find(session[:course]) if session[:course].present?
-        @criterion_mail.to = @criterion_mail.to.split(',')
+        @mail.to = @mail.to.split(',')
         render :new
       end
     end
