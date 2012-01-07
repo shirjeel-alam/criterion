@@ -18,7 +18,8 @@ class Enrollment < ActiveRecord::Base
   
   after_create :associate_session
 
-  after_save :update_status, :create_payments, :evaluate_discount
+  before_save :update_status
+  after_save :create_payments, :evaluate_discount
   
   scope :not_started, where(:status => NOT_STARTED)
   scope :in_progress, where(:status => IN_PROGRESS)
@@ -40,9 +41,9 @@ class Enrollment < ActiveRecord::Base
   #NOTE: Do not change status if COMPLETED OR CANCELLED
   def update_status
     if [Course::COMPLETED, Course::CANCELLED].include?(course.status)
-      self.update_attribute(:status, course.status) 
+      self.status = course.status 
     else
-      self.update_attribute(:status, (start_date.future? ? NOT_STARTED : IN_PROGRESS)) unless [COMPLETED, CANCELLED].include?(status)
+      self.status = start_date.future? ? NOT_STARTED : IN_PROGRESS unless [COMPLETED, CANCELLED].include?(status)
     end
   end
   

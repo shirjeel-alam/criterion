@@ -98,8 +98,7 @@ ActiveAdmin.register Enrollment do
 
   member_action :refresh, :method => :put do
     enrollment = Enrollment.find(params[:id])
-    enrollment.update_status
-    enrollment.create_payments
+    enrollment.save
     redirect_to :action => :show
   end
   
