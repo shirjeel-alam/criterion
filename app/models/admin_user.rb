@@ -8,6 +8,7 @@ class AdminUser < ActiveRecord::Base
   devise :database_authenticatable, :recoverable, :rememberable, :trackable, :validatable
 
   belongs_to :user, :polymorphic => :true
+  has_many :mails, :as => :mailable
 
   validates :role, :presence => true, :inclusion => { :in => [SUPER_ADMIN, ADMIN, TEACHER, STUDENT] }
   validates :status, :presence => true, :inclusion => { :in => [ACTIVE, DEACTIVE] }

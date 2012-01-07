@@ -109,6 +109,10 @@ class Course < ActiveRecord::Base
     Student.all.collect { |s| s unless self.has_enrollment?(s) }.compact.uniq
   end
 
+  def emails
+    students.collect { |s| ["#{s.name} - #{s.email}", s.email] }
+  end
+
   ### Class Methods ###
   
   def self.get_all

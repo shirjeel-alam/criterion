@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120105093212) do
+ActiveRecord::Schema.define(:version => 20120106104551) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.integer  "resource_id",   :null => false
@@ -74,6 +74,19 @@ ActiveRecord::Schema.define(:version => 20120105093212) do
     t.date     "enrollment_date"
     t.boolean  "enrollment_date_for"
     t.date     "start_date"
+  end
+
+  create_table "mails", :force => true do |t|
+    t.string   "from"
+    t.string   "to"
+    t.string   "cc"
+    t.string   "bcc"
+    t.string   "subject"
+    t.text     "body"
+    t.integer  "mailable_id"
+    t.string   "mailable_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "payments", :force => true do |t|

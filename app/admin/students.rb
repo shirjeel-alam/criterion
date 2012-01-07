@@ -63,8 +63,8 @@ ActiveAdmin.register Student do
           flip = true
           result.each do |cumulative_payment|
             tr :class => "#{flip ? 'odd' : 'even'} header" do
-              cumulative_gross_amount = cumulative_payment.second.sum { |p| p.status ? 0 : p.amount }
-              cumulative_discount = cumulative_payment.second.sum { |p| p.status ? 0 : (p.discount.present? ? p.discount : 0) }
+              cumulative_gross_amount = cumulative_payment.second.sum { |p| p.paid? || p.void? ? 0 : p.amount }
+              cumulative_discount = cumulative_payment.second.sum { |p| p.paid? || p.void? ? 0 : (p.discount.present? ? p.discount : 0) }
               cumulative_net_amount = cumulative_gross_amount - cumulative_discount
 
               td image_tag('down_arrow.png')
