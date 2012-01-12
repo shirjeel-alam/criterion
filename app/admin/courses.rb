@@ -139,7 +139,7 @@ ActiveAdmin.register Course do
         span link_to('Finish Course', finish_admin_course_path(course), :method => :put, :confirm => 'Are you sure?')  
       end
 
-      span link_to('Compose Mail', new_admin_mail_path(:course => course))
+      span link_to('Compose Mail', new_admin_criterion_mail_path(:course => course))
     end
   end
 end
