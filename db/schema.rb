@@ -89,19 +89,6 @@ ActiveRecord::Schema.define(:version => 20120107203008) do
     t.date     "start_date"
   end
 
-  create_table "mails", :force => true do |t|
-    t.string   "from"
-    t.string   "to"
-    t.string   "cc"
-    t.string   "bcc"
-    t.string   "subject"
-    t.text     "body"
-    t.integer  "mailable_id"
-    t.string   "mailable_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "payments", :force => true do |t|
     t.integer  "payable_id"
     t.string   "payable_type"

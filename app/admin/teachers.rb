@@ -13,7 +13,7 @@ ActiveAdmin.register Teacher do
       number_to_percentage(teacher.share * 100, :precision => 0)
     end
     column 'Balance', :sortable => :balance do |teacher|
-      status_tag(number_to_currency(teacher.balance, :unit => 'Rs. ', :precision => 0), teacher.balance_tag)
+      status_tag(number_to_currency(teacher.balance, :unit => 'Rs. ', :precision => 0), teacher.balance_tag rescue nil)
     end
 
     default_actions
@@ -26,7 +26,7 @@ ActiveAdmin.register Teacher do
         row(:name) { teacher.name }
         row(:email) { teacher.email }
         row(:share) { number_to_percentage(teacher.share * 100, :precision => 0) }
-        row(:balance) { status_tag(number_to_currency(teacher.balance, :unit => 'Rs. ', :precision => 0), teacher.balance_tag) }
+        row(:balance) { status_tag(number_to_currency(teacher.balance, :unit => 'Rs. ', :precision => 0), teacher.balance_tag) rescue nil }
       end
     end
 
@@ -63,7 +63,7 @@ ActiveAdmin.register Teacher do
               #td status_tag(number_to_currency(cumulative_amount, :unit => 'Rs. ', :precision => 0), :ok)
               td '-'
               td status_tag(cumulative_amount > 0 ? 'Due' : 'Paid', cumulative_amount > 0 ? :error : :ok)
-              td status_tag(number_to_currency(cumulative_amount  * teacher.share, :unit => 'Rs. ', :precision => 0), :warning)
+              td status_tag(number_to_currency(cumulative_amount * teacher.share, :unit => 'Rs. ', :precision => 0), :warning)
             end
             
             flip = !flip

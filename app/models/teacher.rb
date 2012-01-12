@@ -4,6 +4,7 @@ class Teacher < ActiveRecord::Base
   has_many :withdrawals, :as => :payable, :class_name => 'Payment', :dependent => :destroy
   has_many :phone_numbers, :as => :contactable, :dependent => :destroy
   has_many :mails, :as => :mailable
+  has_one :admin_user, :as => :user, :dependent => :destroy
 
   before_validation :set_email
   after_create :create_admin_user
@@ -13,7 +14,7 @@ class Teacher < ActiveRecord::Base
   validates :share, :presence => true, :numericality => { :greater_than => 0, :less_than_or_equal_to => 1 }
 
   def balance
-  	(payments.credit.paid.sum(:amount) * share) - withdrawals.sum(:amount) 
+  	(payments.credit.paid.reduce{ |sum, payment| sum + payment }.net_amount * share) - withdrawals.sum(:amount) rescue 0
   end
 
   def set_email

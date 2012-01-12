@@ -40,9 +40,9 @@ class Payment < ActiveRecord::Base
 
   def +(payment)
     if payment.is_a?(Payment)
-      Payment.new(:amount => (self.amount + payment.amount))
+      Payment.new(:amount => (self.amount.to_i + payment.amount.to_i), :discount => (self.discount.to_i + payment.discount.to_i))
     elsif payment.is_a?(Fixnum)
-      Payment.new(:amount => (self.amount + payment))
+      Payment.new(:amount => (self.amount.to_i + payment))
     else
       raise payment.inspect
     end

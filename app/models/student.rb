@@ -4,6 +4,7 @@ class Student < ActiveRecord::Base
   has_many :courses, :through => :enrollments
   has_many :payments, :through => :enrollments
   has_many :phone_numbers, :as => :contactable, :dependent => :destroy
+  has_one :admin_user, :as => :user, :dependent => :destroy
   
   accepts_nested_attributes_for :enrollments
   accepts_nested_attributes_for :phone_numbers

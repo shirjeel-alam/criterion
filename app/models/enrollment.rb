@@ -30,6 +30,10 @@ class Enrollment < ActiveRecord::Base
     course.session
   end
 
+  def student_id
+    student.id
+  end
+
   def set_status
     self.status = course.started? ? IN_PROGRESS : NOT_STARTED unless status.present?
   end
@@ -93,7 +97,7 @@ class Enrollment < ActiveRecord::Base
   end
   
   def associate_session
-    StudentRegistrationFee.create(:student => student, :session => course.session)
+    StudentRegistrationFee.find_or_create_by_student_id_and_session_id(student.id, session.id)
   end
   
   def months_between(start_date, end_date)
