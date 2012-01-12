@@ -13,7 +13,7 @@ ActiveAdmin.register Teacher do
       number_to_percentage(teacher.share * 100, :precision => 0)
     end
     column 'Balance', :sortable => :balance do |teacher|
-      status_tag(number_to_currency(teacher.balance, :unit => 'Rs. ', :precision => 0), teacher.balance_tag rescue nil)
+      status_tag(number_to_currency(teacher.balance, :unit => 'Rs. ', :precision => 0), teacher.balance_tag) rescue nil
     end
 
     default_actions
