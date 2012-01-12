@@ -21,6 +21,11 @@ function add_fields(link, association, content) {
   $(link).before(content.replace(regexp, new_id)).hide().fadeIn();
 }
 
+function test() {
+  console.log('Here');
+  alert("Hello!");
+}
+
 $(document).ready(function() {
   $(".content").hide();
   $(".header").live('click', function()
