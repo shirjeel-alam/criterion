@@ -60,7 +60,8 @@ ActiveAdmin.register Teacher do
               td cumulative_payment.first.strftime('%B %Y')
               td nil
               td nil
-              td status_tag(number_to_currency(cumulative_amount, :unit => 'Rs. ', :precision => 0), :ok)
+              #td status_tag(number_to_currency(cumulative_amount, :unit => 'Rs. ', :precision => 0), :ok)
+              td '-'
               td status_tag(cumulative_amount > 0 ? 'Due' : 'Paid', cumulative_amount > 0 ? :error : :ok)
               td status_tag(number_to_currency(cumulative_amount  * teacher.share, :unit => 'Rs. ', :precision => 0), :warning)
             end
@@ -72,9 +73,9 @@ ActiveAdmin.register Teacher do
                 td payment.period_label
                 td link_to(payment.payable.student.name, admin_course_path(payment.payable.student))
                 td link_to(payment.payable.course.name, admin_course_path(payment.payable.course))
-                td number_to_currency(payment.amount, :unit => 'Rs. ', :precision => 0)
+                td number_to_currency(payment.net_amount, :unit => 'Rs. ', :precision => 0)
                 td status_tag(payment.status_label, payment.status_tag)
-                td number_to_currency(payment.amount * teacher.share, :unit => 'Rs. ', :precision => 0)
+                td number_to_currency(payment.net_amount * teacher.share, :unit => 'Rs. ', :precision => 0)
               end
             end
           end
