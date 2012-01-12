@@ -73,12 +73,12 @@ ActiveAdmin.register Enrollment do
     def new
       if params[:student_id]
         @student = Student.find(params[:student_id])
-        @enrollment = @student.enrollments.build
         @courses = @student.not_enrolled_courses.collect { |c| [c.label, c.id] }
+        @enrollment = @student.enrollments.build
       elsif params[:course_id]
         @course = Course.find(params[:course_id])
-        @enrollment = @course.enrollments.build
         @students = @course.not_enrolled_students.collect { |s| [s.name, s.id] }
+        @enrollment = @course.enrollments.build
       else
         @enrollment = Enrollment.new
         @courses = Course.get_active
