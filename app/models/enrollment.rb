@@ -31,7 +31,7 @@ class Enrollment < ActiveRecord::Base
   end
 
   def student_id
-    student.id
+    student.id rescue nil
   end
 
   def set_status

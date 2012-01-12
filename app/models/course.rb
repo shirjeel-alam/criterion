@@ -90,7 +90,7 @@ class Course < ActiveRecord::Base
   end
   
   def has_enrollment?(student)
-    enrollments.collect(&:student_id).include?(student.id)
+    enrollments.collect(&:student_id).compact.include?(student.id)
   end
   
   def months_between(start_date, end_date)
