@@ -30,14 +30,14 @@ ActiveAdmin.register CriterionMail do
       params[:criterion_mail][:bcc] = params[:criterion_mail][:bcc].gsub(/ /,'')
 
       if current_admin_user.user.present?
-        @criterion_mail = current_admin_user.user.mails.build(params[:criterion_mail])
+        @criterion_mail = current_admin_user.user.criterion_mails.build(params[:criterion_mail])
       else
-        @criterion_mail = current_admin_user.mails.build(params[:criterion_mail])
+        @criterion_mail = current_admin_user.criterion_mails.build(params[:criterion_mail])
       end
 
       if @criterion_mail.save
         session.delete :course if session[:course].present?
-        CriterionMailer.course_mail(@criterion_mail).deliver
+        #CriterionMailer.course_mail(@criterion_mail).deliver
         flash[:notice] = 'Mail sent successfully'
         redirect_to :back
       else

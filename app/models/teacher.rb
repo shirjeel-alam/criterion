@@ -3,7 +3,7 @@ class Teacher < ActiveRecord::Base
   has_many :payments, :through => :courses
   has_many :withdrawals, :as => :payable, :class_name => 'Payment', :dependent => :destroy
   has_many :phone_numbers, :as => :contactable, :dependent => :destroy
-  has_many :mails, :as => :mailable
+  has_many :criterion_mails, :as => :mailable
   has_one :admin_user, :as => :user, :dependent => :destroy
 
   before_validation :set_email
