@@ -29,11 +29,9 @@ class Student < ActiveRecord::Base
     when 0, 1
       nil
     when 2
-      500 # 250 / course
-    when 3
-      900 # 300 / course
+      250 #500 # 250 / course
     else
-      1400 # 350 / course
+      500 #900 # 300 / course
     end
 
     session_enrollments = enrollments.where(:course_id => session_courses.collect(&:id))
