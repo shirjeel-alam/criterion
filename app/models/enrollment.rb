@@ -40,7 +40,7 @@ class Enrollment < ActiveRecord::Base
   
   #NOTE: Do not change status if COMPLETED OR CANCELLED
   def update_status
-    if [Course::COMPLETED, Course::CANCELLED].include?(course.status)
+    if [Course::NOT_STARTED, Course::COMPLETED, Course::CANCELLED].include?(course.status)
       self.status = course.status 
     else
       self.status = start_date.future? ? NOT_STARTED : IN_PROGRESS unless [COMPLETED, CANCELLED].include?(status)
