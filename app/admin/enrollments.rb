@@ -1,4 +1,6 @@
 ActiveAdmin.register Enrollment do
+  menu :if => proc { current_admin_user.super_admin? }
+  
   filter :id
   filter :course
   filter :student

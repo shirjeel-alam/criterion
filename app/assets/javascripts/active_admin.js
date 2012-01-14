@@ -10,7 +10,7 @@ $(document).ready(function() {
     theme: 'advanced'
   });
 
-  $('.admin_mails').live('click', function() {
+  $('.admin_criterion_mails').live('click', function() {
   	$('#mail_body').val(tinyMCE.activeEditor.getContent());
   });
 });

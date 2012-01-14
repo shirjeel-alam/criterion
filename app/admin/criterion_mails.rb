@@ -1,4 +1,6 @@
 ActiveAdmin.register CriterionMail do
+  menu :if => proc { current_admin_user.super_admin? }
+
   filter :id
   filter :from
   filter :to
@@ -39,7 +41,7 @@ ActiveAdmin.register CriterionMail do
         session.delete :course if session[:course].present?
         #CriterionMailer.course_mail(@criterion_mail).deliver
         flash[:notice] = 'Mail sent successfully'
-        redirect_to :back
+        redirect_to :action => :show
       else
         @course = Course.find(session[:course]) if session[:course].present?
         @criterion_mail.to = @criterion_mail.to.split(',')

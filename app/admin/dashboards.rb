@@ -1,5 +1,9 @@
 ActiveAdmin::Dashboards.build do
 
+  # section :teacher do
+  #   controller.redirect_to(admin_teacher_path(current_admin_user.user))
+  # end
+
   # Define your dashboard sections here. Each block will be
   # rendered on the dashboard in the context of the view. So just
   # return the content which you would like to display.

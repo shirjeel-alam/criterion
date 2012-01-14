@@ -1,4 +1,6 @@
 ActiveAdmin.register Student do
+  menu :if => proc { current_admin_user.super_admin? || current_admin_user.admin? }
+
   filter :id
   filter :name
   

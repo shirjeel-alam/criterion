@@ -25,6 +25,10 @@ class Course < ActiveRecord::Base
   validates :level, :presence => true, :inclusion => { :in => [O_LEVEL, AS_LEVEL, A2_LEVEL] }
 
   scope :active, where(:status => [NOT_STARTED, IN_PROGRESS])
+  scope :not_started, where(:status => NOT_STARTED)
+  scope :in_progress, where(:status => IN_PROGRESS)
+  scope :completed, where(:status => COMPLETED)
+  scope :cancelled, where(:status => CANCELLED)
   
   def update_status
     if start_date.blank? || start_date.try(:future?)

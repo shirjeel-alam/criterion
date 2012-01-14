@@ -14,7 +14,12 @@ class Teacher < ActiveRecord::Base
   validates :share, :presence => true, :numericality => { :greater_than => 0, :less_than_or_equal_to => 1 }
 
   def balance
-  	(payments.credit.paid.reduce{ |sum, payment| sum + payment }.net_amount * share) - withdrawals.sum(:amount) rescue 0
+    income = 0
+    payments.credit.paid.each do |payment|
+      income += payment.net_amount 
+    end
+    income *= share
+    income - withdrawals.sum(:amount)
   end
 
   def set_email

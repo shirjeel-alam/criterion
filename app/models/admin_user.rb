@@ -17,6 +17,22 @@ class AdminUser < ActiveRecord::Base
     new_record? ? false : super
   end
 
+  def super_admin?
+    role == SUPER_ADMIN
+  end
+
+  def admin?
+    role == ADMIN
+  end
+
+  def teacher?
+    role == TEACHER
+  end
+
+  def student?
+    role == STUDENT
+  end
+
   ### Class Methods ###
 
   def self.roles

@@ -4,6 +4,46 @@ ActiveAdmin.register Course do
   filter :status, :as => :select, :collection => lambda { Course.statuses }
   filter :level, :as => :select, :collection => lambda { Course.levels }
   filter :monthly_fee
+
+  scope :all, :default => true do |courses|
+    if current_admin_user.teacher?
+      courses.where(:teacher_id => current_admin_user.user.id)
+    else
+      courses
+    end
+  end
+
+  scope :not_started do |courses|
+    if current_admin_user.teacher?
+      courses.not_started.where(:teacher_id => current_admin_user.user.id)
+    else
+      courses.not_started
+    end
+  end
+
+  scope :in_progress do |courses|
+    if current_admin_user.teacher?
+      courses.in_progress.where(:teacher_id => current_admin_user.user.id)
+    else
+      courses.in_progress
+    end
+  end
+
+  scope :completed do |courses|
+    if current_admin_user.teacher?
+      courses.completed.where(:teacher_id => current_admin_user.user.id)
+    else
+      courses.completed
+    end
+  end
+
+  scope :cancelled do |courses|
+    if current_admin_user.teacher?
+      courses.cancelled.where(:teacher_id => current_admin_user.user.id)
+    else
+      courses.cancelled
+    end
+  end
   
   index do
     column 'ID' do |course|
