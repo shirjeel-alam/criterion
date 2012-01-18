@@ -14,7 +14,7 @@ class Enrollment < ActiveRecord::Base
   validates :enrollment_date, :timeliness => { :type => :date }, :allow_blank => true
   validates :enrollment_date_for, :inclusion => { :in => [CANCELLATION, COMPLETION] }, :allow_blank => true  
 
-  before_validation :set_status, :set_start_date
+  before_validation :set_start_date, :set_status
   
   after_create :associate_session
 
@@ -35,24 +35,28 @@ class Enrollment < ActiveRecord::Base
   end
 
   def set_status
-    self.status = course.started? ? IN_PROGRESS : NOT_STARTED unless status.present?
+    if course.not_started?
+      self.status = NOT_STARTED
+    else
+      self.status = start_date.future? ? NOT_STARTED : IN_PROGRESS
+    end unless status.present?
   end
 
   def set_start_date
     self.start_date = Date.today unless start_date.present? 
   end
   
-  #NOTE: Do not change status if COMPLETED OR CANCELLED
   def update_status
     if [Course::NOT_STARTED, Course::COMPLETED, Course::CANCELLED].include?(course.status)
-      self.status = course.status 
+      self.status = course.status
     else
+      self.start_date = start_date < course.start_date ? course.start_date : start_date
       self.status = start_date.future? ? NOT_STARTED : IN_PROGRESS unless [COMPLETED, CANCELLED].include?(status)
     end
   end
   
   def first_month_payment
-    user_date = course.start_date > created_at.to_date ? course.start_date : created_at.to_date
+    user_date = course.start_date > start_date ? course.start_date : start_date
 
     if (user_date - user_date.beginning_of_month).to_i < 10
       course.monthly_fee
@@ -64,8 +68,8 @@ class Enrollment < ActiveRecord::Base
   end
 
   def create_payments
-    if course.started?
-      months = course.start_date > created_at.to_date ? months_between(course.start_date, course.end_date) : months_between(created_at.to_date, course.end_date)
+    if course.started? && self.started?
+      months = course.start_date > start_date ? months_between(course.start_date, course.end_date) : months_between(start_date, course.end_date)
       
       # First month payment
       Payment.create(:period => months.first, :amount => first_month_payment, :status => Payment::DUE, :payment_type => Payment::CREDIT, :payable_id => id, :payable_type => self.class.name)
@@ -98,6 +102,22 @@ class Enrollment < ActiveRecord::Base
   
   def associate_session
     StudentRegistrationFee.find_or_create_by_student_id_and_session_id(student.id, session.id)
+  end
+
+  def not_started?
+    status == NOT_STARTED
+  end
+
+  def started?
+    status == IN_PROGRESS
+  end
+  
+  def completed?
+    status == COMPLETED
+  end
+
+  def cancelled?
+    status == CANCELLED
   end
   
   def months_between(start_date, end_date)

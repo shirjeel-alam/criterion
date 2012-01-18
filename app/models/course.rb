@@ -43,7 +43,11 @@ class Course < ActiveRecord::Base
   end
   
   def enrollments_update_status
-    enrollments.map(&:update_status)
+    enrollments.each do |enrollment|
+      enrollment.update_status
+    end
+
+    .map(&:update_status)
   end
 
   def set_end_date    

@@ -50,18 +50,18 @@ ActiveAdmin.register Enrollment do
       table_for enrollment.payments.order(:id) do |t|
         t.column(:id) { |payment| link_to(payment.id, admin_payment_path(payment)) }
         t.column(:period) { |payment| payment.period_label}
-        t.column(:gross_amount) { |payment| number_to_currency(best_in_place(payment, :amount, :type => :input, :path => [:admin, payment]), :unit => 'Rs. ', :precision => 0) }
-        t.column(:discount) { |payment| number_to_currency(best_in_place(payment, :discount, :type => :input, :path => [:admin, payment]), :unit => 'Rs. ', :precision => 0) }
+        t.column(:gross_amount) { |payment| number_to_currency(best_in_place_if(payment.due?, payment, :amount, :type => :input, :path => [:admin, payment]), :unit => 'Rs. ', :precision => 0) }
+        t.column(:discount) { |payment| number_to_currency(best_in_place_if(payment.due?, payment, :discount, :type => :input, :path => [:admin, payment]), :unit => 'Rs. ', :precision => 0) }
         t.column(:net_amount) { |payment| number_to_currency(payment.net_amount, :unit => 'Rs. ', :precision => 0) }
         t.column(:status) { |payment| status_tag(payment.status_label, payment.status_tag) }
         t.column(:paid_on) { |payment| payment.date_label }
         t.column(:actions) do |payment| 
           ul do
-            if payment.paid?
-              li span link_to('Refund Payment', refund_admin_payment_path(payment), :method => :put)
-            else
+            if payment.due?
               li span link_to('Make Payment', pay_admin_payment_path(payment), :method => :put)
               li span link_to('Void Payment', void_admin_payment_path(payment), :method => :put)
+            elsif payment.paid?
+              li span link_to('Refund Payment', refund_admin_payment_path(payment), :method => :put)
             end
           end
         end
