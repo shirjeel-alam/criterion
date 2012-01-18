@@ -3,6 +3,7 @@ ActiveAdmin.register Session do
 
   filter :period, :as => :select, :collection => lambda { Session.get_all }
   filter :year
+  filter :status, :as => :select, :collection => lambda { Session.statuses }
   filter :registration_fee
   
   index do
@@ -13,6 +14,9 @@ ActiveAdmin.register Session do
       session.period_label
     end
     column :year
+    column :status, :sortable => :status do |session|
+      status_tag(session.status_label, session.status_tag)
+    end
     column 'Registration Fee', :sortable => :registration_fee do |session|
       number_to_currency(session.registration_fee, :unit => 'Rs. ', :precision => 0)
     end
@@ -24,6 +28,7 @@ ActiveAdmin.register Session do
     f.inputs do
       f.input :period, :as => :select, :collection => Session.periods, :include_blank => false
       f.input :year, :as => :select, :collection => Session.years, :include_blank => false
+      f.input :status, :as => :select, :collection => Session.statuses, :include_blank => false
       f.input :registration_fee
     end
 
@@ -36,6 +41,7 @@ ActiveAdmin.register Session do
         row(:id) { session.id }
         row(:period) { session.period_label }
         row(:year) { session.year }
+        row(:status) { status_tag(session.status_label, session.status_tag) }
         row(:registration_fee) { number_to_currency(session.registration_fee, :unit => 'Rs. ', :precision => 0) }
         row(:courses) { session.courses.count.to_s }
       end
