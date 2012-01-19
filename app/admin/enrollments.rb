@@ -54,7 +54,6 @@ ActiveAdmin.register Enrollment do
         t.column(:discount) { |payment| number_to_currency(best_in_place_if(payment.due?, payment, :discount, :type => :input, :path => [:admin, payment]), :unit => 'Rs. ', :precision => 0) }
         t.column(:net_amount) { |payment| number_to_currency(payment.net_amount, :unit => 'Rs. ', :precision => 0) }
         t.column(:status) { |payment| status_tag(payment.status_label, payment.status_tag) }
-        t.column(:paid_on) { |payment| payment.date_label }
         t.column(:actions) do |payment| 
           ul do
             if payment.due?
@@ -95,11 +94,19 @@ ActiveAdmin.register Enrollment do
     end
   end
   
+  member_action :start, :method => :put do
+    enrollment = Enrollment.find(params[:id])
+    if enrollment.start!
+      flash[:error] = 'Enrollment Started'
+    else
+      flash[:error] = 'Error Starting Enrollment'
+    end
+    redirect_to :action => :show
+  end
+
   member_action :cancel, :method => :put do
     enrollment = Enrollment.find(params[:id])
-    enrollment.attributes = { :status => Enrollment::CANCELLED, :enrollment_date => Date.today, :enrollment_date_for => Enrollment::CANCELLATION }
-    if enrollment.save
-      enrollment.void_payments
+    if enrollment.cancel!
       flash[:error] = 'Enrollment Cancelled'
     else
       flash[:error] = 'Error Cancelling Enrollment'
@@ -108,13 +115,17 @@ ActiveAdmin.register Enrollment do
   end
 
   member_action :refresh, :method => :put do
-    enrollment = Enrollment.find(params[:id])
-    enrollment.save
+    Enrollment.find(params[:id]).save
     redirect_to :action => :show
   end
   
   action_item :only => :show do
     span link_to('Refresh Enrollment', refresh_admin_enrollment_path(enrollment), :method => :put)
-    span link_to('Cancel Enrollment', cancel_admin_enrollment_path(enrollment), :method => :put, :confirm => 'Are you sure?') unless [Enrollment::CANCELLED, Enrollment::COMPLETED].include?(enrollment.status)
+
+    if enrollment.not_started?
+      span link_to('Start Enrollment', start_admin_enrollment_path(enrollment), :method => :put, :confirm => 'Are you sure?')
+    elsif enrollment.started?
+      span link_to('Cancel Enrollment', cancel_admin_enrollment_path(enrollment), :method => :put, :confirm => 'Are you sure?')
+    end
   end
 end

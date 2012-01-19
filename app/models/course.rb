@@ -1,6 +1,5 @@
 class Course < ActiveRecord::Base
   NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED = 0, 1, 2, 3
-  COMPLETION, CANCELLATION = true, false
   O_LEVEL, AS_LEVEL, A2_LEVEL = 0, 1, 2
   
   belongs_to :teacher
@@ -40,14 +39,6 @@ class Course < ActiveRecord::Base
     else
       self.status = CANCELLED
     end unless (completed? || cancelled?)
-  end
-  
-  def enrollments_update_status
-    enrollments.each do |enrollment|
-      enrollment.update_status
-    end
-
-    .map(&:update_status)
   end
 
   def set_end_date    
@@ -96,6 +87,21 @@ class Course < ActiveRecord::Base
   def cancelled?
     status == CANCELLED
   end
+
+  def start!
+    self.update_attributes(:status => IN_PROGRESS, :course_date => Date.today, :start_date => Date.today)
+    start_enrollments
+  end
+
+  def complete!
+    self.update_attributes(:status => COMPLETED, :course_date => Date.today)
+    complete_enrollments
+  end
+
+  def cancel!
+    self.update_attributes(:status => CANCELLED, :course_date => Date.today)
+    cancel_enrollments
+  end
   
   def has_enrollment?(student)
     enrollments.collect(&:student_id).compact.include?(student.id)
@@ -119,6 +125,24 @@ class Course < ActiveRecord::Base
 
   def emails
     students.collect { |s| ["#{s.name} - #{s.email}", s.email] }
+  end
+
+  def start_enrollments
+    enrollments.collect { |enrollment| enrollment if enrollment.not_started? && enrollment.start_date <= start_date }.compact.each do |enrollment|
+      enrollment.start!
+    end
+  end
+
+  def complete_enrollments
+    enrollments.collect { |enrollment| enrollment unless enrollment.cancelled? || enrollment.completed? }.compact.each do |enrollment|
+      enrollment.complete!
+    end
+  end
+
+  def cancel_enrollments
+    enrollments.collect { |enrollment| enrollment unless enrollment.cancelled? || enrollment.completed? }.compact.each do |enrollment|
+      enrollment.cancel!
+    end
   end
 
   ### Class Methods ###
@@ -183,28 +207,6 @@ class Course < ActiveRecord::Base
         :ok
       when CANCELLED
         :error
-    end
-  end
-
-  def course_date_for_label
-    return 'N/A' if course_date_for.nil?
-     
-    case course_date_for
-      when CANCELLATION
-        'Cancellation'
-      when COMPLETION
-        'Completion'
-    end 
-  end
-
-  def course_date_for_tag
-    return :warning if course_date_for.nil?
-    
-    case course_date_for
-      when CANCELLATION
-        :error
-      when COMPLETION
-        :ok
     end
   end
 end

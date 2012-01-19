@@ -1,7 +1,6 @@
 class Enrollment < ActiveRecord::Base
   
   NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED = 0, 1, 2, 3
-  COMPLETION, CANCELLATION = true, false
   
   belongs_to :course
   belongs_to :student
@@ -11,8 +10,7 @@ class Enrollment < ActiveRecord::Base
   validates :course_id, :uniqueness => { :scope => :student_id }
   validates :status, :presence => true, :inclusion => { :in => [NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED] }
   validates :start_date, :timeliness => { :type => :date, :allow_blank => true }
-  validates :enrollment_date, :timeliness => { :type => :date }, :allow_blank => true
-  validates :enrollment_date_for, :inclusion => { :in => [CANCELLATION, COMPLETION] }, :allow_blank => true  
+  validates :enrollment_date, :timeliness => { :type => :date, :allow_blank => true }
 
   before_validation :set_start_date, :set_status
   
@@ -47,11 +45,11 @@ class Enrollment < ActiveRecord::Base
   end
   
   def update_status
-    if [Course::NOT_STARTED, Course::COMPLETED, Course::CANCELLED].include?(course.status)
+    if course.not_started? || course.completed? || course.cancelled?
       self.status = course.status
     else
       self.start_date = start_date < course.start_date ? course.start_date : start_date
-      self.status = start_date.future? ? NOT_STARTED : IN_PROGRESS unless [COMPLETED, CANCELLED].include?(status)
+      self.status = start_date.future? ? NOT_STARTED : IN_PROGRESS unless completed? || cancelled?
     end
   end
   
@@ -76,8 +74,6 @@ class Enrollment < ActiveRecord::Base
       months[1...months.length].each do |date|
         Payment.create(:period => date, :amount => course.monthly_fee, :status => Payment::DUE, :payment_type => Payment::CREDIT, :payable_id => id, :payable_type => self.class.name)
       end
-
-      evaluate_discount
     end
   end
 
@@ -85,7 +81,7 @@ class Enrollment < ActiveRecord::Base
     payments_to_be_void = payments.due.collect { |payment| payment if payment.period.future? }.compact
     payments_to_be_void << payments.due.detect { |payment| payment if payment.period.beginning_of_month == Date.today.beginning_of_month } if (Date.today - Date.today.beginning_of_month).to_i < 10
     payments_to_be_void.each do |payment|
-      payment.update_attribute(:status, Payment::VOID)
+      payment.void!
     end
   end
 
@@ -130,6 +126,19 @@ class Enrollment < ActiveRecord::Base
     end
     months << end_date if start_date.beginning_of_month != end_date.beginning_of_month
     months      
+  end
+
+  def start!
+    self.update_attributes(:status => IN_PROGRESS, :enrollment_date => Date.today, :start_date => Date.today)
+  end
+
+  def complete!
+    self.update_attributes(:status => COMPLETED, :enrollment_date => Date.today)
+  end
+
+  def cancel!
+    self.update_attributes(:status => CANCELLED, :enrollment_date => Date.today)
+    void_payments
   end
 
   ### View Helpers ###

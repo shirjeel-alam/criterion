@@ -8,9 +8,8 @@ class Payment < ActiveRecord::Base
 
   validates :amount, :presence => true, :numericality => { :only_integer => true, :greater_than => 0 }
   validates :status, :presence => true, :inclusion => { :in => [DUE, PAID, VOID, REFUNDED] }
-  validates :paid_on, :timeliness => { :type => :date }, :allow_blank => true
-  validates :refunded_on, :timeliness => { :type => :date }, :allow_blank => true
   validates :discount, :numericality => { :only_integer => true, :greater_than => 0 }, :allow_blank => true
+  validates :payment_date, :timeliness => { :type => :date, :allow_blank => true }
   
   scope :paid, where(:status => PAID)
   scope :due, where(:status => DUE)
@@ -50,6 +49,18 @@ class Payment < ActiveRecord::Base
   
   def net_amount
     discount.present? ? (amount - discount) : amount
+  end
+
+  def pay!
+    self.update_attributes(:status => PAID, :payment_date => Date.today)
+  end
+
+  def void!
+    self.update_attributes(:status => VOID, :payment_date => Date.today)
+  end
+
+  def refund!
+    self.update_attributes(:status => REFUNDED, :payment_date => Date.today)
   end
   
   ### Class Methods ###
@@ -98,9 +109,5 @@ class Payment < ActiveRecord::Base
 
   def period_label
     period.present? ? period.strftime('%B %Y') : 'N/A'
-  end
-  
-  def date_label
-    paid_on.present? ? paid_on.strftime('%d-%b-%Y') : 'N/A'
   end
 end

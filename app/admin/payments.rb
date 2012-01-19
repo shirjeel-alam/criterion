@@ -12,26 +12,25 @@ ActiveAdmin.register Payment do
       row(:amount) { number_to_currency(payment.net_amount, :unit => 'Rs. ', :precision => 0) }
       row(:status) { status_tag(payment.status_label, payment.status_tag) }
       row(:payment_type) { status_tag(payment.type_label, payment.type_tag) }
-      row(:paid_on) { payment.date_label }
       row(:discount) { number_to_currency(payment.discount, :unit => 'Rs. ', :precision => 0) }
     end
   end
   
   member_action :pay, :method => :put do
     payment = Payment.find(params[:id])
-    payment.update_attributes(:status => Payment::PAID, :paid_on => Date.today) ? flash[:notice] = 'Payment successfully made.' : flash[:notice] = 'Error in processing payment.'
+    payment.pay! ? flash[:notice] = 'Payment successfully made.' : flash[:notice] = 'Error in processing payment.'
     redirect_to :back
   end
 
   member_action :void, :method => :put do
     payment = Payment.find(params[:id])
-    payment.update_attributes(:status => Payment::VOID) ? flash[:notice] = 'Payment successfully voided.' : flash[:notice] = 'Error in processing payment.'
+    payment.void! ? flash[:notice] = 'Payment successfully voided.' : flash[:notice] = 'Error in processing payment.'
     redirect_to :back
   end
   
   member_action :refund, :method => :put do
     payment = Payment.find(params[:id])
-    payment.update_attributes(:status => Payment::REFUNDED, :refunded_on => Date.today) ? flash[:notice] = 'Payment successfully refunded.' : flash[:notice] = 'Error in processing payment.'
+    payment.refund! ? flash[:notice] = 'Payment successfully refunded.' : flash[:notice] = 'Error in processing payment.'
     redirect_to :back
   end
 
@@ -40,7 +39,7 @@ ActiveAdmin.register Payment do
   	count = 0
   	payments.each do |payment|
   		if payment.due?
-  			payment.update_attributes(:status => Payment::PAID, :paid_on => Date.today) 
+  			payment.pay!
   			count += 1
   		end
   	end

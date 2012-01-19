@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120107203008) do
+ActiveRecord::Schema.define(:version => 20120119223732) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.integer  "resource_id",   :null => false
@@ -85,7 +85,6 @@ ActiveRecord::Schema.define(:version => 20120107203008) do
     t.datetime "updated_at"
     t.integer  "status"
     t.date     "enrollment_date"
-    t.boolean  "enrollment_date_for"
     t.date     "start_date"
   end
 
@@ -98,9 +97,8 @@ ActiveRecord::Schema.define(:version => 20120107203008) do
     t.boolean  "payment_type"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.date     "paid_on"
     t.integer  "discount"
-    t.date     "refunded_on"
+    t.date     "payment_date"
   end
 
   create_table "phone_numbers", :force => true do |t|
@@ -118,6 +116,7 @@ ActiveRecord::Schema.define(:version => 20120107203008) do
     t.integer  "registration_fee"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "status"
   end
 
   create_table "student_registration_fees", :force => true do |t|

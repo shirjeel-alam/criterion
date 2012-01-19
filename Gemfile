@@ -24,6 +24,8 @@ gem 'jquery-rails'
 gem 'best_in_place'
 gem 'tinymce-rails', :git => 'git://github.com/spohlenz/tinymce-rails.git'
 
+gem 'rufus-scheduler'
+
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 

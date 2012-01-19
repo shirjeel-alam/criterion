@@ -11,7 +11,6 @@ class AdminUser < ActiveRecord::Base
   has_many :criterion_mails, :as => :mailable
 
   validates :role, :presence => true, :inclusion => { :in => [SUPER_ADMIN, ADMIN, TEACHER, STUDENT] }
-  validates :status, :presence => true, :inclusion => { :in => [ACTIVE, DEACTIVE] }
    
   def password_required?
     new_record? ? false : super

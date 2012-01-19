@@ -88,8 +88,7 @@ ActiveAdmin.register Course do
         row(:status) { status_tag(course.status_label, course.status_tag) }
         row(:start_date) { date_format(course.start_date) }
         row(:end_date) { date_format(course.end_date) }
-        row(:action) { status_tag(course.course_date_for_label, course.course_date_for_tag) }
-        row(:action_date) { date_format(course.course_date) }
+        row(:status_date) { date_format(course.course_date) }
       end
     end
     
@@ -120,8 +119,7 @@ ActiveAdmin.register Course do
   
   member_action :start, :method => :put do
     course = Course.find(params[:id])
-    course.attributes = { :start_date => Date.today }
-    if course.save
+    if course.start!
       course.enrollments_update_status
       flash[:notice] = 'Course Started'
     else
@@ -129,24 +127,10 @@ ActiveAdmin.register Course do
     end
     redirect_to :action => :show
   end
-  
-  member_action :reset, :method => :put do
-    course = Course.find(params[:id])
-    course.attributes = { :start_date => nil, :end_date => nil }
-    if course.save
-      course.enrollments_update_status
-      flash[:notice] = 'Course Reset'
-    else
-      flash[:error] = 'Error Restarting Course'
-    end
-    redirect_to :action => :show
-  end
 
   member_action :cancel, :method => :put do
     course = Course.find(params[:id])
-    course.attributes = { :status => Course::CANCELLED, :course_date => Date.today, :course_date_for => Course::CANCELLATION }
-    if course.save
-      course.enrollments_update_status
+    if course.cancel!
       flash[:notice] = 'Course Cancelled'
     else
       flash[:error] = 'Error Cancelling Course'
@@ -156,9 +140,7 @@ ActiveAdmin.register Course do
   
   member_action :finish, :method => :put do
     course = Course.find(params[:id])
-    course.attributes = { :status => Course::COMPLETED, :course_date => Date.today, :course_date_for => Course::COMPLETION }
-    if course.save
-      course.enrollments_update_status
+    if course.complete!
       flash[:notice] = 'Course Finished'
     else
       flash[:error] = 'Error Finishing Course'
@@ -166,15 +148,12 @@ ActiveAdmin.register Course do
     redirect_to :action => :show
   end
   
-  #NOTE: Reset Course only for development purposes
   action_item :only => :show do
     span link_to('Add Enrollment', new_admin_enrollment_path(:course_id => course)) unless (course.completed? || course.cancelled?)
     span do
       if course.not_started?
-        span link_to('Reset Course', reset_admin_course_path(course), :method => :put, :confirm => 'Are you sure?')
         span link_to('Start Course', start_admin_course_path(course), :method => :put, :confirm => 'Are you sure?')
       elsif course.started?
-        span link_to('Reset Course', reset_admin_course_path(course), :method => :put, :confirm => 'Are you sure?')
         span link_to('Cancel Course', cancel_admin_course_path(course), :method => :put, :confirm => 'Are you sure?')
         span link_to('Finish Course', finish_admin_course_path(course), :method => :put, :confirm => 'Are you sure?')  
       end
