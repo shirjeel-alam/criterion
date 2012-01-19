@@ -4,6 +4,7 @@
     f.input :amount
     f.input :status, :as => :radio, :collection => Payment.statuses
     f.input :payment_type, :as => :radio, :collection => Payment.payment_types
+    f.input :payment_date, :as => :datepicker
     f.input :payable_id, :as => :hidden
     f.input :payable_type, :as => :hidden
   end

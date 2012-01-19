@@ -1,5 +1,5 @@
 ActiveAdmin.register Teacher do
-  menu :if => proc { current_admin_user.super_admin? || current_admin_user.admin? }
+  menu :if => proc { current_admin_user.super_admin? }
   
   filter :id
   filter :name
@@ -90,7 +90,6 @@ ActiveAdmin.register Teacher do
         t.column(:id) { |withdrawal| link_to(withdrawal.id, admin_payment_path(withdrawal)) }
         t.column(:amount) { |withdrawal| number_to_currency(withdrawal.amount, :unit => 'Rs. ', :precision => 0) }
         t.column(:status) { |withdrawal| status_tag(withdrawal.status_label, withdrawal.status_tag) }
-        t.column(:paid_on) { |withdrawal| withdrawal.date_label }
       end
     end
   end

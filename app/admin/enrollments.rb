@@ -1,5 +1,5 @@
 ActiveAdmin.register Enrollment do
-  menu :if => proc { current_admin_user.super_admin? }
+  menu :if => proc { current_admin_user.super_admin? || current_admin_user.admin? }
   
   filter :id
   filter :course
@@ -71,6 +71,17 @@ ActiveAdmin.register Enrollment do
   controller do
     active_admin_config.clear_action_items!
 
+    before_filter :check_authorization
+
+    def check_authorization
+      if current_admin_user.admin?
+        if %w[edit destroy].include?(action_name)
+          flash[:error] = 'You are not authorized to perform this action'
+          redirect_to :back
+        end
+      end
+    end
+
     def new
       if params[:student_id]
         @student = Student.find(params[:student_id])
@@ -92,6 +103,10 @@ ActiveAdmin.register Enrollment do
       @courses = Course.get_active
       @students = Student.get_all
     end
+  end
+
+  controller do
+    
   end
   
   member_action :start, :method => :put do

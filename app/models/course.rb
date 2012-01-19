@@ -94,7 +94,7 @@ class Course < ActiveRecord::Base
   end
 
   def complete!
-    self.update_attributes(:status => COMPLETED, :course_date => Date.today)
+    self.update_attributes(:status => COMPLETED, :course_date => Date.today, :end_date => Date.today)
     complete_enrollments
   end
 

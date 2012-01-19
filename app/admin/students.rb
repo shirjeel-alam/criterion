@@ -86,7 +86,7 @@ ActiveAdmin.register Student do
                 td payment.period_label
                 td link_to(payment.payable.course.name, admin_course_path(payment.payable.course))
                 td number_to_currency(best_in_place_if(payment.due?, payment, :amount, :type => :input, :path => [:admin, payment]), :unit => 'Rs. ', :precision => 0)
-                td number_to_currency(best_in_place_if(payment.due?, :discount, :type => :input, :path => [:admin, payment]), :unit => 'Rs. ', :precision => 0)
+                td number_to_currency(best_in_place_if(payment.due?, payment, :discount, :type => :input, :path => [:admin, payment]), :unit => 'Rs. ', :precision => 0)
                 td number_to_currency(payment.net_amount, :unit => 'Rs. ', :precision => 0)
                 td status_tag(payment.status_label, payment.status_tag)
                 td do
@@ -174,5 +174,18 @@ ActiveAdmin.register Student do
     
   action_item :only => :show do
     link_to('Add Enrollment', new_admin_enrollment_path(:student_id => student))
+  end
+
+  controller do
+    before_filter :check_authorization
+
+    def check_authorization
+      if current_admin_user.admin?
+        if %w[edit destroy].include?(action_name)
+          flash[:error] = 'You are not authorized to perform this action'
+          redirect_to :back
+        end
+      end
+    end
   end
 end

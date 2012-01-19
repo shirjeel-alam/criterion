@@ -161,4 +161,17 @@ ActiveAdmin.register Course do
       span link_to('Compose Mail', new_admin_criterion_mail_path(:course => course))
     end
   end
+
+  controller do
+    before_filter :check_authorization
+
+    def check_authorization
+      if current_admin_user.admin?
+        if %w[edit destroy].include?(action_name)
+          flash[:error] = 'You are not authorized to perform this action'
+          redirect_to :back
+        end
+      end
+    end
+  end
 end

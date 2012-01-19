@@ -51,7 +51,7 @@ ActiveAdmin.register Payment do
     def new
       if params[:teacher_id]
         @teacher = Teacher.find(params[:teacher_id])
-        @payment = @teacher.withdrawals.build(:payment_type => Payment::DEBIT, :status => Payment::PAID, :paid_on => Date.today)
+        @payment = @teacher.withdrawals.build(:payment_type => Payment::DEBIT, :status => Payment::PAID, :payment_date => Date.today)
       else
         @payment = Payment.new  
       end

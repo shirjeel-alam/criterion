@@ -1,5 +1,5 @@
 class CriterionMailer < ActionMailer::Base
-  default from: "admin@criterion.com"
+  default from: "admin@criterion.edu"
 
   def course_mail(criterion_mail)
     @criterion_mail = criterion_mail

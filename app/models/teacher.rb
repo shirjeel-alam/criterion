@@ -23,7 +23,7 @@ class Teacher < ActiveRecord::Base
   end
 
   def set_email
-    self.email = "#{name.strip.gsub(' ', '.').downcase}@criterion.com" unless email.present?
+    self.email = "#{name.strip.gsub(' ', '.').downcase}@criterion.edu" unless email.present?
   end
 
   def create_admin_user
