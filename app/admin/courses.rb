@@ -120,7 +120,6 @@ ActiveAdmin.register Course do
   member_action :start, :method => :put do
     course = Course.find(params[:id])
     if course.start!
-      course.enrollments_update_status
       flash[:notice] = 'Course Started'
     else
       flash[:error] = 'Error Starting Course'
