@@ -2,6 +2,7 @@
 //= require jquery.purr
 //= require best_in_place
 //= require tinymce-jquery
+//= require chosen-jquery
 
 $(document).ready(function() {
   $('.best_in_place').best_in_place();
@@ -12,5 +13,12 @@ $(document).ready(function() {
 
   $('.admin_criterion_mails').live('click', function() {
   	$('#mail_body').val(tinyMCE.activeEditor.getContent());
+  });
+
+  $('.chosen-select').chosen();
+
+  $('.button').live('click', function() {
+		$('.chosen-select').chosen();
+		$('.datepicker').datepicker();
   });
 });

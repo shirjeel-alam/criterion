@@ -26,9 +26,9 @@ ActiveAdmin.register Session do
 
   form do |f|
     f.inputs do
-      f.input :period, :as => :select, :collection => Session.periods, :include_blank => false
-      f.input :year, :as => :select, :collection => Session.years, :include_blank => false
-      f.input :status, :as => :select, :collection => Session.statuses, :include_blank => false
+      f.input :period, :as => :select, :collection => Session.periods, :include_blank => false, :input_html => { :class => 'chosen-select' }
+      f.input :year, :as => :select, :collection => Session.years, :include_blank => false, :input_html => { :class => 'chosen-select' }
+      f.input :status, :as => :select, :collection => Session.statuses, :include_blank => false, :input_html => { :class => 'chosen-select' }
       f.input :registration_fee
     end
 

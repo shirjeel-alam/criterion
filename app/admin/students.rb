@@ -156,7 +156,7 @@ ActiveAdmin.register Student do
       f.has_many :phone_numbers do |fp|
         fp.inputs 'Contact Details' do
           fp.input :number
-          fp.input :category, :as => :select, :collection => PhoneNumber.categories, :include_blank => false
+          fp.input :category, :as => :select, :collection => PhoneNumber.categories, :include_blank => false, :input_html => { :class => 'chosen-select' }
         end
       end
       
@@ -164,8 +164,8 @@ ActiveAdmin.register Student do
         fe.inputs 'Enrollment Details' do
           
         end
-        fe.input :course_id, :as => :select, :include_blank => false, :collection => Course.get_active
-        fe.input :start_date, :as => :date
+        fe.input :course_id, :as => :select, :include_blank => false, :collection => Course.get_active, :input_html => { :class => 'chosen-select' }
+        fe.input :start_date, :as => :datepicker, :label => 'Start Date', :input_html => { :class => 'date_input' }
       end
     end
     

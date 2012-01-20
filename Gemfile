@@ -23,6 +23,7 @@ end
 gem 'jquery-rails'
 gem 'best_in_place'
 gem 'tinymce-rails', :git => 'git://github.com/spohlenz/tinymce-rails.git'
+gem 'chosen-rails'
 
 gem 'rufus-scheduler'
 

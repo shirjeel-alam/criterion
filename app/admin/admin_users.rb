@@ -34,8 +34,8 @@ ActiveAdmin.register AdminUser do
     f.inputs "Admin Details" do
       f.input :email, :required => true
       f.input :password, :type => :password, :required => true
-      f.input :role, :as => :select, :collection => AdminUser.admin_roles, :include_blank => false, :required => true
-      f.input :status, :as => :select, :collection => AdminUser.statuses, :include_blank => false, :required => true
+      f.input :role, :as => :select, :collection => AdminUser.admin_roles, :include_blank => false, :required => true, :input_html => { :class => 'chosen-select' }
+      f.input :status, :as => :select, :collection => AdminUser.statuses, :include_blank => false, :required => true, :input_html => { :class => 'chosen-select' }
     end
     
     f.buttons
