@@ -70,4 +70,15 @@ ActiveAdmin.register Session do
   action_item :only => :show do
     link_to('Add Course', new_admin_course_path(:course => { :session_id => session }))
   end
+
+  controller do
+    before_filter :check_authorization
+    
+    def check_authorization
+      unless current_admin_user.super_admin?
+        flash[:error] = 'You are not authorized to perform this action'
+        redirect_to :back
+      end
+    end
+  end
 end

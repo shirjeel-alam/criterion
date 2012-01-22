@@ -97,4 +97,15 @@ ActiveAdmin.register Teacher do
   action_item :only => :show do
     link_to('Add Withdrawal', new_admin_payment_path(:teacher_id => teacher))
   end
+
+  controller do
+    before_filter :check_authorization
+    
+    def check_authorization
+      unless current_admin_user.super_admin?
+        flash[:error] = 'You are not authorized to perform this action'
+        redirect_to :back
+      end
+    end
+  end
 end

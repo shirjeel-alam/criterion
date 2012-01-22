@@ -48,6 +48,15 @@ ActiveAdmin.register Payment do
   end
 
   controller do
+    before_filter :check_authorization
+
+    def check_authorization
+      unless current_admin_user.super_admin?
+        flash[:error] = 'You are not authorized to perform this action'
+        redirect_to :back
+      end
+    end
+
     def new
       if params[:teacher_id]
         @teacher = Teacher.find(params[:teacher_id])
