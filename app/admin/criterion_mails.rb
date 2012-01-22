@@ -38,6 +38,17 @@ ActiveAdmin.register CriterionMail do
   controller do
     active_admin_config.clear_action_items!
 
+    before_filter :check_authorization
+    
+    def check_authorization
+      if current_admin_user.admin?
+        if %w[index show edit update destroy].include?(action_name)
+          flash[:error] = 'You are not authorized to perform this action'
+          redirect_to_back
+        end
+      end
+    end
+
     def new
       if params[:course].present?
         @course = Course.find(params[:course])
@@ -69,7 +80,7 @@ ActiveAdmin.register CriterionMail do
       if @criterion_mail.save
         CriterionMailer.course_mail(@criterion_mail).deliver
         flash[:notice] = 'Mail sent successfully'
-        redirect_to admin_criterion_mail_path(@criterion_mail)
+        redirect_to admin_criterion_mailers_path
       else
         @criterion_mail.to = @criterion_mail.to.split(',') unless @criterion_mail.to.blank?
         @criterion_mail.cc = @criterion_mail.cc.split(',') unless @criterion_mail.cc.blank?

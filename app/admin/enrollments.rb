@@ -77,7 +77,7 @@ ActiveAdmin.register Enrollment do
       if current_admin_user.admin?
         if %w[edit destroy].include?(action_name)
           flash[:error] = 'You are not authorized to perform this action'
-          redirect_to :back
+          redirect_to_back
         end
       end
     end

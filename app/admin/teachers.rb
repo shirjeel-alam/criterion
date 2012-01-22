@@ -104,7 +104,7 @@ ActiveAdmin.register Teacher do
     def check_authorization
       unless current_admin_user.super_admin?
         flash[:error] = 'You are not authorized to perform this action'
-        redirect_to :back
+        redirect_to_back
       end
     end
   end

@@ -19,19 +19,19 @@ ActiveAdmin.register Payment do
   member_action :pay, :method => :put do
     payment = Payment.find(params[:id])
     payment.pay! ? flash[:notice] = 'Payment successfully made.' : flash[:notice] = 'Error in processing payment.'
-    redirect_to :back
+    redirect_to_back
   end
 
   member_action :void, :method => :put do
     payment = Payment.find(params[:id])
     payment.void! ? flash[:notice] = 'Payment successfully voided.' : flash[:notice] = 'Error in processing payment.'
-    redirect_to :back
+    redirect_to_back
   end
   
   member_action :refund, :method => :put do
     payment = Payment.find(params[:id])
     payment.refund! ? flash[:notice] = 'Payment successfully refunded.' : flash[:notice] = 'Error in processing payment.'
-    redirect_to :back
+    redirect_to_back
   end
 
   collection_action :pay_cumulative, :method => :put do
@@ -44,7 +44,7 @@ ActiveAdmin.register Payment do
   		end
   	end
   	flash[:notice] = "#{count} payment(s) successfully made."
-  	redirect_to :back
+  	redirect_to_back
   end
 
   controller do
@@ -53,7 +53,7 @@ ActiveAdmin.register Payment do
     def check_authorization
       unless current_admin_user.super_admin?
         flash[:error] = 'You are not authorized to perform this action'
-        redirect_to :back
+        redirect_to_back
       end
     end
 
