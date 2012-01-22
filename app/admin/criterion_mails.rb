@@ -10,16 +10,44 @@ ActiveAdmin.register CriterionMail do
   filter :body
   filter :created_at, :label => 'MAIL SENT BETWEEN'
 
+  index do
+    column 'ID', :sortable => :id do |mail|
+      link_to(mail.id, admin_criterion_mail_path(mail))
+    end
+    column :from
+    column :to
+    column :subject
+    column :sender, do |mail|
+      if mail.mailable.is_a?(Teacher)
+        link_to(mail.mailable.name, admin_teacher_path(mail.mailable)) rescue nil
+      else
+        mail.mailable_type
+      end
+    end
+  end
+
   form :partial => 'form'
+
+  show do
+    criterion_mail.to = criterion_mail.to.split(',') rescue nil
+    criterion_mail.cc = criterion_mail.cc.split(',') rescue nil
+    criterion_mail.bcc = criterion_mail.bcc.split(',') rescue nil
+    render :partial => 'form', :locals => { :disabled => true }
+  end
 
   controller do
     active_admin_config.clear_action_items!
 
     def new
       if params[:course].present?
-        session[:course] = params[:course]
         @course = Course.find(params[:course])
-        @criterion_mail = CriterionMail.new(:from => current_admin_user.email, :to => @course.emails)
+        @criterion_mail = CriterionMail.new(:from => current_admin_user.email, :to => @course.emails.collect(&:second))
+      elsif params[:courses].present?
+        @courses = Course.find(params[:courses].collect(&:second))
+        @criterion_mail = CriterionMail.new(:from => current_admin_user.email, :to => @courses.collect { |course| course.emails.collect(&:second) }.flatten)
+      elsif params[:teachers].present?
+        @teachers = Teacher.find(params[:teachers].collect(&:second))
+        @criterion_mail = CriterionMail.new(:from => current_admin_user.email, :to => @teachers.collect(&:email))
       else
         super
       end
@@ -27,9 +55,10 @@ ActiveAdmin.register CriterionMail do
 
     def create
       receipients = params[:criterion_mail][:to].reject!(&:blank?)
-      params[:criterion_mail][:to] = params[:criterion_mail][:to].join(',').gsub(/ /,'')
-      params[:criterion_mail][:cc] = params[:criterion_mail][:cc].gsub(/ /,'')
-      params[:criterion_mail][:bcc] = params[:criterion_mail][:bcc].gsub(/ /,'')
+      # The gsub's are un-necessary
+      params[:criterion_mail][:to] = params[:criterion_mail][:to].join(',') if params[:criterion_mail][:to].present?
+      params[:criterion_mail][:cc] = params[:criterion_mail][:cc].join(',') if params[:criterion_mail][:cc].present?
+      params[:criterion_mail][:bcc] = params[:criterion_mail][:bcc].join(',') if params[:criterion_mail][:bcc].present?
 
       if current_admin_user.user.present?
         @criterion_mail = current_admin_user.user.criterion_mails.build(params[:criterion_mail])
@@ -38,13 +67,13 @@ ActiveAdmin.register CriterionMail do
       end
 
       if @criterion_mail.save
-        session.delete :course if session[:course].present?
-        #CriterionMailer.course_mail(@criterion_mail).deliver
+        CriterionMailer.course_mail(@criterion_mail).deliver
         flash[:notice] = 'Mail sent successfully'
-        redirect_to :action => :show
+        redirect_to admin_criterion_mail_path(@criterion_mail)
       else
-        @course = Course.find(session[:course]) if session[:course].present?
-        @criterion_mail.to = @criterion_mail.to.split(',')
+        @criterion_mail.to = @criterion_mail.to.split(',') unless @criterion_mail.to.blank?
+        @criterion_mail.cc = @criterion_mail.cc.split(',') unless @criterion_mail.cc.blank?
+        @criterion_mail.bcc = @criterion_mail.bcc.split(',') unless @criterion_mail.bcc.blank?
         render :new
       end
     end

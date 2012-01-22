@@ -120,11 +120,11 @@ class Course < ActiveRecord::Base
   end
   
   def not_enrolled_students
-    Student.all.collect { |s| s unless self.has_enrollment?(s) }.compact.uniq
+    Student.all.collect { |student| student unless self.has_enrollment?(student) }.compact.uniq
   end
 
   def emails
-    students.collect { |s| ["#{s.name} - #{s.email}", s.email] }
+    students.collect { |student| ["#{student.name} - #{student.email}", student.email] }
   end
 
   def start_enrollments

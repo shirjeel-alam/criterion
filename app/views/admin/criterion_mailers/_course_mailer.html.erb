@@ -1,0 +1,65 @@
+<% scope = params[:scope].present? ? params[:scope] : 'courses' %>
+
+<% if scope == 'courses' %>
+	<%= form_tag(new_admin_criterion_mail_path, :method => :get) do %>
+		<table border="0" cellspacing="0" cellpadding="0" class="index_table">
+			<thead>
+				<th><%= check_box_tag("mailer_all", 1, false) %></th>
+				<th>Course ID</th>
+				<th>Course</th>
+				<th>Level</th>
+				<th>Session</th>
+				<th>Teacher</th>
+				<th>Status</th>
+			</thead>
+
+			<tbody>
+				<% flip = true %>
+				<% courses.each_with_index do |course, i| %>
+					<tr class="<%= flip ? 'odd' : 'even' %>">
+						<td><%= check_box_tag("courses[#{i}]", course.id, false, :class => 'mailer') %></td>
+						<td><%= link_to(course.id, admin_course_path(course)) %></td>
+						<td><%= course.name %></td>
+						<td><%= course.level_label %></td>
+						<td><%= course.session.label rescue nil %></td>
+						<td><%= course.teacher.present? ? course.teacher.name : 'N/A' %></td>
+						<td><%= content_tag(:span, course.status_label, :class => "status #{course.status_tag}") %></td>
+					</tr>
+					<% flip = !flip %>
+				<% end %>
+			</tbody>
+		</table>
+		<%= submit_tag 'Compose E-Mail' %>
+	<% end %>
+<% elsif scope == 'teachers' %>
+	<%= form_tag(new_admin_criterion_mail_path, :method => :get) do %>
+		<table border="0" cellspacing="0" cellpadding="0" class="index_table">
+			<thead>
+				<th><%= check_box_tag("mailer_all", 1, false) %></th>
+				<th>Teacher ID</th>
+				<th>Teacher</th>
+				<th>Courses</th>
+			</thead>
+
+			<tbody>
+				<% flip = true %>
+				<% teachers.each_with_index do |teacher, i| %>
+					<tr class="<%= flip ? 'odd' : 'even' %>">
+						<td><%= check_box_tag("teachers[#{i}]", teacher.id, false, :class => 'mailer') %></td>
+						<td><%= link_to(teacher.id, admin_teacher_path(teacher)) %></td>
+						<td><%= teacher.name %></td>
+						<td>
+							<ul style="list-style-type:disc;">
+								<% teacher.courses.each do |course| %>
+									<li><%= course.title %></li>
+								<% end %>
+							</ul>
+						</td>
+					</tr>
+					<% flip = !flip %>
+				<% end %>
+			</tbody>
+		</table>
+		<%= submit_tag 'Compose E-Mail' %>
+	<% end %>
+<% end %>	

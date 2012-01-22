@@ -11,6 +11,8 @@ class AdminUser < ActiveRecord::Base
   has_many :criterion_mails, :as => :mailable
 
   validates :role, :presence => true, :inclusion => { :in => [SUPER_ADMIN, ADMIN, TEACHER, STUDENT] }
+
+  scope :admin, where(:role => [ADMIN, SUPER_ADMIN])
    
   def password_required?
     new_record? ? false : super
@@ -44,6 +46,10 @@ class AdminUser < ActiveRecord::Base
 
   def self.statuses
     [['Active', ACTIVE], ['Deactive', DEACTIVE]]
+  end
+
+  def self.emails
+    AdminUser.admin.collect(&:email)
   end
 
   ### View Helpers ###

@@ -48,12 +48,11 @@ class Student < ActiveRecord::Base
   ### Class Methods ###
 
   def self.get_all
-    Student.all.collect { |s| [s.name, s.id] }
+    Student.all.collect { |student| [student.name, student.id] }
   end
 
-  #NOTE: Temp method
   def self.emails
-    Student.all.collect { |s| ["#{s.name} - #{s.email}", s.email] }
+    Student.all.collect { |student| ["#{student.name} - #{student.email}", student.email] }
   end
   
   ### View Helpers ###

@@ -36,6 +36,10 @@ class Teacher < ActiveRecord::Base
     Teacher.all.collect { |teacher| [teacher.name, teacher.id] }
   end
 
+  def self.emails
+    Teacher.all.collect { |teacher| ["#{teacher.name} - #{teacher.email}", teacher.email] }
+  end
+
   ### View Helpers ###
 
   def balance_tag
