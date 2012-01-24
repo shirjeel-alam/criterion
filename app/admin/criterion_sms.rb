@@ -7,7 +7,7 @@ ActiveAdmin.register CriterionSms do
 	
 	index do
 		column 'ID', :sortable => :id do |sms|
-			link_to(sms.id, admin_criterion_sms_path(sms))
+			link_to(sms.id, admin_criterion_sm_path(sms))
 		end
 		column :to
 		column :sender, :sortable => :sender_id do |sms|
@@ -56,7 +56,7 @@ ActiveAdmin.register CriterionSms do
     	if @criterion_sms.save
     		if @criterion_sms.successful?
     			flash[:notice] = 'SMS successfully sent'
-        	redirect_to admin_criterion_sms_path(@criterion_sms)
+        	redirect_to admin_criterion_sm_path(@criterion_sms)
     		else
     			flash[:error] = 'Error sending SMS'
         	redirect_to root_path
