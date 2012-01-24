@@ -6,7 +6,7 @@ class CriterionSms < ActiveRecord::Base
 
 	before_validation :strip_to
 	before_create :associate_receiver
-	#after_create :send_sms
+	after_create :send_sms
 
 	validates :to, :presence => true, :numericality => true, :length => { :is => 11 }, :format => { :with => /^03\d{9}$/ }
 	validates :message, :presence => true, :length => { :maximum => 300 }
@@ -25,7 +25,6 @@ class CriterionSms < ActiveRecord::Base
 	end
 
 	def send_sms
-		debugger
 		http = Net::HTTP.new('api.sendsms.pk')
 		request = Net::HTTP::Post.new("/sendsms/#{API_KEY}.json")
 		request.set_form_data(:phone => to, :msg => message, :type => 0)
