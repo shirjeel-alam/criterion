@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120119225908) do
+ActiveRecord::Schema.define(:version => 20120124205209) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.integer  "resource_id",   :null => false
@@ -73,6 +73,18 @@ ActiveRecord::Schema.define(:version => 20120119225908) do
     t.text     "body"
     t.integer  "mailable_id"
     t.string   "mailable_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "criterion_sms", :force => true do |t|
+    t.string   "to"
+    t.text     "message"
+    t.integer  "sender_id"
+    t.string   "sender_type"
+    t.integer  "receiver_id"
+    t.string   "receiver_type"
+    t.boolean  "status"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

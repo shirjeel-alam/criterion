@@ -5,6 +5,7 @@ class Teacher < ActiveRecord::Base
   has_many :phone_numbers, :as => :contactable, :dependent => :destroy
   has_many :criterion_mails, :as => :mailable
   has_one :admin_user, :as => :user, :dependent => :destroy
+  has_many :received_messages, :as => :receiver, :class_name => 'CriterionSms'
 
   before_validation :set_email
   after_create :create_admin_user

@@ -1,7 +1,8 @@
 ActiveAdmin.register Session do
   menu :if => proc { current_admin_user.super_admin? }
 
-  filter :period, :as => :select, :collection => lambda { Session.get_all }
+  filter :id
+  filter :period, :as => :select, :collection => lambda { Session.periods }
   filter :year
   filter :status, :as => :select, :collection => lambda { Session.statuses }
   filter :registration_fee

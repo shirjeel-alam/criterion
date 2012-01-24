@@ -24,6 +24,8 @@ ActiveAdmin.register CriterionMail do
         mail.mailable_type
       end
     end
+
+    default_actions
   end
 
   form :partial => 'form'
