@@ -5,7 +5,7 @@ ActiveAdmin.register Payment do
   filter :amount
   filter :status, :as => :select, :collection => lambda { Payment.statuses }
   filter :payment_type, :as => :select, :collection => lambda { Payment.payment_types }
-  filter :category, :as => :select, :collection => lambda { Category.categories }
+  #filter :category, :as => :select, :collection => lambda { Category.categories }
 
   index do
     column 'ID', :sortable => :id do |payment|

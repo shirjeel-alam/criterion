@@ -19,10 +19,10 @@ class Payment < ActiveRecord::Base
   scope :credit, where(:payment_type => CREDIT)
   scope :debit, where(:payment_type => DEBIT)
 
-  scope :student_fee, where(:category_id => Category.find_by_name(Category::STUDENT_FEE))
-  scope :teacher_fee, where(:category_id => Category.find_by_name(Category::TEACHER_FEE))
-  scope :bills, where(:category_id => Category.find_by_name(Category::BILLS))
-  scope :misc, where(:category_id => Category.find_by_name(Category::MISC))
+  # scope :student_fee, where(:category_id => Category.find_by_name(Category::STUDENT_FEE))
+  # scope :teacher_fee, where(:category_id => Category.find_by_name(Category::TEACHER_FEE))
+  # scope :bills, where(:category_id => Category.find_by_name(Category::BILLS))
+  # scope :misc, where(:category_id => Category.find_by_name(Category::MISC))
 
   scope :on, lambda { |date| where(:payment_date => date) }
   
