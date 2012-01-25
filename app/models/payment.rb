@@ -3,6 +3,7 @@ class Payment < ActiveRecord::Base
   CREDIT, DEBIT = true, false
   
   belongs_to :payable, :polymorphic => :true
+  belongs_to :category
   
   before_validation :check_payment, :on => :create, :if => "payable_type == 'Enrollment'"
 
@@ -14,8 +15,16 @@ class Payment < ActiveRecord::Base
   scope :paid, where(:status => PAID)
   scope :due, where(:status => DUE)
   scope :void, where(:status => VOID)
+  
   scope :credit, where(:payment_type => CREDIT)
   scope :debit, where(:payment_type => DEBIT)
+
+  scope :student_fee, where(:category_id => Category.find_by_name(Category::STUDENT_FEE))
+  scope :teacher_fee, where(:category_id => Category.find_by_name(Category::TEACHER_FEE))
+  scope :bills, where(:category_id => Category.find_by_name(Category::BILLS))
+  scope :misc, where(:category_id => Category.find_by_name(Category::MISC))
+
+  scope :on, lambda { |date| where(:payment_date => date) }
   
   def check_payment
     errors.add(:duplicate, "Entry already exists") if Payment.where(:period => period.beginning_of_month..period.end_of_month, :payable_id => payable_id, :payable_type => payable_type, :payment_type => payment_type).present?

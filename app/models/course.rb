@@ -30,11 +30,11 @@ class Course < ActiveRecord::Base
   scope :cancelled, where(:status => CANCELLED)
   
   def update_status
-    if start_date.blank? || start_date.try(:future?)
+    if start_date.blank? || start_date > Date.today
       self.status = NOT_STARTED
-    elsif start_date.try(:past?) || end_date.try(:future?)
+    elsif start_date <= Date.today || end_date > Date.today
       self.status = IN_PROGRESS
-    elsif end_date.try(:past?) || end_date == Date.today
+    elsif end_date >= Date.today
       self.status = COMPLETED
     else
       self.status = CANCELLED
@@ -142,6 +142,23 @@ class Course < ActiveRecord::Base
   def cancel_enrollments
     enrollments.collect { |enrollment| enrollment unless enrollment.cancelled? || enrollment.completed? }.compact.each do |enrollment|
       enrollment.cancel!
+    end
+  end
+
+  def update_course
+    last_status = status
+    update_status
+    current_status = status
+    
+    unless last_status == current_status
+      case current_status
+      when IN_PROGRESS
+        start!
+      when COMPLETED
+        complete!
+      when CANCELLED
+        cancel!
+      end
     end
   end
 

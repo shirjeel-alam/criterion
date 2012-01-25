@@ -1,4 +1,6 @@
 ActiveAdmin.register Course do
+  menu :priority => 2
+
   filter :id
   filter :name
   filter :status, :as => :select, :collection => lambda { Course.statuses }
@@ -100,6 +102,8 @@ ActiveAdmin.register Course do
         t.column(:status) { |enrollment| status_tag(enrollment.status_label, enrollment.status_tag) }
       end
     end
+
+    active_admin_comments
   end
   
   form do |f|

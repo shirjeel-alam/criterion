@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120124205209) do
+ActiveRecord::Schema.define(:version => 20120125230804) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.integer  "resource_id",   :null => false
@@ -50,6 +50,12 @@ ActiveRecord::Schema.define(:version => 20120124205209) do
   add_index "admin_users", ["email"], :name => "index_admin_users_on_email", :unique => true
   add_index "admin_users", ["reset_password_token"], :name => "index_admin_users_on_reset_password_token", :unique => true
 
+  create_table "categories", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "courses", :force => true do |t|
     t.string   "name"
     t.integer  "teacher_id"
@@ -73,6 +79,17 @@ ActiveRecord::Schema.define(:version => 20120124205209) do
     t.text     "body"
     t.integer  "mailable_id"
     t.string   "mailable_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "criterion_reports", :force => true do |t|
+    t.date     "report_date"
+    t.integer  "gross_revenue"
+    t.integer  "discounts"
+    t.integer  "net_revenue"
+    t.integer  "expenditure"
+    t.integer  "balance"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -110,6 +127,7 @@ ActiveRecord::Schema.define(:version => 20120124205209) do
     t.datetime "updated_at"
     t.integer  "discount"
     t.date     "payment_date"
+    t.integer  "category_id"
   end
 
   create_table "phone_numbers", :force => true do |t|

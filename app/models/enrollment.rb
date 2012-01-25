@@ -49,7 +49,7 @@ class Enrollment < ActiveRecord::Base
       self.status = course.status
     else
       self.start_date = start_date < course.start_date ? course.start_date : start_date
-      self.status = start_date.future? ? NOT_STARTED : IN_PROGRESS unless completed? || cancelled?
+      self.status = start_date < Date.today ? NOT_STARTED : IN_PROGRESS unless completed? || cancelled?
     end
   end
   
@@ -70,9 +70,9 @@ class Enrollment < ActiveRecord::Base
       months = course.start_date > start_date ? months_between(course.start_date, course.end_date) : months_between(start_date, course.end_date)
       
       # First month payment
-      Payment.create(:period => months.first, :amount => first_month_payment, :status => Payment::DUE, :payment_type => Payment::CREDIT, :payable_id => id, :payable_type => self.class.name)
+      Payment.create(:period => months.first, :amount => first_month_payment, :status => Payment::DUE, :payment_type => Payment::CREDIT, :payable_id => id, :payable_type => self.class.name, :category => Category.find_by_name(Category::STUDENT_FEE))
       months[1...months.length].each do |date|
-        Payment.create(:period => date, :amount => course.monthly_fee, :status => Payment::DUE, :payment_type => Payment::CREDIT, :payable_id => id, :payable_type => self.class.name)
+        Payment.create(:period => date, :amount => course.monthly_fee, :status => Payment::DUE, :payment_type => Payment::CREDIT, :payable_id => id, :payable_type => self.class.name, :category => Category.find_by_name(Category::STUDENT_FEE))
       end
     end
   end
@@ -139,6 +139,23 @@ class Enrollment < ActiveRecord::Base
   def cancel!
     self.update_attributes(:status => CANCELLED, :enrollment_date => Date.today)
     void_payments
+  end
+
+  def update_enrollment
+    last_status = status
+    update_status
+    current_status = status
+    
+    unless last_status == current_status
+      case current_status
+      when IN_PROGRESS
+        start!
+      when COMPLETED
+        complete!
+      when CANCELLED
+        cancel!
+      end
+    end
   end
 
   ### View Helpers ###

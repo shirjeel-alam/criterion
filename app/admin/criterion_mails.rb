@@ -1,5 +1,5 @@
 ActiveAdmin.register CriterionMail do
-  menu :if => proc { current_admin_user.super_admin? }
+  menu :parent => 'More Menus', :if => proc { current_admin_user.super_admin? }
 
   filter :id
   filter :from

@@ -1,19 +1,67 @@
 ActiveAdmin.register Payment do
-  menu false
+  menu :parent => 'More Menus', :if => proc { current_admin_user.super_admin? }
+
+  filter :id
+  filter :amount
+  filter :status, :as => :select, :collection => lambda { Payment.statuses }
+  filter :payment_type, :as => :select, :collection => lambda { Payment.payment_types }
+  filter :category, :as => :select, :collection => lambda { Category.categories }
+
+  index do
+    column 'ID', :sortable => :id do |payment|
+      link_to(payment.id, admin_payment_path(payment))
+    end
+    column :period, :sortable => :period do |payment|
+      payment.period_label
+    end
+    column :amount, :sortable => :amount do |payment|
+      number_to_currency(payment.amount, :unit => 'Rs. ', :precision => 0)
+    end
+    column :discount, :sortable => :discount do |payment|
+      number_to_currency(payment.discount, :unit => 'Rs. ', :precision => 0)
+    end
+    column :status, :sortable => :status do |payment|
+      status_tag(payment.status_label, payment.status_tag)
+    end
+    column :payment_type, :sortable => :payment_type do |payment|
+      status_tag(payment.type_label, payment.type_tag)
+    end
+    column :payment_date, :sortable => :payment_date do |payment|
+      date_format(payment.payment_date)
+    end
+    column :payable do |payment|
+      if payment.payable.is_a?(Student)
+        link_to(payment.payable.name, admin_student_path(payment.payable)) rescue nil
+      elsif payment.payable.is_a?(Teacher)
+        link_to(payment.payable.name, admin_teacher_path(payment.payable)) rescue nil
+      end
+    end
+    column :category, :sortable => :category_id do |payment|
+      payment.category.name_label rescue nil
+    end
+
+    default_actions
+  end
 
   form :partial => 'form'
 
   show do
-    attributes_table_for payment do
-      row(:id) { payment.id }
-      row(:payable) { payment.payable }
-      row(:payable_type) { payment.payable_type }
-      row(:period) { payment.period_label }
-      row(:amount) { number_to_currency(payment.net_amount, :unit => 'Rs. ', :precision => 0) }
-      row(:status) { status_tag(payment.status_label, payment.status_tag) }
-      row(:payment_type) { status_tag(payment.type_label, payment.type_tag) }
-      row(:discount) { number_to_currency(payment.discount, :unit => 'Rs. ', :precision => 0) }
+    panel 'Payment Details' do
+      attributes_table_for payment do
+        row(:id) { payment.id }
+        row(:payable) { payment.payable }
+        row(:payable_type) { payment.payable_type }
+        row(:period) { payment.period_label }
+        row(:amount) { number_to_currency(payment.net_amount, :unit => 'Rs. ', :precision => 0) }
+        row(:discount) { number_to_currency(payment.discount, :unit => 'Rs. ', :precision => 0) }
+        row(:status) { status_tag(payment.status_label, payment.status_tag) }
+        row(:payment_type) { status_tag(payment.type_label, payment.type_tag) }
+        row(:payment_date) { date_format(payment.payment_date) }
+        row(:category) { payment.category.name_label rescue nil }
+      end
     end
+
+    active_admin_comments
   end
   
   member_action :pay, :method => :put do
@@ -60,7 +108,7 @@ ActiveAdmin.register Payment do
     def new
       if params[:teacher_id]
         @teacher = Teacher.find(params[:teacher_id])
-        @payment = @teacher.withdrawals.build(:payment_type => Payment::DEBIT, :status => Payment::PAID, :payment_date => Date.today)
+        @payment = @teacher.withdrawals.build(:payment_type => Payment::DEBIT, :status => Payment::PAID, :payment_date => Date.today, :category => Category.find_by_name(Category::TEACHER_FEE))
       else
         @payment = Payment.new  
       end

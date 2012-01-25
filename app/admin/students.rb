@@ -1,5 +1,5 @@
 ActiveAdmin.register Student do
-  menu :if => proc { current_admin_user.super_admin? || current_admin_user.admin? }
+  menu :priority => 2, :if => proc { current_admin_user.super_admin? || current_admin_user.admin? }
 
   filter :id
   filter :name
@@ -145,6 +145,8 @@ ActiveAdmin.register Student do
         t.column(:status) { |enrollment| status_tag(enrollment.status_label, enrollment.status_tag) }
       end 
     end if student.enrollments.cancelled.present?
+
+    active_admin_comments
   end
     
   form do |f|

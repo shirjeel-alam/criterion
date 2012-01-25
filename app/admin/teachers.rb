@@ -1,5 +1,5 @@
 ActiveAdmin.register Teacher do
-  menu :if => proc { current_admin_user.super_admin? }
+  menu :priority => 2, :if => proc { current_admin_user.super_admin? }
   
   filter :id
   filter :name
@@ -92,6 +92,8 @@ ActiveAdmin.register Teacher do
         t.column(:status) { |withdrawal| status_tag(withdrawal.status_label, withdrawal.status_tag) }
       end
     end
+
+    active_admin_comments
   end
 
   action_item :only => :show do

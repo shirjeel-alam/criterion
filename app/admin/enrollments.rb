@@ -1,5 +1,5 @@
 ActiveAdmin.register Enrollment do
-  menu :if => proc { current_admin_user.super_admin? || current_admin_user.admin? }
+  menu :priority => 2, :if => proc { current_admin_user.super_admin? || current_admin_user.admin? }
   
   filter :id
   filter :course
@@ -66,6 +66,8 @@ ActiveAdmin.register Enrollment do
         end
       end
     end
+
+    active_admin_comments
   end
   
   controller do

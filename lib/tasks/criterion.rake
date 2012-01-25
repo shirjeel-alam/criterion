@@ -41,4 +41,10 @@ namespace :criterion do
     end
   end
 
+  desc "Generate default categories"
+  task :generate_categories => :environment do
+    ['student fee', 'teacher fee', 'bills', 'stationery', 'misc'].each do |category|
+      Category.find_or_create_by_name(category)
+    end
+  end
 end

@@ -1,5 +1,5 @@
 ActiveAdmin.register StudentRegistrationFee do
-	menu false
+	menu :parent => 'More Menus', :if => proc { current_admin_user.super_admin? }
 	
   member_action :pay, :method => :put do
   	student_registration_fee = StudentRegistrationFee.find(params[:id])

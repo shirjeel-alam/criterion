@@ -1,5 +1,5 @@
 ActiveAdmin.register Session do
-  menu :if => proc { current_admin_user.super_admin? }
+  menu :parent => 'More Menus', :if => proc { current_admin_user.super_admin? }
 
   filter :id
   filter :period, :as => :select, :collection => lambda { Session.periods }
@@ -66,6 +66,8 @@ ActiveAdmin.register Session do
         t.column { |registration_fee| link_to('Make Payment', pay_admin_student_registration_fee_path(registration_fee), :method => :put) unless registration_fee.status }
       end
     end
+
+    active_admin_comments
   end
 
   action_item :only => :show do

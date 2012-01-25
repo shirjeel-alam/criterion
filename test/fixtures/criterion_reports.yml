@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  report_date: 2012-01-26
+  gross_revenue: 1
+  discounts: 1
+  net_revenue: 1
+  expenditure: 1
+  balance: 1
+
+two:
+  report_date: 2012-01-26
+  gross_revenue: 1
+  discounts: 1
+  net_revenue: 1
+  expenditure: 1
+  balance: 1
