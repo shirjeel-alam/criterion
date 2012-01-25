@@ -9,12 +9,12 @@ ActiveAdmin.register Payment, :as => 'Expenditure' do
 	filter :payment_type, :as => :select, :collection => lambda { Payment.payment_types }
 	filter :category, :as => :select, :collection => lambda { Category.categories }
 
-	# scope :all, :default => true do |payments|
-	# 	Payment.debit
-	# end
-	# scope :teacher_fee
-	# scope :bills
-	# scope :misc
+	scope :all, :default => true do |payments|
+		Payment.debit
+	end
+	scope :teacher_fee
+	scope :bills
+	scope :misc
 
 	index do
 		column 'ID', :sortable => :id do |payment|
