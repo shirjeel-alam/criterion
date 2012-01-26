@@ -48,9 +48,11 @@ ActiveAdmin.register Payment, :as => 'Expenditure' do
 		column :category, :sortable => :category_id do |payment|
 			payment.category.name_label rescue nil
 		end
-		# column nil do |payment|
-			
-		# end
+		column nil do |payment|
+			span link_to('View', admin_payment_path(payment))	
+			span link_to('Edit', edit_admin_payment_path(payment))
+			span link_to('Delete', admin_payment_path(payment), :method => :delete)
+		end
 	end
 
 	action_item :only => :index do

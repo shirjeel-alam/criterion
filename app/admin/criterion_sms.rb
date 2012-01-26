@@ -27,7 +27,8 @@ ActiveAdmin.register CriterionSms do
 
 	form do |f|
 		f.inputs do
-			f.input :to
+			f.input :to, :as => :select, :multiple => true, :collection => PhoneNumber.all_mobile_numbers, :required => true, :input_html => { :class => 'chosen-select', :style => 'width:77.8%;' }
+			#f.input :to
 			f.input :message
 		end
 
@@ -47,7 +48,18 @@ ActiveAdmin.register CriterionSms do
     end
 
     def new
-    	@criterion_sms = current_admin_user.sent_messages.build
+    	if params[:course].present?
+        @course = Course.find(params[:course])
+        @criterion_sms = CriterionSms.new(:to => @course.phone_numbers.collect(&:second))
+      elsif params[:courses].present?
+        @courses = Course.find(params[:courses].collect(&:second))
+        @criterion_sms = CriterionSms.new(:to => @courses.collect { |course| course.phone_numbers.collect(&:second) }.flatten)
+      elsif params[:teachers].present?
+        @teachers = Teacher.find(params[:teachers].collect(&:second))
+        @criterion_sms = CriterionSms.new(:to => @teachers.collect { |teacher| teacher.phone_numbers.mobile.first.number if teacher.phone_numbers.mobile.first.present? }.compact.uniq )
+      else
+        @criterion_sms = current_admin_user.sent_messages.build
+      end
     end
 
     def create

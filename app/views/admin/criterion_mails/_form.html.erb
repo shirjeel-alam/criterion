@@ -2,15 +2,13 @@
 
 <%= semantic_form_for [:admin, @criterion_mail], :builder => ActiveAdmin::FormBuilder do |f|
   f.inputs do
-    f.inputs do
-  		f.input :from, :required => true, :input_html => { :disabled => disabled }
-  		f.input :to, :as => :select, :multiple => true, :collection => Email.all_emails, :required => true, :input_html => { :class => 'chosen-select', :style => 'width:77.8%;', :disabled => disabled }
-  		f.input :cc, :as => :select, :multiple => true, :collection => Email.all_emails, :required => true, :input_html => { :class => 'chosen-select', :style => 'width:77.8%;', :disabled => disabled }
-  		f.input :bcc, :as => :select, :multiple => true, :collection => Email.all_emails, :required => true, :input_html => { :class => 'chosen-select', :style => 'width:77.8%;', :disabled => disabled }
-  		f.input :subject, :input_html => { :disabled => disabled }
-  		f.input :body, :input_html => { :id => :mail_body }, :required => true
-  	end
-  end
+		f.input :from, :required => true, :input_html => { :disabled => disabled }
+		f.input :to, :as => :select, :multiple => true, :collection => Email.all_emails, :required => true, :input_html => { :class => 'chosen-select', :style => 'width:77.8%;', :disabled => disabled }
+		f.input :cc, :as => :select, :multiple => true, :collection => Email.all_emails, :required => true, :input_html => { :class => 'chosen-select', :style => 'width:77.8%;', :disabled => disabled }
+		f.input :bcc, :as => :select, :multiple => true, :collection => Email.all_emails, :required => true, :input_html => { :class => 'chosen-select', :style => 'width:77.8%;', :disabled => disabled }
+		f.input :subject, :input_html => { :disabled => disabled }
+		f.input :body, :input_html => { :id => :mail_body }, :required => true
+	end
 
   f.buttons
 end %>

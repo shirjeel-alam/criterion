@@ -124,7 +124,11 @@ class Course < ActiveRecord::Base
   end
 
   def emails
-    students.collect { |student| ["#{student.name} - #{student.email}", student.email] }
+    students.collect { |student| ["#{student.name} - #{student.email}", student.email]  if student.email.present? }.compact.uniq
+  end
+
+  def phone_numbers
+    students.collect { |student| ["#{student.name} - #{student.phone_numbers.mobile.first.number}", student.phone_numbers.mobile.first.number] if student.phone_numbers.mobile.first.present? }.compact.uniq
   end
 
   def start_enrollments

@@ -12,7 +12,7 @@ ActiveAdmin.register CriterionMail, :as => 'CriterionMailer' do
 	end
 
 	index do 
-		render :partial => 'course_mailer', :locals => { :courses => Course.active, :teachers => Teacher.all }
+		render :partial => 'criterion_mailer', :locals => { :courses => Course.active, :teachers => Teacher.all }
 	end
 
 	controller do

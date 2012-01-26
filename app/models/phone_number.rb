@@ -36,6 +36,10 @@ class PhoneNumber < ActiveRecord::Base
     [['Mobile', MOBILE], ['Home', HOME], ['Work', WORK], ['General', GENERAL]]
   end
 
+  def self.all_mobile_numbers
+    PhoneNumber.mobile.collect { |phone_number| ["#{phone_number.contactable.name} - #{phone_number.number}", phone_number.number] }
+  end
+
   ### View Helpers ###
 
   def label

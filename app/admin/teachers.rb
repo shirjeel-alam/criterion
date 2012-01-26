@@ -90,6 +90,7 @@ ActiveAdmin.register Teacher do
         t.column(:id) { |withdrawal| link_to(withdrawal.id, admin_payment_path(withdrawal)) }
         t.column(:amount) { |withdrawal| number_to_currency(withdrawal.amount, :unit => 'Rs. ', :precision => 0) }
         t.column(:status) { |withdrawal| status_tag(withdrawal.status_label, withdrawal.status_tag) }
+        t.column(:payment_date) { |withdrawal| date_format(withdrawal.payment_date) }
       end
     end
 
