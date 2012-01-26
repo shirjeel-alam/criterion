@@ -48,8 +48,9 @@ ActiveAdmin.register Payment, :as => 'Expenditure' do
 		column :category, :sortable => :category_id do |payment|
 			payment.category.name_label rescue nil
 		end
-
-		default_actions
+		# column nil do |payment|
+			
+		# end
 	end
 
 	action_item :only => :index do
