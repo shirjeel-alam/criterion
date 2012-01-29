@@ -7,6 +7,13 @@ ActiveAdmin.register Payment do
   filter :payment_type, :as => :select, :collection => lambda { Payment.payment_types }
   filter :category, :as => :select, :collection => lambda { Category.categories }
 
+  scope :all
+  scope :paid
+  scope :due
+  scope :void
+  scope :credit
+  scope :debit
+
   index do
     column 'ID', :sortable => :id do |payment|
       link_to(payment.id, admin_payment_path(payment))
