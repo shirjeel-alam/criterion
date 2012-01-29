@@ -67,8 +67,6 @@ ActiveAdmin.register CriterionMail do
     end
 
     def create
-      receipients = params[:criterion_mail][:to].reject!(&:blank?)
-      # The gsub's are un-necessary
       params[:criterion_mail][:to] = params[:criterion_mail][:to].join(',') if params[:criterion_mail][:to].present?
       params[:criterion_mail][:cc] = params[:criterion_mail][:cc].join(',') if params[:criterion_mail][:cc].present?
       params[:criterion_mail][:bcc] = params[:criterion_mail][:bcc].join(',') if params[:criterion_mail][:bcc].present?

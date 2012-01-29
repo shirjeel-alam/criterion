@@ -40,6 +40,10 @@ class PhoneNumber < ActiveRecord::Base
     PhoneNumber.mobile.collect { |phone_number| ["#{phone_number.contactable.name} - #{phone_number.number}", phone_number.number] }
   end
 
+  def self.valid_mobile_number?(number)
+    number.match(/^03\d{9}$/).present?
+  end
+
   ### View Helpers ###
 
   def label

@@ -28,8 +28,8 @@ ActiveAdmin.register CriterionSms do
 	form do |f|
 		f.inputs do
 			f.input :to, :as => :select, :multiple => true, :collection => PhoneNumber.all_mobile_numbers, :required => true, :input_html => { :class => 'chosen-select', :style => 'width:77.8%;' }
-			#f.input :to
-			f.input :message
+			f.input :extra, :as => :string, :hint => 'Comma separated list of mobile numbers'
+			f.input :message, :required => true, :hint => '300 Characters Only'
 		end
 
 		f.buttons
@@ -63,19 +63,36 @@ ActiveAdmin.register CriterionSms do
     end
 
     def create
-    	@criterion_sms = current_admin_user.sent_messages.build(params[:criterion_sms])
+      @criterion_sms = CriterionSms.new(:to => CriterionSms::DEFAULT_VALID_MOBILE_NUMBER, :message => params[:criterion_sms][:message])
 
-    	if @criterion_sms.save
-    		if @criterion_sms.successful?
-    			flash[:notice] = 'SMS successfully sent'
-        	redirect_to admin_criterion_sm_path(@criterion_sms)
-    		else
-    			flash[:error] = 'Error sending SMS'
-        	redirect_to root_path
-    		end
-    	else
-    		render :new
-    	end
+      if @criterion_sms.valid?
+        receipients = params[:criterion_sms][:to]
+        receipients << params[:criterion_sms][:extra].split(',') if params[:criterion_sms][:extra].present?
+        receipients = receipients.flatten
+        receipients = receipients.reject(&:blank?)
+
+        successful_count = 0
+        total_count = receipients.count
+        receipients.each do |receipient|
+          sms_data = { :to => receipient, :message => params[:criterion_sms][:message] }
+
+          if current_admin_user.user.present?
+            @criterion_sms = current_admin_user.user.sent_messages.build(sms_data)
+          else
+            @criterion_sms = current_admin_user.sent_messages.build(sms_data)
+          end
+
+          if @criterion_sms.save
+            successful_count += 1 if @criterion_sms.successful?
+          end
+        end
+
+        flash[:notice] = "SMS sent to #{successful_count} of #{total_count} receipients"
+        redirect_to admin_criterion_sms_senders_path
+      else
+        @criterion_sms.to = params[:criterion_sms][:to]
+        render :new
+      end
     end
   end
 end

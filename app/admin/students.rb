@@ -36,7 +36,12 @@ ActiveAdmin.register Student do
         t.column(:session) { |registration_fee| registration_fee.session.label rescue nil }
         t.column(:amount) { |registration_fee| number_to_currency(registration_fee.amount, :unit => 'Rs. ', :precision => 0) }
         t.column(:status) { |registration_fee| status_tag(registration_fee.status_label, registration_fee.status_tag) }
-        t.column { |registration_fee| link_to('Make Payment', pay_admin_student_registration_fee_path(registration_fee), :method => :put) unless registration_fee.status }
+        t.column do |registration_fee|
+          if registration_fee.due?
+            li link_to('Make Payment', pay_admin_student_registration_fee_path(registration_fee), :method => :put)
+            li link_to('Void Payment', void_admin_student_registration_fee_path(registration_fee), :method => :put)
+          end
+        end
       end
     end
     

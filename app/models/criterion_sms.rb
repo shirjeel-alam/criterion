@@ -1,5 +1,6 @@
 class CriterionSms < ActiveRecord::Base
 	API_KEY = 'cc733a1ee374fa37453e'
+	DEFAULT_VALID_MOBILE_NUMBER = '03222463936'
 
 	belongs_to :sender, :polymorphic => true
 	belongs_to :receiver, :polymorphic => true
@@ -35,5 +36,8 @@ class CriterionSms < ActiveRecord::Base
 		else
 			update_attribute(:status, false)
 		end
+	end
+
+	def extra
 	end
 end
