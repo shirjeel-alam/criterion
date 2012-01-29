@@ -37,7 +37,7 @@ class PhoneNumber < ActiveRecord::Base
   end
 
   def self.all_mobile_numbers
-    PhoneNumber.mobile.collect { |phone_number| ["#{phone_number.contactable.name} - #{phone_number.number}", phone_number.number] }
+    PhoneNumber.mobile.collect { |phone_number| ["#{phone_number.contactable.name + ' -' rescue nil} #{phone_number.number}".lstrip, phone_number.number] }
   end
 
   def self.valid_mobile_number?(number)
