@@ -20,7 +20,7 @@ ActiveAdmin.register AdminUser do
         link_to(admin.user.name, admin_student_path(admin.user)) rescue nil
       end
     end
-    column :status, :sortable => :status do |admin|
+    column 'Status', :sortable => :status do |admin|
       status_tag(admin.status_label, admin.status_tag)
     end
     column :current_sign_in_at

@@ -11,8 +11,8 @@ ActiveAdmin.register CriterionMail, :as => 'CriterionMailer' do
 		Teacher.select('*')
 	end
 
-	index do 
-		render :partial => 'criterion_mailer', :locals => { :courses => Course.active, :teachers => Teacher.all }
+	index do
+		div render :partial => 'criterion_mailer', :locals => { :courses => Course.active, :teachers => Teacher.all }
 	end
 
 	controller do
