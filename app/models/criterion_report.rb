@@ -25,7 +25,7 @@ class CriterionReport < ActiveRecord::Base
 	end
 
 	def calc_expenditure
-		Payment.debit.paid.on(report_date).sum(:amount) rescue nil
+		Payment.debit.cash.paid.on(report_date).sum(:amount) rescue nil
 	end
 
 	def calc_balance
@@ -34,6 +34,7 @@ class CriterionReport < ActiveRecord::Base
 
 	def update_report_data
 		calc_report_data
+		self.attributes = { :updated_at => Time.now }
 		save
 	end
 
@@ -41,5 +42,9 @@ class CriterionReport < ActiveRecord::Base
 
   def balance_tag
     balance >= 0 ? :ok : :error
+  end
+
+  def title
+  	"Criterion Report - #{report_date.strftime('%d %B, %Y')}"
   end
 end

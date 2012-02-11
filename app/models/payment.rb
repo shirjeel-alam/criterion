@@ -1,6 +1,7 @@
 class Payment < ActiveRecord::Base
   DUE, PAID, VOID, REFUNDED = 0, 1, 2, 3
   CREDIT, DEBIT = true, false
+  CASH, CHEQUE = 0, 1
   
   belongs_to :payable, :polymorphic => :true
   belongs_to :category
@@ -11,6 +12,7 @@ class Payment < ActiveRecord::Base
   validates :status, :presence => true, :inclusion => { :in => [DUE, PAID, VOID, REFUNDED] }
   validates :discount, :numericality => { :only_integer => true, :greater_than => 0 }, :allow_blank => true
   validates :payment_date, :timeliness => { :type => :date, :allow_blank => true }
+  validates :payment_method, :presence => true, :inclusion => { :in => [CASH, CHEQUE] }
   
   scope :paid, where(:status => PAID)
   scope :due, where(:status => DUE)
@@ -18,6 +20,9 @@ class Payment < ActiveRecord::Base
   
   scope :credit, where(:payment_type => CREDIT)
   scope :debit, where(:payment_type => DEBIT)
+
+  scope :cash, where(:payment_method => CASH)
+  scope :cheque, where(:payment_method => CHEQUE)
 
   scope :student_fee, where(:category_id => Category.find_by_name(Category::STUDENT_FEE))
   scope :teacher_fee, where(:category_id => Category.find_by_name(Category::TEACHER_FEE))
@@ -82,6 +87,10 @@ class Payment < ActiveRecord::Base
     [['Credit', CREDIT], ['Debit', DEBIT]]
   end
 
+  def self.payment_methods
+    [['Cash', CASH], ['Cheque', CHEQUE]]
+  end
+
   ### View Helpers ###
 
   def status_label
@@ -118,5 +127,23 @@ class Payment < ActiveRecord::Base
 
   def period_label
     period.present? ? period.strftime('%B %Y') : 'N/A'
+  end
+
+  def payment_method_label
+    case payment_method
+      when CASH
+        'Cash'
+      when CHEQUE
+        'Cheque'
+    end
+  end
+
+  def payment_method_tag
+    case payment_method
+      when CASH
+        :ok
+      when CHEQUE
+        :warning
+    end
   end
 end

@@ -13,6 +13,8 @@ ActiveAdmin.register Payment do
   scope :void
   scope :credit
   scope :debit
+  scope :cash
+  scope :cheque
 
   index do
     column 'ID', :sortable => :id do |payment|

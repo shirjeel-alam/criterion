@@ -4,7 +4,9 @@
     f.input :status, :as => :radio, :collection => Payment.statuses, :required => true
     f.input :category, :as => :select, :collection => Category.categories, :required => true, :include_blank => false, :input_html => { :class => 'chosen-select' }
     f.input :payment_type, :as => :radio, :collection => Payment.payment_types, :required => true
+    f.input :payment_method, :as => :radio, :collection => Payment.payment_methods, :required => true
     f.input :payment_date, :as => :datepicker, :required => true
+    f.input :additional_info
     f.input :payable_id, :as => :hidden
     f.input :payable_type, :as => :hidden
   end

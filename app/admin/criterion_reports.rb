@@ -28,9 +28,16 @@ ActiveAdmin.register CriterionReport do
 		column :balance, :sortable => :balance do |report|
 			status_tag(number_to_currency(report.balance, :unit => 'Rs. ', :precision => 0), report.balance_tag)
 		end
+		column :last_updated do |report|
+			time_format(report.updated_at)
+		end
+		column nil do |report|
+			span link_to('View', admin_criterion_report_path(report), :class => :member_link)
+			span link_to('Update', update_report_admin_criterion_report_path(report), :method => :put, :class => :member_link)
+		end
 	end
 
-	show do
+	show :title => :title do
 		panel 'Criterion Report Details' do
 			attributes_table_for criterion_report do
 				row(:id) { criterion_report.id }
@@ -43,6 +50,48 @@ ActiveAdmin.register CriterionReport do
 			end
 		end
 
+		panel 'Payments (Revenue)' do
+			table_for Payment.credit.paid.on(criterion_report.report_date).order(:id) do |t|
+        t.column(:id) { |payment| link_to(payment.id, admin_payment_path(payment)) }
+        t.column(:period) { |payment| payment.period_label}
+        t.column(:gross_amount) { |payment| number_to_currency(payment.amount, :unit => 'Rs. ', :precision => 0) }
+        t.column(:discount) { |payment| number_to_currency(payment.discount, :unit => 'Rs. ', :precision => 0) }
+        t.column(:net_amount) { |payment| number_to_currency(payment.net_amount, :unit => 'Rs. ', :precision => 0) }
+        t.column(:paid_by) do |payment|
+        	if payment.payable.is_a?(Enrollment)
+						link_to(payment.payable.student.name, admin_student_path(payment.payable.student)) rescue nil
+					elsif payment.payable.is_a?(Teacher)
+						link_to(payment.payable.name, admin_teacher_path(payment.payable)) rescue nil
+					end
+        end
+        t.column(:category) { |payment| payment.category.name_label rescue nil }
+      end
+		end
+
+		panel 'Payments (Expenditure)' do
+			table_for Payment.debit.cash.paid.on(criterion_report.report_date).order(:id) do |t|
+        t.column(:id) { |payment| link_to(payment.id, admin_payment_path(payment)) }
+        t.column(:period) { |payment| payment.period_label}
+        t.column(:amount) { |payment| number_to_currency(payment.amount, :unit => 'Rs. ', :precision => 0) }
+        t.column(:discount) { |payment| number_to_currency(payment.discount, :unit => 'Rs. ', :precision => 0) }
+        t.column(:payment_method) { |payment| status_tag(payment.payment_method_label, payment.payment_method_tag) }
+        t.column(:paid_to) do |payment|
+        	if payment.payable.is_a?(Enrollment)
+						link_to(payment.payable.student.name, admin_student_path(payment.payable.student)) rescue nil
+					elsif payment.payable.is_a?(Teacher)
+						link_to(payment.payable.name, admin_teacher_path(payment.payable)) rescue nil
+					end
+        end
+        t.column(:category) { |payment| payment.category.name_label rescue nil }
+      end
+		end
+
 		active_admin_comments
 	end
+
+	member_action :update_report, :method => :put do
+    criterion_report = CriterionReport.find(params[:id])
+    criterion_report.update_report_data
+    redirect_to_back
+  end
 end

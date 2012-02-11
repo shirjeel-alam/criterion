@@ -13,10 +13,10 @@ module ApplicationHelper
   end
   
   def date_format(date)
-    if date.present?
-      date.strftime('%d %B, %Y')
-    else
-      'N/A'
-    end
+    date.present? ? date.strftime('%d %B, %Y') : 'N/A'
+  end
+
+  def time_format(time)
+    time.present? ? time.strftime('%l:%M %P') : 'N/A'
   end
 end
