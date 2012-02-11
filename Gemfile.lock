@@ -86,6 +86,7 @@ GEM
     fastercsv (1.5.4)
     formtastic (2.0.2)
       rails (~> 3.0)
+    googlecharts (1.6.8)
     has_scope (0.5.1)
     heroku (2.19.1)
       launchy (>= 0.3.2)
@@ -226,6 +227,7 @@ DEPENDENCIES
   coffee-rails
   execjs
   faker
+  googlecharts
   heroku
   jquery-rails
   meta_search

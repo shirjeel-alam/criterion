@@ -86,6 +86,11 @@ ActiveAdmin.register CriterionReport do
       end
 		end
 
+		panel 'Graphs' do
+			chart = Gchart.pie_3d(:data => [criterion_report.net_revenue, criterion_report.expenditure], :size => '600x200', :labels => ['Revenue', 'Expenditure'])
+      image_tag(chart)
+     end
+
 		active_admin_comments
 	end
 

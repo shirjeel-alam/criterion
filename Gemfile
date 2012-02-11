@@ -26,6 +26,7 @@ gem 'tinymce-rails', :git => 'git://github.com/spohlenz/tinymce-rails.git'
 gem 'chosen-rails'
 
 gem 'rufus-scheduler'
+gem 'googlecharts'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
