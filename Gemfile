@@ -10,13 +10,13 @@ gem 'airbrake'
 gem 'validates_timeliness'
 
 gem 'activeadmin'
+gem 'sass-rails'
 gem 'meta_search'
 
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
   gem 'coffee-rails'
-  gem 'sass-rails'
   gem 'uglifier'
 end
 
