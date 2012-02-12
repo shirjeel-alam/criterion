@@ -7,12 +7,14 @@ class Teacher < ActiveRecord::Base
   has_one :admin_user, :as => :user, :dependent => :destroy
   has_many :received_messages, :as => :receiver, :class_name => 'CriterionSms'
 
+  accepts_nested_attributes_for :phone_numbers
+
   before_validation :set_email
   after_create :create_admin_user
 
   validates :name, :presence => true
   validates :email, :presence => true
-  validates :share, :presence => true, :numericality => { :greater_than => 0, :less_than_or_equal_to => 1 }
+  validates :share, :presence => true, :numericality => { :greater_than_or_equal_to => 0.1, :less_than_or_equal_to => 1 }
 
   def balance
     income = 0

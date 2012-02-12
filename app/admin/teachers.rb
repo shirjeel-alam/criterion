@@ -21,6 +21,21 @@ ActiveAdmin.register Teacher do
     default_actions
   end
 
+  form do |f|
+    f.inputs do
+      f.input :name, :required => true
+      f.input :email, :required => true
+      f.input :share, :required => true
+
+      f.has_many :phone_numbers do |fp|
+        fp.input :number
+        fp.input :category, :as => :select, :collection => PhoneNumber.categories, :include_blank => false, :input_html => { :class => 'chosen-select' }
+      end
+    end
+
+    f.buttons
+  end
+
   show :title => :name do
     panel 'Teacher Details' do
       attributes_table_for teacher do
