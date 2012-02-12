@@ -14,7 +14,7 @@ ActiveAdmin.register Student do
       student.address_label
     end
     column 'Contact Number' do |student|
-      student.phone_numbers.each { |number| div number.label }
+      student.phone_numbers.each { |number| div number.label } if student.phone_numbers.present?
     end
     
     default_actions

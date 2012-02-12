@@ -100,6 +100,49 @@ ActiveAdmin.register Enrollment do
       end
     end
 
+    def create
+      if params[:enrollment][:course_id].is_a?(Array)
+        @student = Student.find(params[:enrollment][:student_id])
+        @course_ids = params[:enrollment][:course_id].reject(&:blank?)
+        params[:enrollment].delete :course_id
+
+        count = 0
+        @course_ids.each do |course_id|
+          params[:enrollment].merge!(:course_id => course_id)
+          @enrollment = Enrollment.new(params[:enrollment])
+
+          count += 1 if @enrollment.save
+        end
+
+        flash[:notice] = "#{count} enrollment(s) successfully added."
+        redirect_to admin_student_path(@student)
+      elsif params[:enrollment][:student_id].is_a?(Array)
+        @course = Course.find(params[:enrollment][:course_id])
+        @student_ids = params[:enrollment][:student_id].reject(&:blank?)
+        params[:enrollment].delete :student_id
+
+        count = 0
+        @student_ids.each do |student_id|
+          params[:enrollment].merge!(:student_id => student_id)
+          @enrollment = Enrollment.new(params[:enrollment])
+
+          count += 1 if @enrollment.save
+        end
+
+        flash[:notice] = "#{count} enrollment(s) successfully added."
+        redirect_to admin_course_path(@course)
+      else
+        @enrollment = Enrollment.new(params[:enrollment])
+
+        if @enrollment.save
+          flash[:notice] = 'Enrollment successfully created'
+          redirect_to admin_enrollment_path(@enrollment)
+        else
+          render :new
+        end
+      end
+    end
+
     def edit
       @enrollment = Enrollment.find(params[:id])
       @courses = Course.get_active
