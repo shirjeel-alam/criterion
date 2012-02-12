@@ -39,8 +39,8 @@ ActiveAdmin.register Payment do
       date_format(payment.payment_date)
     end
     column :payable do |payment|
-      if payment.payable.is_a?(Student)
-        link_to(payment.payable.name, admin_student_path(payment.payable)) rescue nil
+      if payment.payable.is_a?(Enrollment)
+        link_to(payment.payable.student.name, admin_student_path(payment.payable.student)) rescue nil
       elsif payment.payable.is_a?(Teacher)
         link_to(payment.payable.name, admin_teacher_path(payment.payable)) rescue nil
       end

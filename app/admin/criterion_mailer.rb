@@ -1,4 +1,4 @@
-ActiveAdmin.register CriterionMail, :as => 'CriterionMailer' do
+ActiveAdmin.register CriterionMail, :as => 'Criterion Mailer' do
 	menu :parent => 'Criterion', :priority => 2, :if => proc { current_admin_user.super_admin? || current_admin_user.admin? }
 
 	actions :index

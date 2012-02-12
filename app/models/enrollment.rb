@@ -4,6 +4,9 @@ class Enrollment < ActiveRecord::Base
   
   belongs_to :course
   belongs_to :student
+
+  has_one :teacher, :through => :course
+  has_one :session, :through => :course
   
   has_many :payments, :as => :payable, :dependent => :destroy
   
@@ -23,10 +26,6 @@ class Enrollment < ActiveRecord::Base
   scope :in_progress, where(:status => IN_PROGRESS)
   scope :completed, where(:status => COMPLETED)
   scope :cancelled, where(:status => CANCELLED)
-  
-  def session
-    course.session
-  end
 
   def student_id
     student.id rescue nil

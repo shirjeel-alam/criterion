@@ -1,6 +1,6 @@
 class AdminUser < ActiveRecord::Base
 	DEFAULT_PASSWORD = 'criterion'
-	SUPER_ADMIN, ADMIN, TEACHER, STUDENT = 0, 1, 2, 3 # Roles
+	SUPER_ADMIN, ADMIN, TEACHER, STUDENT, STAFF = 0, 1, 2, 3, 4 # Roles
 	ACTIVE, DEACTIVE = true, false
 
   # Include default devise modules. Others available are:
@@ -10,6 +10,7 @@ class AdminUser < ActiveRecord::Base
   belongs_to :user, :polymorphic => :true
   has_many :criterion_mails, :as => :mailable
   has_many :sent_messages, :as => :sender, :class_name => 'CriterionSms'
+  has_one :criterion_account
 
   validates :role, :presence => true, :inclusion => { :in => [SUPER_ADMIN, ADMIN, TEACHER, STUDENT] }
 
@@ -65,6 +66,8 @@ class AdminUser < ActiveRecord::Base
 	  		'Teacher'
 	  	when STUDENT
 	  		'Student'
+      when STAFF
+        'Staff'
   	end
   end
 

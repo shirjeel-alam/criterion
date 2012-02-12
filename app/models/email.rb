@@ -14,4 +14,8 @@ module Email
 	def self.student_emails
 		Student.emails
 	end
+
+	def self.staff_emails
+		Staff.emails
+	end
 end

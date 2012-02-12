@@ -13,13 +13,6 @@ gem 'activeadmin'
 gem 'sass-rails'
 gem 'meta_search'
 
-# Gems used only for assets and not required
-# in production environments by default.
-group :assets do
-  gem 'coffee-rails'
-  gem 'uglifier'
-end
-
 gem 'jquery-rails'
 gem 'best_in_place'
 gem 'tinymce-rails', :git => 'git://github.com/spohlenz/tinymce-rails.git'
@@ -39,6 +32,13 @@ gem 'googlecharts'
 
 # For heroku db:push and db:pull
 gem 'taps'
+
+# Gems used only for assets and not required
+# in production environments by default.
+group :assets do
+  gem 'coffee-rails'
+  gem 'uglifier'
+end
 
 group :development, :test do
   # Pretty printed test output

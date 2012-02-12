@@ -1,4 +1,4 @@
-ActiveAdmin.register CriterionSms, :as => 'CriterionSmsSender' do
+ActiveAdmin.register CriterionSms, :as => 'Criterion SMS Sender' do
 	menu :parent => 'Criterion', :priority => 2, :if => proc { current_admin_user.super_admin? || current_admin_user.admin? }
 
 	actions :index

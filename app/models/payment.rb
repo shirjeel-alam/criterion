@@ -51,6 +51,14 @@ class Payment < ActiveRecord::Base
     status == REFUNDED
   end
 
+  def credit?
+    payment_type == CREDIT
+  end
+
+  def debit?
+    payment_type == DEBIT
+  end
+
   def +(payment)
     if payment.is_a?(Payment)
       Payment.new(:amount => (self.amount.to_i + payment.amount.to_i), :discount => (self.discount.to_i + payment.discount.to_i))
@@ -67,6 +75,7 @@ class Payment < ActiveRecord::Base
 
   def pay!
     self.update_attributes(:status => PAID, :payment_date => Date.today)
+    create_account_entry
   end
 
   def void!
@@ -75,6 +84,26 @@ class Payment < ActiveRecord::Base
 
   def refund!
     self.update_attributes(:status => REFUNDED, :payment_date => Date.today)
+    create_account_entry
+  end
+
+  def create_account_entry
+    if payable.is_a?(Enrollment)
+      if paid?
+        CriterionAccount.institute_account.account_entries.build(:payment_id => self.id, :entry_type => AccountEntry::DEBIT)
+        payable.teacher.criterion_account.account_entries.build(:payment_id => self.id, :entry_type => AccountEntry::CREDIT)
+      elsif refunded?
+        CriterionAccount.institute_account.account_entries.build(:payment_id => self.id, :entry_type => AccountEntry::CREDIT)
+        payable.teacher.criterion_account.account_entries.build(:payment_id => self.id, :entry_type => AccountEntry::DEBIT)
+      end
+    elsif payable.is_a?(Teacher)
+      if debit?
+        
+      elsif credit?
+      end
+    elsif payable.is_a?(Staff)
+
+    end
   end
   
   ### Class Methods ###

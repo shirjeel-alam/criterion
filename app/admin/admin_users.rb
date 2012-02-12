@@ -18,6 +18,8 @@ ActiveAdmin.register AdminUser do
         link_to(admin.user.name, admin_teacher_path(admin.user)) rescue nil
       when AdminUser::STUDENT
         link_to(admin.user.name, admin_student_path(admin.user)) rescue nil
+      when AdminUser::ADMIN, AdminUser::STAFF
+        link_to(admin.user.name, admin_staff_path(admin.user)) rescue nil
       end
     end
     column 'Status', :sortable => :status do |admin|

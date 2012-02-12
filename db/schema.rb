@@ -11,7 +11,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120211221807) do
+ActiveRecord::Schema.define(:version => 20120212200608) do
+
+  create_table "account_entries", :force => true do |t|
+    t.integer  "criterion_account_id"
+    t.integer  "payment_id"
+    t.boolean  "entry_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "active_admin_comments", :force => true do |t|
     t.integer  "resource_id",   :null => false
@@ -68,6 +76,14 @@ ActiveRecord::Schema.define(:version => 20120211221807) do
     t.datetime "updated_at"
     t.date     "course_date"
     t.integer  "level"
+  end
+
+  create_table "criterion_accounts", :force => true do |t|
+    t.integer  "admin_user_id"
+    t.integer  "balance"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "institute_account", :default => false
   end
 
   create_table "criterion_mails", :force => true do |t|
@@ -148,6 +164,13 @@ ActiveRecord::Schema.define(:version => 20120211221807) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "status"
+  end
+
+  create_table "staffs", :force => true do |t|
+    t.string   "name"
+    t.string   "email"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "student_registration_fees", :force => true do |t|
