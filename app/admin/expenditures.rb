@@ -10,7 +10,7 @@ ActiveAdmin.register Payment, :as => 'Expenditure' do
 	filter :category, :as => :select, :collection => lambda { Category.categories }
 
 	scope :all, :default => true do |payments|
-		Payment.debit
+		Payment.credit
 	end
 	scope :teacher_fee
 	scope :bills

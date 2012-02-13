@@ -1,10 +1,11 @@
 ActiveAdmin.register Teacher do
-  menu :priority => 2, :if => proc { current_admin_user.super_admin? }
+  menu :priority => 2, :if => proc { current_admin_user.super_admin? || current_admin_user.admin? }
   
   filter :id
   filter :name
+  filter :email
   filter :share
-  
+
   index do
     column 'ID' do |teacher|
       link_to(teacher.id, admin_teacher_path(teacher))
@@ -48,7 +49,7 @@ ActiveAdmin.register Teacher do
     end
 
     panel 'Payments (Income)' do
-      temp_payments = teacher.payments.credit.collect do |payment|
+      temp_payments = teacher.payments.debit.collect do |payment|
         payment.period = payment.period.beginning_of_month
         payment
       end
@@ -100,27 +101,37 @@ ActiveAdmin.register Teacher do
       end
     end
 
+    panel 'Payments (Deposits)' do
+      table_for teacher.transactions.debit.each do |t|
+        t.column(:id) { |deposit| link_to(deposit.id, admin_payment_path(deposit)) }
+        t.column(:amount) { |deposit| number_to_currency(deposit.amount, :unit => 'Rs. ', :precision => 0) }
+        t.column(:status) { |deposit| status_tag(deposit.status_label, deposit.status_tag) }
+        t.column(:payment_date) { |deposit| date_format(deposit.payment_date) }
+      end
+    end if teacher.transactions.debit.present?
+
     panel 'Payments (Withdrawal)' do
-      table_for teacher.withdrawals.each do |t|
+      table_for teacher.transactions.credit.each do |t|
         t.column(:id) { |withdrawal| link_to(withdrawal.id, admin_payment_path(withdrawal)) }
         t.column(:amount) { |withdrawal| number_to_currency(withdrawal.amount, :unit => 'Rs. ', :precision => 0) }
         t.column(:status) { |withdrawal| status_tag(withdrawal.status_label, withdrawal.status_tag) }
         t.column(:payment_date) { |withdrawal| date_format(withdrawal.payment_date) }
       end
-    end
+    end if teacher.transactions.credit.present?
 
     active_admin_comments
   end
 
   action_item :only => :show do
-    link_to('Add Withdrawal', new_admin_payment_path(:teacher_id => teacher))
+    span link_to('Debit Account (Withdrawal)', new_admin_payment_path(:teacher_id => teacher, :payment_type => Payment::CREDIT))
+    span link_to('Credit Account (Deposit)', new_admin_payment_path(:teacher_id => teacher, :payment_type => Payment::DEBIT))
   end
 
   controller do
     before_filter :check_authorization
     
     def check_authorization
-      unless current_admin_user.super_admin?
+      unless current_admin_user.super_admin? || current_admin_user.admin?
         flash[:error] = 'You are not authorized to perform this action'
         redirect_to_back
       end

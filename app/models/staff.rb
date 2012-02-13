@@ -1,5 +1,5 @@
 class Staff < ActiveRecord::Base
-	has_many :withdrawals, :as => :payable, :class_name => 'Payment', :dependent => :destroy
+	has_many :transactions, :as => :payable, :class_name => 'Payment', :dependent => :destroy
   has_many :phone_numbers, :as => :contactable, :dependent => :destroy
   has_many :criterion_mails, :as => :mailable
   has_one :admin_user, :as => :user, :dependent => :destroy
@@ -12,6 +12,14 @@ class Staff < ActiveRecord::Base
 
   validates :name, :presence => true
   validates :email, :presence => true
+
+  def balance
+    income = 0
+    transactions.debit.each do |payment|
+      income += payment.net_amount 
+    end
+    income - transactions.credit.sum(:amount)
+  end
 
   def set_email
     self.email = "#{name.strip.gsub(' ', '.').downcase}@criterion.edu" unless email.present?
@@ -29,5 +37,11 @@ class Staff < ActiveRecord::Base
 
   def self.emails
     Staff.all.collect { |staff| ["#{staff.name} - #{staff.email}", staff.email] }
+  end
+
+  ### View Helpers ###
+
+  def balance_tag
+    balance >= 0 ? :ok : :error
   end
 end

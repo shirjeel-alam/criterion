@@ -1,6 +1,6 @@
 class AdminUser < ActiveRecord::Base
 	DEFAULT_PASSWORD = 'criterion'
-	SUPER_ADMIN, ADMIN, TEACHER, STUDENT, STAFF = 0, 1, 2, 3, 4 # Roles
+	SUPER_ADMIN, ADMIN, TEACHER, STUDENT, STAFF, PARTNER = 0, 1, 2, 3, 4, 5
 	ACTIVE, DEACTIVE = true, false
 
   # Include default devise modules. Others available are:
@@ -12,9 +12,9 @@ class AdminUser < ActiveRecord::Base
   has_many :sent_messages, :as => :sender, :class_name => 'CriterionSms'
   has_one :criterion_account
 
-  validates :role, :presence => true, :inclusion => { :in => [SUPER_ADMIN, ADMIN, TEACHER, STUDENT] }
+  validates :role, :presence => true, :inclusion => { :in => [SUPER_ADMIN, ADMIN, TEACHER, STUDENT, STAFF, PARTNER] }
 
-  scope :admin, where(:role => [ADMIN, SUPER_ADMIN])
+  scope :admin, where(:role => [ADMIN, SUPER_ADMIN, PARTNER])
    
   def password_required?
     new_record? ? false : super
@@ -36,14 +36,22 @@ class AdminUser < ActiveRecord::Base
     role == STUDENT
   end
 
+  def staff?
+    role == STAFF
+  end
+
+  def partner?
+    role == PARTNER
+  end
+
   ### Class Methods ###
 
   def self.roles
-  	[['Super Admin', SUPER_ADMIN], ['Admin', ADMIN], ['Teacher', TEACHER], ['Student', STUDENT]]
+  	[['Super Admin', SUPER_ADMIN], ['Admin', ADMIN], ['Teacher', TEACHER], ['Student', STUDENT], ['Staff', STAFF], ['Partner', PARTNER]]
   end
 
   def self.admin_roles
-  	[['Super Admin', SUPER_ADMIN], ['Admin', ADMIN]]
+  	[['Super Admin', SUPER_ADMIN], ['Admin', ADMIN], ['Partner', PARTNER]]
   end
 
   def self.statuses
@@ -68,6 +76,8 @@ class AdminUser < ActiveRecord::Base
 	  		'Student'
       when STAFF
         'Staff'
+      when PARTNER
+        'partner'
   	end
   end
 
@@ -78,5 +88,4 @@ class AdminUser < ActiveRecord::Base
   def status_tag
   	status ? :ok : :error
   end
-
 end

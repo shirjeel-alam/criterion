@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120212200608) do
+ActiveRecord::Schema.define(:version => 20120213212641) do
 
   create_table "account_entries", :force => true do |t|
     t.integer  "criterion_account_id"
@@ -83,7 +83,7 @@ ActiveRecord::Schema.define(:version => 20120212200608) do
     t.integer  "balance"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "institute_account", :default => false
+    t.integer  "account_type"
   end
 
   create_table "criterion_mails", :force => true do |t|

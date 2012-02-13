@@ -117,9 +117,15 @@ ActiveAdmin.register Payment do
     def new
       if params[:teacher_id]
         @teacher = Teacher.find(params[:teacher_id])
-        @payment = @teacher.withdrawals.build(:payment_type => Payment::DEBIT, :status => Payment::PAID, :payment_date => Date.today, :category => Category.find_by_name(Category::TEACHER_FEE))
+        @payment = @teacher.transactions.build(:payment_type => params[:payment_type], :status => Payment::PAID, :payment_date => Date.today)
+      elsif params[:staff_id]
+        @staff_account = Staff.find(params[:staff_id])
+        @payment = @staff_account.transactions.build(:payment_type => params[:payment_type], :status => Payment::PAID, :payment_date => Date.today)
+      elsif params[:partner_id]
+        @partner_account = Partner.find(params[:partner_id])
+        @payment = @partner_account.transactions.build(:payment_type => params[:payment_type], :status => Payment::PAID, :payment_date => Date.today)
       else
-        @payment = Payment.new  
+        @payment = Payment.new
       end
     end
 
@@ -127,8 +133,8 @@ ActiveAdmin.register Payment do
       @payment = Payment.new(params[:payment])
       
       if @payment.save
-        flash[:notice] = 'Withdrawal successfully created'
-        redirect_to admin_teacher_path(@payment.payable)
+        flash[:notice] = @payment.credit? ? 'Account debited successfully' : 'Account credited successfully'
+        redirect_to send("admin_#{@payment.payable_type.downcase}_path", @payment.payable)
       else
         render :new
       end

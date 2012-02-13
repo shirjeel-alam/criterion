@@ -6,10 +6,5 @@ class CreateCriterionAccounts < ActiveRecord::Migration
 
       t.timestamps
     end
-
-    CriterionAccount.reset_column_information
-    AdminUser.find_each do |user|
-    	user.build_criterion_account.save
-    end
   end
 end

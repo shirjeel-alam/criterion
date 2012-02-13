@@ -1,5 +1,5 @@
 ActiveAdmin.register CriterionSms do
-	menu :parent => 'More Menus', :label => 'Criterion SMS', :if => proc { current_admin_user.super_admin? }
+	menu :parent => 'More Menus', :label => 'Criterion SMS', :if => proc { current_admin_user.super_admin? || current_admin_user.admin? || current_admin_user.teacher? }
 
 	filter :id
 	filter :to

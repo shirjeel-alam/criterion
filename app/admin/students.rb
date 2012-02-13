@@ -3,6 +3,7 @@ ActiveAdmin.register Student do
 
   filter :id
   filter :name
+  filter :email
   
   index do
     column 'ID', :sortable => :id do |student|

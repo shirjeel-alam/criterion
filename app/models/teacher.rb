@@ -1,7 +1,7 @@
 class Teacher < ActiveRecord::Base
   has_many :courses
   has_many :payments, :through => :courses
-  has_many :withdrawals, :as => :payable, :class_name => 'Payment', :dependent => :destroy
+  has_many :transactions, :as => :payable, :class_name => 'Payment', :dependent => :destroy
   has_many :phone_numbers, :as => :contactable, :dependent => :destroy
   has_many :criterion_mails, :as => :mailable
   has_one :admin_user, :as => :user, :dependent => :destroy
@@ -18,11 +18,11 @@ class Teacher < ActiveRecord::Base
 
   def balance
     income = 0
-    payments.credit.paid.each do |payment|
+    payments.debit.paid.each do |payment|
       income += payment.net_amount 
     end
     income *= share
-    income - withdrawals.sum(:amount)
+    income - transactions.credit.sum(:amount)
   end
 
   def set_email

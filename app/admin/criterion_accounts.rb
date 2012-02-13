@@ -6,15 +6,20 @@ ActiveAdmin.register CriterionAccount do
       link_to(account.id, admin_criterion_account_path(account))
     end
     column 'Account Holder', :sortable => :admin_user_id do |account|
-    	admin = account.admin_user
-    	case admin.role
+    	account_holder = account.admin_user
+    	case account_holder.role
       when AdminUser::TEACHER
-        link_to(admin.user.name, admin_teacher_path(admin.user)) rescue nil
+        link_to(account_holder.user.name, admin_teacher_path(account_holder.user)) rescue nil
+      when AdminUser::STAFF
+        link_to(account_holder.user.name, admin_staff_path(account_holder.user)) rescue nil
       when AdminUser::STUDENT
-        link_to(admin.user.name, admin_student_path(admin.user)) rescue nil
+        link_to(account_holder.user.name, admin_student_path(account_holder.user)) rescue nil
       else
-      	link_to(admin.email, admin_admin_user_path(admin))
-      end
+      	link_to(account_holder.email, admin_admin_user_path(account_holder))
+      end if account_holder.present?
+    end
+    column :account_type, :sortable => :account_type do |account|
+      account.account_type_label
     end
     column 'Initial Balance', :sortable => :balance do |account|
     	number_to_currency(account.balance, :unit => 'Rs. ', :precision => 0)

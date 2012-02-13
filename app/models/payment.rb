@@ -17,6 +17,7 @@ class Payment < ActiveRecord::Base
   scope :paid, where(:status => PAID)
   scope :due, where(:status => DUE)
   scope :void, where(:status => VOID)
+  scope :refunded, where(:status => REFUNDED)
   
   scope :credit, where(:payment_type => CREDIT)
   scope :debit, where(:payment_type => DEBIT)
@@ -87,6 +88,7 @@ class Payment < ActiveRecord::Base
     create_account_entry
   end
 
+  # Needs work
   def create_account_entry
     if payable.is_a?(Enrollment)
       if paid?
