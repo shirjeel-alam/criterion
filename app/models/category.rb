@@ -1,9 +1,4 @@
 class Category < ActiveRecord::Base
-	STUDENT_FEE = 'student fee'
-	TEACHER_FEE = 'teacher fee'
-	BILLS = 'bills'
-	MISC = 'misc'
-
 	has_many :payments
 
 	before_save :downcase_name

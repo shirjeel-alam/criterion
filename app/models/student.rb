@@ -1,8 +1,9 @@
 class Student < ActiveRecord::Base
   has_many :enrollments, :dependent => :destroy
-  has_many :student_registration_fees
+  has_and_belongs_to_many :sessions
   has_many :courses, :through => :enrollments
   has_many :payments, :through => :enrollments
+  has_many :registration_fees, :as => :payable, :class_name => 'Payment', :dependent => :destroy
   has_many :phone_numbers, :as => :contactable, :dependent => :destroy
   has_one :admin_user, :as => :user, :dependent => :destroy
   has_many :received_messages, :as => :receiver, :class_name => 'CriterionSms'

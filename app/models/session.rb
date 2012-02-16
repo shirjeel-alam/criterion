@@ -2,8 +2,8 @@ class Session < ActiveRecord::Base
   NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED = 0, 1, 2, 3
 
   has_many :courses, :dependent => :destroy
-  has_many :student_registration_fees, :dependent => :destroy
-  has_many :students, :through => :student_registration_fees
+  has_and_belongs_to_many :students
+  has_many :registration_fees, :through => :students
 
   accepts_nested_attributes_for :courses
 

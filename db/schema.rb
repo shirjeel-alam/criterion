@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120213212641) do
+ActiveRecord::Schema.define(:version => 20120216201518) do
 
   create_table "account_entries", :force => true do |t|
     t.integer  "criterion_account_id"
@@ -167,20 +167,19 @@ ActiveRecord::Schema.define(:version => 20120213212641) do
     t.integer  "status"
   end
 
+  create_table "sessions_students", :force => true do |t|
+    t.integer  "student_id"
+    t.integer  "session_id"
+    t.integer  "payment_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "staffs", :force => true do |t|
     t.string   "name"
     t.string   "email"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "student_registration_fees", :force => true do |t|
-    t.integer  "student_id"
-    t.integer  "session_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.date     "registration_fee_date"
-    t.integer  "status",                :default => 0
   end
 
   create_table "students", :force => true do |t|

@@ -5,6 +5,7 @@ class Payment < ActiveRecord::Base
   
   belongs_to :payable, :polymorphic => :true
   belongs_to :category
+  belongs_to :sessions_student
   
   before_validation :check_payment, :on => :create, :if => "payable_type == 'Enrollment'"
 
@@ -12,7 +13,7 @@ class Payment < ActiveRecord::Base
   validates :status, :presence => true, :inclusion => { :in => [DUE, PAID, VOID, REFUNDED] }
   validates :discount, :numericality => { :only_integer => true, :greater_than => 0 }, :allow_blank => true
   validates :payment_date, :timeliness => { :type => :date, :allow_blank => true }
-  validates :payment_method, :presence => true, :inclusion => { :in => [CASH, CHEQUE] }
+  validates :payment_method, :inclusion => { :in => [CASH, CHEQUE] }, :allow_blank => true
   
   scope :paid, where(:status => PAID)
   scope :due, where(:status => DUE)
@@ -25,17 +26,16 @@ class Payment < ActiveRecord::Base
   scope :cash, where(:payment_method => CASH)
   scope :cheque, where(:payment_method => CHEQUE)
 
-  scope :student_fee, where(:category_id => Category.find_by_name(Category::STUDENT_FEE))
-  scope :teacher_fee, where(:category_id => Category.find_by_name(Category::TEACHER_FEE))
-  scope :bills, where(:category_id => Category.find_by_name(Category::BILLS))
-  scope :misc, where(:category_id => Category.find_by_name(Category::MISC))
-
   scope :on, lambda { |date| where(:payment_date => date) }
   
   def check_payment
     errors.add(:duplicate, "Entry already exists") if Payment.where(:period => period.beginning_of_month..period.end_of_month, :payable_id => payable_id, :payable_type => payable_type, :payment_type => payment_type).present?
   end
-  
+
+  def session
+    sessions_student.session rescue nil
+  end
+
   def due?
     status == DUE
   end

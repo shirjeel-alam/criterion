@@ -1,5 +1,4 @@
-class Enrollment < ActiveRecord::Base
-  
+class Enrollment < ActiveRecord::Base  
   NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED = 0, 1, 2, 3
   
   belongs_to :course
@@ -69,9 +68,9 @@ class Enrollment < ActiveRecord::Base
       months = course.start_date > start_date ? months_between(course.start_date, course.end_date) : months_between(start_date, course.end_date)
       
       # First month payment
-      Payment.create(:period => months.first, :amount => first_month_payment, :status => Payment::DUE, :payment_type => Payment::DEBIT, :payable_id => id, :payable_type => self.class.name, :category => Category.find_by_name(Category::STUDENT_FEE))
+      Payment.create(:period => months.first, :amount => first_month_payment, :status => Payment::DUE, :payment_type => Payment::DEBIT, :payable_id => id, :payable_type => self.class.name)
       months[1...months.length].each do |date|
-        Payment.create(:period => date, :amount => course.monthly_fee, :status => Payment::DUE, :payment_type => Payment::DEBIT, :payable_id => id, :payable_type => self.class.name, :category => Category.find_by_name(Category::STUDENT_FEE))
+        Payment.create(:period => date, :amount => course.monthly_fee, :status => Payment::DUE, :payment_type => Payment::DEBIT, :payable_id => id, :payable_type => self.class.name)
       end
     end
   end
@@ -96,7 +95,7 @@ class Enrollment < ActiveRecord::Base
   end
   
   def associate_session
-    StudentRegistrationFee.find_or_create_by_student_id_and_session_id(student.id, session.id)
+    SessionsStudent.find_or_create_by_student_id_and_session_id(student.id, session.id)
   end
 
   def not_started?
