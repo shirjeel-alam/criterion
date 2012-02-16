@@ -33,6 +33,10 @@ class Teacher < ActiveRecord::Base
     AdminUser.create(:email => email, :password => AdminUser::DEFAULT_PASSWORD, :role => AdminUser::TEACHER, :user => self)
   end
 
+  def criterion_account
+    admin_user.criterion_account
+  end
+
   ### Class Methods ###
 
   def self.get_all

@@ -16,6 +16,7 @@ ActiveRecord::Schema.define(:version => 20120213212641) do
   create_table "account_entries", :force => true do |t|
     t.integer  "criterion_account_id"
     t.integer  "payment_id"
+    t.integer  "amount"
     t.boolean  "entry_type"
     t.datetime "created_at"
     t.datetime "updated_at"
