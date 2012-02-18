@@ -101,7 +101,7 @@ ActiveAdmin.register Course do
         t.column(:phone_number) { |enrollment| enrollment.student.phone_numbers.first.number rescue nil }
         t.column(:status) { |enrollment| status_tag(enrollment.status_label, enrollment.status_tag) }
       end
-    end
+    end if course.enrollments.present?
 
     active_admin_comments
   end

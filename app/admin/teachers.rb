@@ -26,7 +26,7 @@ ActiveAdmin.register Teacher do
     f.inputs do
       f.input :name, :required => true
       f.input :email, :required => true
-      f.input :share, :required => true
+      f.input :share, :required => true, :step => 0.1
 
       f.has_many :phone_numbers do |fp|
         fp.input :number
@@ -78,7 +78,6 @@ ActiveAdmin.register Teacher do
               td cumulative_payment.first.strftime('%B %Y')
               td nil
               td nil
-              #td status_tag(number_to_currency(cumulative_amount, :unit => 'Rs. ', :precision => 0), :ok)
               td '-'
               td status_tag(cumulative_amount > 0 ? 'Due' : 'Paid', cumulative_amount > 0 ? :error : :ok)
               td status_tag(number_to_currency(cumulative_amount * teacher.share, :unit => 'Rs. ', :precision => 0), :warning)
@@ -99,7 +98,7 @@ ActiveAdmin.register Teacher do
           end
         end
       end
-    end
+    end if teacher.payments.debit.present?
 
     panel 'Payments (Deposits)' do
       table_for teacher.transactions.debit.each do |t|
@@ -124,7 +123,7 @@ ActiveAdmin.register Teacher do
 
   action_item :only => :show do
     span link_to('Debit Account (Withdrawal)', new_admin_payment_path(:teacher_id => teacher, :payment_type => Payment::CREDIT))
-    span link_to('Credit Account (Deposit)', new_admin_payment_path(:teacher_id => teacher, :payment_type => Payment::DEBIT))
+    span link_to('Credit Account (Deposit)', new_admin_payment_path(:teacher_id => teacher, :payment_type => Payment::DEBIT)) if current_admin_user.super_admin?
   end
 
   controller do

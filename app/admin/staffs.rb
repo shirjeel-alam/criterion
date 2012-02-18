@@ -22,6 +22,7 @@ ActiveAdmin.register Staff do
     f.inputs do
       f.input :name, :required => true
       f.input :email, :required => true
+      f.input :admin_user_confirmation, :as => :radio, :label => 'Create system login?', :required => true
 
       f.has_many :phone_numbers do |fp|
         fp.input :number
@@ -65,7 +66,7 @@ ActiveAdmin.register Staff do
 
   action_item :only => :show do
     span link_to('Debit Account (Withdrawal)', new_admin_payment_path(:staff_id => staff, :payment_type => Payment::CREDIT))
-    span link_to('Credit Account (Deposit)', new_admin_payment_path(:staff_id => staff, :payment_type => Payment::DEBIT))
+    span link_to('Credit Account (Deposit)', new_admin_payment_path(:staff_id => staff, :payment_type => Payment::DEBIT)) if current_admin_user.super_admin?
   end
 
   controller do

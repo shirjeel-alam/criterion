@@ -22,6 +22,9 @@ class Teacher < ActiveRecord::Base
       income += payment.net_amount 
     end
     income *= share
+    transactions.debit.paid.each do |payment|
+      income += payment.net_amount 
+    end
     income - transactions.credit.sum(:amount)
   end
 

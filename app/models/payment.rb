@@ -88,34 +88,42 @@ class Payment < ActiveRecord::Base
     create_account_entry
   end
 
-  # Needs work
   def create_account_entry
     if payable.is_a?(Enrollment)
       if paid?
-        CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => amount, :entry_type => AccountEntry::DEBIT)
-        CriterionAccount.criterion_account.account_entries.create!(:payment_id => self.id, :amount => amount * (1 - payable.teacher.share), :entry_type => AccountEntry::CREDIT)
-        payable.teacher.criterion_account.account_entries.create!(:payment_id => self.id, :amount => amount * payable.teacher.share, :entry_type => AccountEntry::CREDIT)
+        CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
+        CriterionAccount.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount * (1 - payable.teacher.share), :entry_type => AccountEntry::CREDIT)
+        payable.teacher.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount * payable.teacher.share, :entry_type => AccountEntry::CREDIT)
       elsif refunded?
-        CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => amount, :entry_type => AccountEntry::CREDIT)
-        CriterionAccount.criterion_account.account_entries.create!(:payment_id => self.id, :amount => amount * (1 - payable.teacher.share), :entry_type => AccountEntry::DEBIT)
-        payable.teacher.criterion_account.account_entries.create!(:payment_id => self.id, :amount => amount * payable.teacher.share, :entry_type => AccountEntry::DEBIT)
+        CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
+        CriterionAccount.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount * (1 - payable.teacher.share), :entry_type => AccountEntry::DEBIT)
+        payable.teacher.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount * payable.teacher.share, :entry_type => AccountEntry::DEBIT)
+      end
+    elsif payable.is_a?(SessionStudent)
+      if paid?
+        CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
+        CriterionAccount.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
+      elsif refunded?
+        CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
+        CriterionAccount.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
       end
     elsif payable.is_a?(Teacher)
       if debit?
-        CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => amount, :entry_type => AccountEntry::DEBIT)
-        payable.criterion_account.account_entries.create!(:payment_id => self.id, :amount => amount, :entry_type => AccountEntry::CREDIT)
+        CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
+        payable.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
       elsif credit?
-        CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => amount, :entry_type => AccountEntry::CREDIT)
-        payable.criterion_account.account_entries.create!(:payment_id => self.id, :amount => amount, :entry_type => AccountEntry::DEBIT)
+        CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
+        payable.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
       end
     elsif payable.is_a?(Staff)
       if debit?
-        CriterionAccount.criterion_account.account_entries.create!(:payment_id => self.id, :amount => amount, :entry_type => AccountEntry::DEBIT)
-        payable.criterion_account.account_entries.create!(:payment_id => self.id, :amount => amount, :entry_type => AccountEntry::CREDIT)
+        CriterionAccount.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
+        payable.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
       elsif credit?
-        CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => amount, :entry_type => AccountEntry::CREDIT)
-        payable.criterion_account.account_entries.create!(:payment_id => self.id, :amount => amount, :entry_type => AccountEntry::DEBIT)
+        CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
+        payable.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
       end
+    elsif payable.is_a?(Partner)
     end
   end
   

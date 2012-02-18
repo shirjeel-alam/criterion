@@ -95,7 +95,7 @@ class Enrollment < ActiveRecord::Base
   end
   
   def associate_session
-    SessionsStudent.find_or_create_by_student_id_and_session_id(student.id, session.id)
+    SessionStudent.find_or_create_by_student_id_and_session_id(student.id, session.id)
   end
 
   def not_started?

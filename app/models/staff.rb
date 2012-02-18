@@ -12,6 +12,9 @@ class Staff < ActiveRecord::Base
 
   validates :name, :presence => true
   validates :email, :presence => true
+  validates :admin_user_confirmation, :presence => true
+
+  attr_accessor :admin_user_confirmation
 
   def balance
     income = 0
@@ -26,7 +29,7 @@ class Staff < ActiveRecord::Base
   end
 
   def create_admin_user
-    AdminUser.create(:email => email, :password => AdminUser::DEFAULT_PASSWORD, :role => AdminUser::STAFF, :user => self)
+    AdminUser.create(:email => email, :password => AdminUser::DEFAULT_PASSWORD, :role => AdminUser::STAFF, :user => self) if admin_user_confirmation.to_i == 0 
   end
 
   def criterion_account
