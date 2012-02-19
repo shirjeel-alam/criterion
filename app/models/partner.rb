@@ -19,7 +19,7 @@ class Partner < ActiveRecord::Base
   end
 
   def create_admin_user
-    AdminUser.create(:email => email, :password => AdminUser::DEFAULT_PASSWORD, :role => AdminUser::SUPER_ADMIN, :user => self)
+    AdminUser.create(:email => email, :password => AdminUser::DEFAULT_PASSWORD, :role => AdminUser::PARTNER, :user => self)
   end
 
   def criterion_account

@@ -46,6 +46,10 @@ class AdminUser < ActiveRecord::Base
     role == PARTNER
   end
 
+  def super_admin_or_partner?
+    super_admin? || partner?
+  end
+
   ### Class Methods ###
 
   def self.roles

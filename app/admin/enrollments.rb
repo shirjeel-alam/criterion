@@ -1,5 +1,5 @@
 ActiveAdmin.register Enrollment do
-  menu :priority => 2, :if => proc { current_admin_user.super_admin? || current_admin_user.admin? }
+  menu :priority => 2, :if => proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? }
   
   filter :id
   filter :course
@@ -50,8 +50,8 @@ ActiveAdmin.register Enrollment do
       table_for enrollment.payments.order(:id) do |t|
         t.column(:id) { |payment| link_to(payment.id, admin_payment_path(payment)) }
         t.column(:period) { |payment| payment.period_label}
-        t.column(:gross_amount) { |payment| number_to_currency(best_in_place_if(current_admin_user.super_admin? && payment.due?, payment, :amount, :type => :input, :path => [:admin, payment]), :unit => 'Rs. ', :precision => 0) }
-        t.column(:discount) { |payment| number_to_currency(best_in_place_if(current_admin_user.super_admin? && payment.due?, payment, :discount, :type => :input, :path => [:admin, payment]), :unit => 'Rs. ', :precision => 0) }
+        t.column(:gross_amount) { |payment| number_to_currency(best_in_place_if(current_admin_user.super_admin_or_partner? && payment.due?, payment, :amount, :type => :input, :path => [:admin, payment]), :unit => 'Rs. ', :precision => 0) }
+        t.column(:discount) { |payment| number_to_currency(best_in_place_if(current_admin_user.super_admin_or_partner? && payment.due?, payment, :discount, :type => :input, :path => [:admin, payment]), :unit => 'Rs. ', :precision => 0) }
         t.column(:net_amount) { |payment| number_to_currency(payment.net_amount, :unit => 'Rs. ', :precision => 0) }
         t.column(:status) { |payment| status_tag(payment.status_label, payment.status_tag) }
         t.column(:actions) do |payment| 

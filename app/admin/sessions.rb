@@ -1,5 +1,5 @@
 ActiveAdmin.register Session do
-  menu :parent => 'More Menus', :if => proc { current_admin_user.super_admin? }
+  menu :parent => 'More Menus', :if => proc { current_admin_user.super_admin_or_partner? }
 
   filter :id
   filter :period, :as => :select, :collection => lambda { Session.periods }
@@ -83,7 +83,7 @@ ActiveAdmin.register Session do
     before_filter :check_authorization
     
     def check_authorization
-      unless current_admin_user.super_admin?
+      unless current_admin_user.super_admin_or_partner?
         flash[:error] = 'You are not authorized to perform this action'
         redirect_to_back
       end

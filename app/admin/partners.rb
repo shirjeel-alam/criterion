@@ -1,5 +1,5 @@
 ActiveAdmin.register Partner do
- 	menu :priority => 2, :if => proc { current_admin_user.super_admin? || current_admin_user.admin? }
+ 	menu :priority => 2, :if => proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? }
   
   filter :id
   filter :name
@@ -67,14 +67,14 @@ ActiveAdmin.register Partner do
 
   action_item :only => :show do
     span link_to('Debit Account (Withdrawal)', new_admin_payment_path(:partner_id => partner, :payment_type => Payment::CREDIT))
-    span link_to('Credit Account (Deposit)', new_admin_payment_path(:partner_id => partner, :payment_type => Payment::DEBIT)) if current_admin_user.super_admin?
+    span link_to('Credit Account (Deposit)', new_admin_payment_path(:partner_id => partner, :payment_type => Payment::DEBIT)) if current_admin_user.super_admin_or_partner?
   end
 
   controller do
     before_filter :check_authorization
     
     def check_authorization
-      unless current_admin_user.super_admin?
+      unless current_admin_user.super_admin_or_partner?
         flash[:error] = 'You are not authorized to perform this action'
         redirect_to_back
       end

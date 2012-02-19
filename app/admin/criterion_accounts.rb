@@ -1,5 +1,5 @@
 ActiveAdmin.register CriterionAccount do
-  menu :parent => 'Criterion', :priority => 2, :if => proc { current_admin_user.super_admin? }
+  menu :parent => 'Criterion', :priority => 2, :if => proc { current_admin_user.super_admin_or_partner? }
 
   actions :index, :show
 
@@ -16,6 +16,8 @@ ActiveAdmin.register CriterionAccount do
         link_to(account_holder.user.name, admin_staff_path(account_holder.user)) rescue nil
       when AdminUser::STUDENT
         link_to(account_holder.user.name, admin_student_path(account_holder.user)) rescue nil
+      when AdminUser::PARTNER
+        link_to(account_holder.user.name, admin_partner_path(account_holder.user)) rescue nil
       else
       	link_to(account_holder.email, admin_admin_user_path(account_holder))
       end if account_holder.present?
