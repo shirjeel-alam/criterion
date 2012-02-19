@@ -26,6 +26,8 @@ class Payment < ActiveRecord::Base
   scope :cash, where(:payment_method => CASH)
   scope :cheque, where(:payment_method => CHEQUE)
 
+  scope :expenditure, where(:payable_id => nil, :payable_type => nil, :payment_type => CREDIT)
+
   scope :on, lambda { |date| where(:payment_date => date) }
   
   def check_payment
@@ -124,6 +126,8 @@ class Payment < ActiveRecord::Base
         payable.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
       end
     elsif payable.is_a?(Partner)
+    else # Must be expenditures
+
     end
   end
   
@@ -139,6 +143,15 @@ class Payment < ActiveRecord::Base
 
   def self.payment_methods
     [['Cash', CASH], ['Cheque', CHEQUE]]
+  end
+
+  def self.month(date)
+    date.beginning_of_month..date.end_of_month
+  end
+
+  def self.quarter(year, n)
+    date = Date.new(year, 3 * n, 1)
+    date.beginning_of_quarter..date.end_of_quarter
   end
 
   ### View Helpers ###

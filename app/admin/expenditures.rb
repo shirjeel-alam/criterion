@@ -5,16 +5,31 @@ ActiveAdmin.register Payment, :as => 'Expenditure' do
 
 	filter :id
 	filter :amount
-	filter :status, :as => :select, :collection => lambda { Payment.statuses }
-	filter :payment_type, :as => :select, :collection => lambda { Payment.payment_types }
+	filter :period
 	filter :category, :as => :select, :collection => lambda { Category.categories }
+	filter :payment_method, :as => :select, :collection => lambda { Payment.payment_methods }
 
 	scope :all, :default => true do |payments|
-		Payment.credit
+		Payment.expenditure
 	end
-	scope :teacher_fee
-	scope :bills
-	scope :misc
+	scope :this_month do |payments|
+		Payment.expenditure.on(Payment.month(Date.today))
+	end
+	scope :last_month do |payments|
+		Payment.expenditure.on(Payment.month(Date.today << 1))
+	end
+	scope :first_quarter do |payments|
+		Payment.expenditure.on(Payment.quarter(Date.today.year, 1))
+	end
+	scope :second_quarter do |payments|
+		Payment.expenditure.on(Payment.quarter(Date.today.year, 2))
+	end
+	scope :third_quarter do |payments|
+		Payment.expenditure.on(Payment.quarter(Date.today.year, 3))
+	end
+	scope :fourth_quarter do |payments|
+		Payment.expenditure.on(Payment.quarter(Date.today.year, 4))
+	end
 
 	index do
 		column 'ID', :sortable => :id do |payment|
@@ -38,6 +53,9 @@ ActiveAdmin.register Payment, :as => 'Expenditure' do
 		column :payment_date, :sortable => :payment_date do |payment|
       date_format(payment.payment_date)
     end
+    column :payment_method, :sortable => :payment_method do |payment|
+      status_tag(payment.payment_method_label, payment.payment_method_tag)
+    end
 		column :payable do |payment|
 			if payment.payable.is_a?(Enrollment)
 				link_to(payment.payable.student.name, admin_student_path(payment.payable.student)) rescue nil
@@ -48,14 +66,16 @@ ActiveAdmin.register Payment, :as => 'Expenditure' do
 		column :category, :sortable => :category_id do |payment|
 			payment.category.name_label rescue nil
 		end
-		column nil do |payment|
-			span link_to('View', admin_payment_path(payment))	
-			span link_to('Edit', edit_admin_payment_path(payment))
-			span link_to('Delete', admin_payment_path(payment), :method => :delete)
-		end
+		# column nil do |payment|
+		# 	span link_to('View', admin_payment_path(payment))	
+		# 	span link_to('Edit', edit_admin_payment_path(payment))
+		# 	span link_to('Delete', admin_payment_path(payment), :method => :delete)
+		# end
+
+		# default_actions
 	end
 
 	action_item :only => :index do
-		span link_to('New Expenditure', new_admin_payment_path)
+		span link_to('New Expenditure', new_admin_payment_path(:status => Payment::PAID, :payment_date => Date.today, :payment_type => Payment::CREDIT))
 	end
 end

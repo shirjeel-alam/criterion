@@ -5,6 +5,7 @@ ActiveAdmin.register Payment do
   filter :amount
   filter :status, :as => :select, :collection => lambda { Payment.statuses }
   filter :payment_type, :as => :select, :collection => lambda { Payment.payment_types }
+  filter :payment_method, :as => :select, :collection => lambda { Payment.payment_methods }
   filter :category, :as => :select, :collection => lambda { Category.categories }
 
   scope :all
@@ -38,6 +39,9 @@ ActiveAdmin.register Payment do
     column :payment_date, :sortable => :payment_date do |payment|
       date_format(payment.payment_date)
     end
+    column :payment_method, :sortable => :payment_method do |payment|
+      status_tag(payment.payment_method_label, payment.payment_method_tag)
+    end
     column :payable do |payment|
       if payment.payable.is_a?(Enrollment)
         link_to(payment.payable.student.name, admin_student_path(payment.payable.student)) rescue nil
@@ -49,7 +53,7 @@ ActiveAdmin.register Payment do
       payment.category.name_label rescue nil
     end
 
-    default_actions
+    # default_actions
   end
 
   form :partial => 'form'
