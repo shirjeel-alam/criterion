@@ -16,13 +16,13 @@ class Staff < ActiveRecord::Base
 
   attr_accessor :admin_user_confirmation
 
-  def balance
-    income = 0
-    transactions.debit.each do |payment|
-      income += payment.net_amount 
-    end
-    income - transactions.credit.sum(:amount)
-  end
+  # def balance
+  #   income = 0
+  #   transactions.debit.each do |payment|
+  #     income += payment.net_amount 
+  #   end
+  #   income - transactions.credit.sum(:amount)
+  # end
 
   def set_email
     self.email = "#{name.strip.gsub(' ', '.').downcase}@criterion.edu" unless email.present?

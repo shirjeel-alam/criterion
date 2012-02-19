@@ -18,4 +18,8 @@ module Email
 	def self.staff_emails
 		Staff.emails
 	end
+
+	def self.partner_emails
+		Partner.emails
+	end
 end

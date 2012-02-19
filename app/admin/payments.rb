@@ -74,6 +74,16 @@ ActiveAdmin.register Payment do
       end
     end
 
+    panel 'Account Entries' do
+      table_for payment.account_entries do |t|
+        t.column(:id) { |account_entry| link_to(account_entry.id, admin_account_entry_path(account_entry)) }
+        t.column(:criterion_account) { |account_entry| link_to(account_entry.criterion_account.title, admin_criterion_account_path(account_entry.criterion_account)) }
+        #t.column(:payment) { |account_entry| link_to(account_entry.payment_id, admin_payment_path(account_entry.payment)) }
+        t.column(:entry_type) { |account_entry| status_tag(account_entry.entry_type_label, account_entry.entry_type_tag) }
+        t.column(:amount) { |account_entry| number_to_currency(account_entry.amount, :unit => 'Rs. ', :precision => 0) }
+      end
+    end
+
     active_admin_comments
   end
   
@@ -123,11 +133,13 @@ ActiveAdmin.register Payment do
         @teacher = Teacher.find(params[:teacher_id])
         @payment = @teacher.transactions.build(:payment_type => params[:payment_type], :status => Payment::PAID, :payment_date => Date.today)
       elsif params[:staff_id]
-        @staff_account = Staff.find(params[:staff_id])
-        @payment = @staff_account.transactions.build(:payment_type => params[:payment_type], :status => Payment::PAID, :payment_date => Date.today)
+        @staff = Staff.find(params[:staff_id])
+        @payment = @staff.transactions.build(:payment_type => params[:payment_type], :status => Payment::PAID, :payment_date => Date.today)
       elsif params[:partner_id]
-        @partner_account = Partner.find(params[:partner_id])
-        @payment = @partner_account.transactions.build(:payment_type => params[:payment_type], :status => Payment::PAID, :payment_date => Date.today)
+        @partner = Partner.find(params[:partner_id])
+        @payment = @partner.transactions.build(:payment_type => params[:payment_type], :status => Payment::PAID, :payment_date => Date.today)
+      elsif params[:category_id]
+        @payment = Payment.new(:payment_type => params[:payment_type],  :category_id => params[:category_id],:status => Payment::PAID, :payment_date => Date.today)
       else
         @payment = Payment.new(params[:payment])
       end
@@ -140,6 +152,9 @@ ActiveAdmin.register Payment do
         if @payment.payable.present?
           flash[:notice] = @payment.credit? ? 'Account debited successfully' : 'Account credited successfully'
           redirect_to send("admin_#{@payment.payable_type.downcase}_path", @payment.payable)
+        elsif @payment.appropriated?
+          flash[:notice] = 'Amount successfully appropriated'
+          redirect_to admin_criterion_account_path(CriterionAccount.criterion_account)
         else
           flash[:notice] = 'Expenditure successfully created'
           redirect_to admin_expenditures_path

@@ -12,12 +12,12 @@ ActiveAdmin.register Teacher do
     end
     column :name
     column :email
-    column 'Share', :sortable => :share do |teacher|
+    column :share, :sortable => :share do |teacher|
       number_to_percentage(teacher.share * 100, :precision => 0)
     end
-    column 'Balance', :sortable => :balance do |teacher|
-      status_tag(number_to_currency(teacher.balance, :unit => 'Rs. ', :precision => 0), teacher.balance_tag) rescue nil
-    end
+    # column 'Balance', :sortable => :balance do |teacher|
+    #   status_tag(number_to_currency(teacher.balance, :unit => 'Rs. ', :precision => 0), teacher.balance_tag) rescue nil
+    # end
 
     default_actions
   end
@@ -26,7 +26,7 @@ ActiveAdmin.register Teacher do
     f.inputs do
       f.input :name, :required => true
       f.input :email, :required => true
-      f.input :share, :required => true, :step => 0.1
+      f.input :share, :required => true, :step => 0.05
 
       f.has_many :phone_numbers do |fp|
         fp.input :number
@@ -44,7 +44,7 @@ ActiveAdmin.register Teacher do
         row(:name) { teacher.name }
         row(:email) { teacher.email }
         row(:share) { number_to_percentage(teacher.share * 100, :precision => 0) }
-        row(:balance) { status_tag(number_to_currency(teacher.balance, :unit => 'Rs. ', :precision => 0), teacher.balance_tag) rescue nil }
+        # row(:balance) { status_tag(number_to_currency(teacher.balance, :unit => 'Rs. ', :precision => 0), teacher.balance_tag) rescue nil }
       end
     end
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120216201518) do
+ActiveRecord::Schema.define(:version => 20120219173405) do
 
   create_table "account_entries", :force => true do |t|
     t.integer  "criterion_account_id"
@@ -81,7 +81,7 @@ ActiveRecord::Schema.define(:version => 20120216201518) do
 
   create_table "criterion_accounts", :force => true do |t|
     t.integer  "admin_user_id"
-    t.integer  "balance"
+    t.integer  "initial_balance", :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "account_type"
@@ -131,6 +131,14 @@ ActiveRecord::Schema.define(:version => 20120216201518) do
     t.integer  "status"
     t.date     "enrollment_date"
     t.date     "start_date"
+  end
+
+  create_table "partners", :force => true do |t|
+    t.string   "name"
+    t.string   "email"
+    t.float    "share"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "payments", :force => true do |t|

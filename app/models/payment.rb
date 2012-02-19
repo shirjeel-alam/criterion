@@ -6,6 +6,7 @@ class Payment < ActiveRecord::Base
   belongs_to :payable, :polymorphic => :true
   belongs_to :category
   belongs_to :sessions_student
+  has_many :account_entries
   
   before_validation :check_payment, :on => :create, :if => "payable_type == 'Enrollment'"
   after_create :create_account_entry
@@ -63,6 +64,10 @@ class Payment < ActiveRecord::Base
     payment_type == DEBIT
   end
 
+  def appropriated?
+    category == Category.find_by_name('appropriated')
+  end
+
   def +(payment)
     if payment.is_a?(Payment)
       Payment.new(:amount => (self.amount.to_i + payment.amount.to_i), :discount => (self.discount.to_i + payment.discount.to_i))
@@ -110,7 +115,7 @@ class Payment < ActiveRecord::Base
         CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
         CriterionAccount.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
       end
-    elsif payable.is_a?(Teacher)
+    elsif payable.is_a?(Teacher) || payable.is_a?(Staff) || payable.is_a?(Partner)
       if debit?
         CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
         payable.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
@@ -118,15 +123,11 @@ class Payment < ActiveRecord::Base
         CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
         payable.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
       end
-    elsif payable.is_a?(Staff)
-      if debit?
-        CriterionAccount.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
-        payable.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
-      elsif credit?
-        CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
-        payable.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
+    elsif appropriated?
+      CriterionAccount.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
+      Partner.find_each do |partner|
+        partner.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount * partner.share, :entry_type => AccountEntry::CREDIT)
       end
-    #elsif payable.is_a?(Partner)
     else # Must be an expenditure
       if credit?
         CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
@@ -212,5 +213,17 @@ class Payment < ActiveRecord::Base
       when CHEQUE
         :warning
     end
+  end
+
+  def particular
+    if payable.is_a?(Enrollment)
+      "#{payable.student.name} (#{payable.student.id})"
+    elsif payable.is_a?(SessionStudent)
+      "#{payable.student.name} (#{payable.student.id}), Registration"
+    elsif payable.is_a?(Teacher) || payable.is_a?(Staff) #|| payable.is_a?(Partner)
+      "#{payable.name} (#{payable.id})"
+    else # Must be an expenditure
+      category.try(:name_label)
+    end rescue nil
   end
 end

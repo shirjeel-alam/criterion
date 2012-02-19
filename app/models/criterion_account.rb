@@ -23,6 +23,23 @@ class CriterionAccount < ActiveRecord::Base
   	end if admin_user.present?
 	end
 
+	def balance
+		case account_type
+		when BANK
+			account_entries.debit.sum(:amount) - account_entries.credit.sum(:amount) + initial_balance
+		else
+			account_entries.credit.sum(:amount) - account_entries.debit.sum(:amount) + initial_balance
+		end
+	end
+
+	def bank_account?
+		self == CriterionAccount.bank_account
+	end
+
+	def criterion_account?
+		self == CriterionAccount.criterion_account
+	end
+
 	### Class Methods ###
 
 	def self.bank_account
@@ -57,4 +74,14 @@ class CriterionAccount < ActiveRecord::Base
 				'Partner'
 		end
 	end
+
+	### View Helpers ###
+
+	def initial_balance_tag
+    initial_balance >= 0 ? :ok : :error
+  end
+
+  def balance_tag
+    balance >= 0 ? :ok : :error
+  end
 end
