@@ -76,6 +76,6 @@ ActiveAdmin.register Payment, :as => 'Expenditure' do
 	end
 
 	action_item :only => :index do
-		span link_to('New Expenditure', new_admin_payment_path(:status => Payment::PAID, :payment_date => Date.today, :payment_type => Payment::CREDIT))
+		span link_to('New Expenditure', new_admin_payment_path(:payment => { :status => Payment::PAID, :payment_date => Date.today, :payment_type => Payment::CREDIT }))
 	end
 end

@@ -14,6 +14,8 @@ class AdminUser < ActiveRecord::Base
 
   validates :role, :presence => true, :inclusion => { :in => [SUPER_ADMIN, ADMIN, TEACHER, STUDENT, STAFF, PARTNER] }
 
+  after_create { |admin| admin.build_criterion_account.save! }
+
   scope :admin, where(:role => [ADMIN, SUPER_ADMIN, PARTNER])
    
   def password_required?

@@ -36,7 +36,11 @@ class CriterionAccount < ActiveRecord::Base
 	### View Helpers ###
 
 	def title
-		"#{account_type_label} Account - #{admin_user.user.name rescue nil}"
+		if admin_user.present?
+			"#{account_type_label} Account - #{admin_user.user.name rescue nil}"
+		else
+			"#{account_type_label} Account"
+		end
 	end
 
 	def account_type_label

@@ -129,7 +129,7 @@ ActiveAdmin.register Payment do
         @partner_account = Partner.find(params[:partner_id])
         @payment = @partner_account.transactions.build(:payment_type => params[:payment_type], :status => Payment::PAID, :payment_date => Date.today)
       else
-        @payment = Payment.new
+        @payment = Payment.new(params[:payment])
       end
     end
 
@@ -137,8 +137,13 @@ ActiveAdmin.register Payment do
       @payment = Payment.new(params[:payment])
       
       if @payment.save
-        flash[:notice] = @payment.credit? ? 'Account debited successfully' : 'Account credited successfully'
-        redirect_to send("admin_#{@payment.payable_type.downcase}_path", @payment.payable)
+        if @payment.payable.present?
+          flash[:notice] = @payment.credit? ? 'Account debited successfully' : 'Account credited successfully'
+          redirect_to send("admin_#{@payment.payable_type.downcase}_path", @payment.payable)
+        else
+          flash[:notice] = 'Expenditure successfully created'
+          redirect_to admin_expenditures_path
+        end
       else
         render :new
       end

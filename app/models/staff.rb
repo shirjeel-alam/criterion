@@ -29,7 +29,9 @@ class Staff < ActiveRecord::Base
   end
 
   def create_admin_user
-    AdminUser.create(:email => email, :password => AdminUser::DEFAULT_PASSWORD, :role => AdminUser::STAFF, :user => self) if admin_user_confirmation.to_i == 0 
+    admin_user_attributes = { :email => email, :password => AdminUser::DEFAULT_PASSWORD, :role => AdminUser::ADMIN, :user => self }
+    admin_user_attributes.merge!(:role => AdminUser::STAFF, :status => AdminUser::DEACTIVE) if admin_user_confirmation == 'false'
+    AdminUser.create!(admin_user_attributes) 
   end
 
   def criterion_account

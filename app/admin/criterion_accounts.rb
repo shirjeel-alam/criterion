@@ -41,7 +41,7 @@ ActiveAdmin.register CriterionAccount do
         		link_to(admin.user.name, admin_student_path(admin.user)) rescue nil
       		else
       			link_to(admin.email, admin_admin_user_path(admin))
-      		end
+      		end if admin.present?
 	      end
         row(:initial_balance) { number_to_currency(criterion_account.balance, :unit => 'Rs. ', :precision => 0) }
       end

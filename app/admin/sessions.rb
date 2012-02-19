@@ -88,5 +88,9 @@ ActiveAdmin.register Session do
         redirect_to_back
       end
     end
+
+    def new
+      @session = Session.new(:registration_fee => 500)
+    end
   end
 end

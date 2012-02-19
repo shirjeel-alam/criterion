@@ -73,7 +73,7 @@ ActiveAdmin.register Staff do
     before_filter :check_authorization
     
     def check_authorization
-      unless current_admin_user.super_admin?
+      unless current_admin_user.super_admin? || current_admin_user.admin?
         flash[:error] = 'You are not authorized to perform this action'
         redirect_to_back
       end

@@ -8,6 +8,7 @@ class Payment < ActiveRecord::Base
   belongs_to :sessions_student
   
   before_validation :check_payment, :on => :create, :if => "payable_type == 'Enrollment'"
+  after_create :create_account_entry
 
   validates :amount, :presence => true, :numericality => { :only_integer => true, :greater_than => 0 }
   validates :status, :presence => true, :inclusion => { :in => [DUE, PAID, VOID, REFUNDED] }
@@ -26,7 +27,7 @@ class Payment < ActiveRecord::Base
   scope :cash, where(:payment_method => CASH)
   scope :cheque, where(:payment_method => CHEQUE)
 
-  scope :expenditure, where(:payable_id => nil, :payable_type => nil, :payment_type => CREDIT)
+  scope :expenditure, where(:payable_id => nil, :payment_type => CREDIT)
 
   scope :on, lambda { |date| where(:payment_date => date) }
   
@@ -125,9 +126,12 @@ class Payment < ActiveRecord::Base
         CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
         payable.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
       end
-    elsif payable.is_a?(Partner)
-    else # Must be expenditures
-
+    #elsif payable.is_a?(Partner)
+    else # Must be an expenditure
+      if credit?
+        CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
+        CriterionAccount.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
+      end
     end
   end
   
