@@ -150,10 +150,6 @@ ActiveAdmin.register Enrollment do
     end
   end
 
-  controller do
-    
-  end
-  
   member_action :start, :method => :put do
     enrollment = Enrollment.find(params[:id])
     if enrollment.start!

@@ -51,7 +51,7 @@ ActiveAdmin.register CriterionReport do
 		end
 
 		panel 'Payments (Revenue)' do
-			table_for Payment.credit.paid.on(criterion_report.report_date).order(:id) do |t|
+			table_for Payment.debit.paid.on(criterion_report.report_date).order(:id) do |t|
         t.column(:id) { |payment| link_to(payment.id, admin_payment_path(payment)) }
         t.column(:period) { |payment| payment.period_label}
         t.column(:gross_amount) { |payment| number_to_currency(payment.amount, :unit => 'Rs. ', :precision => 0) }
@@ -69,7 +69,7 @@ ActiveAdmin.register CriterionReport do
 		end
 
 		panel 'Payments (Expenditure)' do
-			table_for Payment.debit.cash.paid.on(criterion_report.report_date).order(:id) do |t|
+			table_for Payment.credit.cash.paid.on(criterion_report.report_date).order(:id) do |t|
         t.column(:id) { |payment| link_to(payment.id, admin_payment_path(payment)) }
         t.column(:period) { |payment| payment.period_label}
         t.column(:amount) { |payment| number_to_currency(payment.amount, :unit => 'Rs. ', :precision => 0) }
