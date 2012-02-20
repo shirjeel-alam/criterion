@@ -12,7 +12,7 @@ class Course < ActiveRecord::Base
   before_validation :set_end_date
 
   before_save :update_status
-  after_save :create_payments
+  after_save :update_session, :create_payments
   
   validates :name, :presence => true
   validates :teacher_id, :presence => true
@@ -164,6 +164,11 @@ class Course < ActiveRecord::Base
         cancel!
       end
     end
+  end
+
+  def update_session
+    session.update_status
+    session.save
   end
 
   ### Class Methods ###
