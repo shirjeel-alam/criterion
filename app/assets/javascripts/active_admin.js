@@ -32,7 +32,7 @@ $(document).ready(function() {
 
   $('.button').live('click', function() {
 		$('.chosen-select').chosen();
-		$('.datepicker').datepicker();
+		$('.datepicker').datepicker({dateFormat: 'dd-mm-yy'});
   });
 
   /*** END ***/
