@@ -4,11 +4,13 @@ class Partner < ActiveRecord::Base
   has_many :criterion_mails, :as => :mailable
   has_one :admin_user, :as => :user, :dependent => :destroy
   has_many :received_messages, :as => :receiver, :class_name => 'CriterionSms'
+  has_many :sent_messages, :as => :sender, :class_name => 'CriterionSms'
 
   accepts_nested_attributes_for :phone_numbers
 
   before_validation :set_email
   after_create :create_admin_user
+  after_save :update_admin_user_email
 
   validates :name, :presence => true
   validates :email, :presence => true
@@ -24,6 +26,10 @@ class Partner < ActiveRecord::Base
 
   def criterion_account
     admin_user.criterion_account
+  end
+
+  def update_admin_user_email
+    admin_user.update_attribute(:email, email) if admin_user.present?
   end
 
   ### Class Methods ###

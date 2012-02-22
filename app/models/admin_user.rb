@@ -9,12 +9,11 @@ class AdminUser < ActiveRecord::Base
 
   belongs_to :user, :polymorphic => :true
   has_many :criterion_mails, :as => :mailable
-  has_many :sent_messages, :as => :sender, :class_name => 'CriterionSms'
   has_one :criterion_account
 
   validates :role, :presence => true, :inclusion => { :in => [SUPER_ADMIN, ADMIN, TEACHER, STUDENT, STAFF, PARTNER] }
 
-  after_create { |admin| admin.build_criterion_account.save! }
+  after_create :create_criterion_account
 
   scope :admin, where(:role => [ADMIN, SUPER_ADMIN, PARTNER])
    
@@ -48,6 +47,10 @@ class AdminUser < ActiveRecord::Base
 
   def super_admin_or_partner?
     super_admin? || partner?
+  end
+
+  def create_criterion_account
+    self.build_criterion_account.save!
   end
 
   ### Class Methods ###
