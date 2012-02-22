@@ -100,12 +100,12 @@ class Payment < ActiveRecord::Base
     if payable.is_a?(Enrollment)
       if paid?
         CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
-        CriterionAccount.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount * (1 - payable.teacher.share), :entry_type => AccountEntry::CREDIT)
-        payable.teacher.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount * payable.teacher.share, :entry_type => AccountEntry::CREDIT)
+        CriterionAccount.criterion_account.account_entries.create!(:payment_id => self.id, :amount => (net_amount * (1 - payable.teacher.share)).round, :entry_type => AccountEntry::CREDIT)
+        payable.teacher.criterion_account.account_entries.create!(:payment_id => self.id, :amount => (net_amount * payable.teacher.share).round, :entry_type => AccountEntry::CREDIT)
       elsif refunded?
         CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
-        CriterionAccount.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount * (1 - payable.teacher.share), :entry_type => AccountEntry::DEBIT)
-        payable.teacher.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount * payable.teacher.share, :entry_type => AccountEntry::DEBIT)
+        CriterionAccount.criterion_account.account_entries.create!(:payment_id => self.id, :amount => (net_amount * (1 - payable.teacher.share)).round, :entry_type => AccountEntry::DEBIT)
+        payable.teacher.criterion_account.account_entries.create!(:payment_id => self.id, :amount => (net_amount * payable.teacher.share).round, :entry_type => AccountEntry::DEBIT)
       end
     elsif payable.is_a?(SessionStudent)
       if paid?
@@ -126,7 +126,7 @@ class Payment < ActiveRecord::Base
     elsif appropriated?
       CriterionAccount.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
       Partner.find_each do |partner|
-        partner.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount * partner.share, :entry_type => AccountEntry::CREDIT)
+        partner.criterion_account.account_entries.create!(:payment_id => self.id, :amount => (net_amount * partner.share).round, :entry_type => AccountEntry::CREDIT)
       end
     else # Must be an expenditure
       if credit?
