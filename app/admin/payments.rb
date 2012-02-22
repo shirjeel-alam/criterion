@@ -65,8 +65,9 @@ ActiveAdmin.register Payment do
         row(:payable) { payment.payable }
         row(:payable_type) { payment.payable_type }
         row(:period) { payment.period_label }
-        row(:amount) { number_to_currency(payment.net_amount, :unit => 'Rs. ', :precision => 0) }
+        row(:amount) { number_to_currency(payment.amount, :unit => 'Rs. ', :precision => 0) }
         row(:discount) { number_to_currency(payment.discount, :unit => 'Rs. ', :precision => 0) }
+        row(:net_amount) { number_to_currency(payment.net_amount, :unit => 'Rs. ', :precision => 0) }
         row(:status) { status_tag(payment.status_label, payment.status_tag) }
         row(:payment_type) { status_tag(payment.type_label, payment.type_tag) }
         row(:payment_date) { date_format(payment.payment_date) }
