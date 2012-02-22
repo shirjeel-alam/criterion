@@ -45,6 +45,7 @@ group :development, :test do
   gem 'ruby-debug19', :require => 'ruby-debug'
   gem 'turn', :require => false
   gem 'thin'
+  gem 'pry'
 end
 
 group :prouduction do

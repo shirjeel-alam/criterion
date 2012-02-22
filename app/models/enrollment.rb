@@ -76,8 +76,8 @@ class Enrollment < ActiveRecord::Base
   end
 
   def void_payments
-    payments_to_be_void = payments.due.collect { |payment| payment if payment.period.future? }.compact
-    payments_to_be_void << payments.due.detect { |payment| payment if payment.period.beginning_of_month == Date.today.beginning_of_month } if (Date.today - Date.today.beginning_of_month).to_i < 10
+    payments_to_be_void = payments.due.collect { |payment| payment if payment.period.future? & payment.due? }.compact
+    payments_to_be_void << payments.due.detect { |payment| payment if payment.period.beginning_of_month == Date.today.beginning_of_month } if (Date.today - Date.today.beginning_of_month).to_i < 10 && payment.due?
     payments_to_be_void.each do |payment|
       payment.void!
     end
@@ -88,7 +88,7 @@ class Enrollment < ActiveRecord::Base
   end
 
   def apply_discount(discount)
-    discountable_payments = payments.collect { |payment| payment if payment.period.future? }.compact
+    discountable_payments = payments.collect { |payment| payment if payment.period.future? & payment.due? }.compact
     discountable_payments.each do |payment|
       payment.update_attribute(:discount, discount)
     end

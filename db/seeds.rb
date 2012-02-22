@@ -9,10 +9,22 @@ AdminUser.destroy_all
 
 AdminUser.create!(:email => 'admin@criterion.edu', :password => 'password', :password_confirmation => 'password', :role => AdminUser::SUPER_ADMIN, :status => AdminUser::ACTIVE)
 
+### Students ###
+Student.destroy_all
+
+student = Student.create!(:name => 'Talib Dal', :email => 'nuzaifdal@live.com', :address => "Gulshan-e-Iqbal Block-#{rand(15)}")
+student.phone_numbers.create!(:number => '03218916438', :category => PhoneNumber::MOBILE)
+
+student = Student.create!(:name => 'Aziz Ahmed', :email => 'azizahmed@hotmail.com', :address => "Gulshan-e-Iqbal Block-#{rand(15)}")
+student.phone_numbers.create!(:number => '03132000090', :category => PhoneNumber::MOBILE)
+
+student = Student.create!(:name => 'Aisha Kudiya', :email => 'aisha.kudiya@dibpak.com', :address => "Gulshan-e-Iqbal Block-#{rand(15)}")
+student.phone_numbers.create!(:number => '03453174589', :category => PhoneNumber::MOBILE)
+
 ### Teacher Accounts ###
 Teacher.destroy_all
 
-[['Kamran Abdulsalam', 0.8], ['Adeel Iqbal', 0.8], ['Hussain Raza', 0.8], ['Munawar Mujahid', 0.8], ['Moinuddin Ali', 0.8]].each do |teacher|
+[['Kamran Abdulsalam', 0.8], ['Adeel Iqbal', 0.8], ['Hussain Raza', 0.8], ['Munawar Mujahid', 0.7], ['Moinuddin Ali', 0.8]].each do |teacher|
 	Teacher.create!(:name => teacher[0], :share => teacher[1])
 end
 

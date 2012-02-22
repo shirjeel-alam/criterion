@@ -220,7 +220,7 @@ class Payment < ActiveRecord::Base
       "#{payable.student.name} (#{payable.student.id})"
     elsif payable.is_a?(SessionStudent)
       "#{payable.student.name} (#{payable.student.id}), Registration"
-    elsif payable.is_a?(Teacher) || payable.is_a?(Staff) #|| payable.is_a?(Partner)
+    elsif payable.is_a?(Teacher) || payable.is_a?(Staff) || payable.is_a?(Partner)
       "#{payable.name} (#{payable.id})"
     else # Must be an expenditure
       category.try(:name_label)
