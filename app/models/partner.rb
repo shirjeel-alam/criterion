@@ -16,6 +16,10 @@ class Partner < ActiveRecord::Base
   validates :email, :presence => true
   validates :share, :presence => true, :numericality => { :greater_than_or_equal_to => 0.1, :less_than_or_equal_to => 1 }
 
+  def balance
+    criterion_account.balance
+  end
+
   def set_email
     self.email = "#{name.strip.gsub(' ', '.').downcase}@criterion.edu" unless email.present?
   end
@@ -40,5 +44,11 @@ class Partner < ActiveRecord::Base
 
   def self.emails
     Partner.all.collect { |partner| ["#{partner.name} - #{partner.email}", partner.email] }
+  end
+
+  ### View Helpers ###
+
+  def balance_tag
+    balance >= 0 ? :ok : :error
   end
 end

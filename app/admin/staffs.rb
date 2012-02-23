@@ -11,9 +11,9 @@ ActiveAdmin.register Staff do
     end
     column :name
     column :email
-    # column 'Balance', :sortable => :balance do |teacher|
-    #   status_tag(number_to_currency(staff.balance, :unit => 'Rs. ', :precision => 0), staff.balance_tag) rescue nil
-    # end
+    column 'Balance', :sortable => :balance do |staff|
+      status_tag(number_to_currency(staff.balance, :unit => 'Rs. ', :precision => 0), staff.balance_tag) rescue nil
+    end
 
     default_actions
   end
@@ -39,7 +39,7 @@ ActiveAdmin.register Staff do
         row(:id) { staff.id }
         row(:name) { staff.name }
         row(:email) { staff.email }
-        # row(:balance) { status_tag(number_to_currency(staff.balance, :unit => 'Rs. ', :precision => 0), staff.balance_tag) rescue nil }
+        row(:balance) { status_tag(number_to_currency(staff.balance, :unit => 'Rs. ', :precision => 0), staff.balance_tag) rescue nil }
       end
     end
 

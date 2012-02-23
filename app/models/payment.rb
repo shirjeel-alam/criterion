@@ -1,7 +1,7 @@
 class Payment < ActiveRecord::Base
   DUE, PAID, VOID, REFUNDED = 0, 1, 2, 3
   CREDIT, DEBIT = true, false
-  CASH, CHEQUE = 0, 1
+  CASH, CHEQUE, INTERNAL = 0, 1, 2
   
   belongs_to :payable, :polymorphic => :true
   belongs_to :category
@@ -15,7 +15,7 @@ class Payment < ActiveRecord::Base
   validates :status, :presence => true, :inclusion => { :in => [DUE, PAID, VOID, REFUNDED] }
   validates :discount, :numericality => { :only_integer => true, :greater_than => 0 }, :allow_blank => true
   validates :payment_date, :timeliness => { :type => :date, :allow_blank => true }
-  validates :payment_method, :inclusion => { :in => [CASH, CHEQUE] }, :allow_blank => true
+  validates :payment_method, :inclusion => { :in => [CASH, CHEQUE, INTERNAL] }, :allow_blank => true
   
   scope :paid, where(:status => PAID)
   scope :due, where(:status => DUE)
@@ -27,10 +27,14 @@ class Payment < ActiveRecord::Base
 
   scope :cash, where(:payment_method => CASH)
   scope :cheque, where(:payment_method => CHEQUE)
+  scope :internal, where(:payment_method => INTERNAL)
+  scope :cash_or_cheque, where(:payment_method => [CASH, CHEQUE])
 
   scope :expenditure, where(:payable_id => nil, :payment_type => CREDIT)
 
   scope :on, lambda { |date| where(:payment_date => date) }
+
+  attr_accessor :other_account
   
   def check_payment
     errors.add(:duplicate, "Entry already exists") if Payment.where(:period => period.beginning_of_month..period.end_of_month, :payable_id => payable_id, :payable_type => payable_type, :payment_type => payment_type).present?
@@ -62,6 +66,18 @@ class Payment < ActiveRecord::Base
 
   def debit?
     payment_type == DEBIT
+  end
+
+  def cash?
+    payment_method == CASH
+  end
+
+  def cheque?
+    payment_method == CHEQUE
+  end
+
+  def internal?
+    payment_method == INTERNAL
   end
 
   def appropriated?
@@ -117,18 +133,34 @@ class Payment < ActiveRecord::Base
       end
     elsif payable.is_a?(Teacher) || payable.is_a?(Partner)
       if debit?
-        CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
+        if other_account.present?
+          CriterionAccount.find(other_account).account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
+        else
+          CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
+        end
         payable.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
       elsif credit?
-        CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
+        if other_account.present?
+          CriterionAccount.find(other_account).account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
+        else
+          CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
+        end
         payable.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
       end
     elsif payable.is_a?(Staff)
       if debit?
-        CriterionAccount.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
+        if other_account.present?
+          CriterionAccount.find(other_account).account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
+        else
+          CriterionAccount.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
+        end
         payable.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
       elsif credit?
-        CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
+        if other_account.present?
+          CriterionAccount.find(other_account).account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
+        else
+          CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
+        end
         payable.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
       end
     elsif appropriated?
@@ -154,8 +186,10 @@ class Payment < ActiveRecord::Base
     [['Credit', CREDIT], ['Debit', DEBIT]]
   end
 
-  def self.payment_methods
-    [['Cash', CASH], ['Cheque', CHEQUE]]
+  def self.payment_methods(exclude_internal = false)
+    payment_methods = [['Cash', CASH], ['Cheque', CHEQUE]]
+    payment_methods << ['Internal', INTERNAL] unless exclude_internal
+    payment_methods
   end
 
   def self.month(date)
@@ -211,6 +245,8 @@ class Payment < ActiveRecord::Base
         'Cash'
       when CHEQUE
         'Cheque'
+      when INTERNAL
+        'Internal'
     end
   end
 
@@ -220,6 +256,8 @@ class Payment < ActiveRecord::Base
         :ok
       when CHEQUE
         :warning
+      when INTERNAL
+        :error
     end
   end
 

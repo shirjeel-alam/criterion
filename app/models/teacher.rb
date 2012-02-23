@@ -18,17 +18,9 @@ class Teacher < ActiveRecord::Base
   validates :email, :presence => true
   validates :share, :presence => true, :numericality => { :greater_than_or_equal_to => 0.1, :less_than_or_equal_to => 1 }
 
-  # def balance
-  #   income = 0
-  #   payments.debit.paid.each do |payment|
-  #     income += payment.net_amount 
-  #   end
-  #   income *= share
-  #   transactions.debit.paid.each do |payment|
-  #     income += payment.net_amount 
-  #   end
-  #   income - transactions.credit.sum(:amount)
-  # end
+  def balance
+    criterion_account.balance
+  end
 
   def set_email
     self.email = "#{name.strip.gsub(' ', '.').downcase}@criterion.edu" unless email.present?

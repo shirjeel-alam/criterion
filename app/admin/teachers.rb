@@ -14,10 +14,10 @@ ActiveAdmin.register Teacher do
     column :email
     column :share, :sortable => :share do |teacher|
       number_to_percentage(teacher.share * 100, :precision => 0)
+    end if current_admin_user.super_admin_or_partner?
+    column 'Balance', :sortable => :balance do |teacher|
+      status_tag(number_to_currency(teacher.balance, :unit => 'Rs. ', :precision => 0), teacher.balance_tag) rescue nil
     end
-    # column 'Balance', :sortable => :balance do |teacher|
-    #   status_tag(number_to_currency(teacher.balance, :unit => 'Rs. ', :precision => 0), teacher.balance_tag) rescue nil
-    # end
 
     default_actions
   end
@@ -43,8 +43,8 @@ ActiveAdmin.register Teacher do
         row(:id) { teacher.id }
         row(:name) { teacher.name }
         row(:email) { teacher.email }
-        row(:share) { number_to_percentage(teacher.share * 100, :precision => 0) }
-        # row(:balance) { status_tag(number_to_currency(teacher.balance, :unit => 'Rs. ', :precision => 0), teacher.balance_tag) rescue nil }
+        row(:share) { number_to_percentage(teacher.share * 100, :precision => 0) } if current_admin_user.super_admin_or_partner?
+        row(:balance) { status_tag(number_to_currency(teacher.balance, :unit => 'Rs. ', :precision => 0), teacher.balance_tag) rescue nil }
       end
     end
 

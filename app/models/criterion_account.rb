@@ -42,6 +42,10 @@ class CriterionAccount < ActiveRecord::Base
 
 	### Class Methods ###
 
+	def self.accounts(exlude_account = nil)
+		CriterionAccount.all.collect { |account| [account.title, account.id] unless account == exlude_account }.compact
+	end
+
 	def self.bank_account
 		CriterionAccount.find_by_account_type(BANK)
 	end

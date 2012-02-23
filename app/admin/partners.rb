@@ -15,6 +15,9 @@ ActiveAdmin.register Partner do
     column :share, :sortable => :share do |partner|
       number_to_percentage(partner.share * 100, :precision => 0)
     end
+    column 'Balance', :sortable => :balance do |partner|
+      status_tag(number_to_currency(partner.balance, :unit => 'Rs. ', :precision => 0), partner.balance_tag) rescue nil
+    end
 
     default_actions
   end
@@ -41,6 +44,7 @@ ActiveAdmin.register Partner do
         row(:name) { partner.name }
         row(:email) { partner.email }
         row(:share) { number_to_percentage(partner.share * 100, :precision => 0) }
+        row(:balance) { status_tag(number_to_currency(partner.balance, :unit => 'Rs. ', :precision => 0), partner.balance_tag) rescue nil }
       end
     end
 

@@ -72,6 +72,7 @@ ActiveAdmin.register Payment do
         row(:payment_type) { status_tag(payment.type_label, payment.type_tag) }
         row(:payment_date) { date_format(payment.payment_date) }
         row(:category) { payment.category.name_label rescue nil }
+        row(:additional_info) { payment.additional_info }
       end
     end
 
@@ -79,11 +80,10 @@ ActiveAdmin.register Payment do
       table_for payment.account_entries do |t|
         t.column(:id) { |account_entry| link_to(account_entry.id, admin_account_entry_path(account_entry)) }
         t.column(:criterion_account) { |account_entry| link_to(account_entry.criterion_account.title, admin_criterion_account_path(account_entry.criterion_account)) }
-        #t.column(:payment) { |account_entry| link_to(account_entry.payment_id, admin_payment_path(account_entry.payment)) }
         t.column(:entry_type) { |account_entry| status_tag(account_entry.entry_type_label, account_entry.entry_type_tag) }
         t.column(:amount) { |account_entry| number_to_currency(account_entry.amount, :unit => 'Rs. ', :precision => 0) }
       end
-    end
+    end if payment.account_entries.present?
 
     active_admin_comments
   end
@@ -120,7 +120,7 @@ ActiveAdmin.register Payment do
   end
 
   controller do
-    before_filter :check_authorization
+    before_filter :check_authorization, :except => [:new, :create]
 
     def check_authorization
       unless current_admin_user.super_admin_or_partner?
@@ -131,14 +131,14 @@ ActiveAdmin.register Payment do
 
     def new
       if params[:teacher_id]
-        @teacher = Teacher.find(params[:teacher_id])
-        @payment = @teacher.transactions.build(:payment_type => params[:payment_type], :status => Payment::PAID, :payment_date => Date.today)
+        @account_holder = Teacher.find(params[:teacher_id])
+        @payment = @account_holder.transactions.build(:payment_type => params[:payment_type], :status => Payment::PAID, :payment_date => Date.today)
       elsif params[:staff_id]
-        @staff = Staff.find(params[:staff_id])
-        @payment = @staff.transactions.build(:payment_type => params[:payment_type], :status => Payment::PAID, :payment_date => Date.today)
+        @account_holder = Staff.find(params[:staff_id])
+        @payment = @account_holder.transactions.build(:payment_type => params[:payment_type], :status => Payment::PAID, :payment_date => Date.today)
       elsif params[:partner_id]
-        @partner = Partner.find(params[:partner_id])
-        @payment = @partner.transactions.build(:payment_type => params[:payment_type], :status => Payment::PAID, :payment_date => Date.today)
+        @account_holder = Partner.find(params[:partner_id])
+        @payment = @account_holder.transactions.build(:payment_type => params[:payment_type], :status => Payment::PAID, :payment_date => Date.today)
       elsif params[:category_id]
         @payment = Payment.new(:payment_type => params[:payment_type],  :category_id => params[:category_id],:status => Payment::PAID, :payment_date => Date.today)
       else
