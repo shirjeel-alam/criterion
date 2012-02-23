@@ -13,11 +13,11 @@ class CriterionReport < ActiveRecord::Base
 	end
 
 	def calc_gross_revenue
-		Payment.credit.paid.cash_or_cheque.on(report_date).sum(:amount) rescue nil
+		Payment.debit.paid.cash_or_cheque.on(report_date).sum(:amount) rescue nil
 	end
 
 	def calc_discounts
-		Payment.credit.paid.cash_or_cheque.on(report_date).sum(:discount) rescue nil
+		Payment.debit.paid.cash_or_cheque.on(report_date).sum(:discount) rescue nil
 	end
 
 	def calc_net_revenue
@@ -25,7 +25,7 @@ class CriterionReport < ActiveRecord::Base
 	end
 
 	def calc_expenditure
-		Payment.debit.paid.cash.on(report_date).sum(:amount) rescue nil
+		Payment.credit.paid.cash.on(report_date).sum(:amount) rescue nil
 	end
 
 	def calc_balance

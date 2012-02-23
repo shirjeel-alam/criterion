@@ -51,7 +51,7 @@ ActiveAdmin.register CriterionReport do
 		end
 
 		panel 'Payments (Revenue)' do
-			table_for Payment.debit.paid.on(criterion_report.report_date).order(:id) do |t|
+			table_for Payment.debit.paid.cash_or_cheque.on(criterion_report.report_date).order(:id) do |t|
         t.column(:id) { |payment| link_to(payment.id, admin_payment_path(payment)) }
         t.column(:period) { |payment| payment.period_label}
         t.column(:gross_amount) { |payment| number_to_currency(payment.amount, :unit => 'Rs. ', :precision => 0) }
@@ -66,10 +66,10 @@ ActiveAdmin.register CriterionReport do
         end
         t.column(:category) { |payment| payment.category.name_label rescue nil }
       end
-		end
+		end if Payment.debit.paid.cash_or_cheque.on(criterion_report.report_date).present?
 
 		panel 'Payments (Expenditure)' do
-			table_for Payment.credit.cash.paid.on(criterion_report.report_date).order(:id) do |t|
+			table_for Payment.credit.paid.cash.on(criterion_report.report_date).order(:id) do |t|
         t.column(:id) { |payment| link_to(payment.id, admin_payment_path(payment)) }
         t.column(:period) { |payment| payment.period_label}
         t.column(:amount) { |payment| number_to_currency(payment.amount, :unit => 'Rs. ', :precision => 0) }
@@ -84,7 +84,7 @@ ActiveAdmin.register CriterionReport do
         end
         t.column(:category) { |payment| payment.category.name_label rescue nil }
       end
-		end
+		end if Payment.credit.paid.cash.on(criterion_report.report_date).present?
 
 		panel 'Graphs' do
 			chart = Gchart.pie_3d(:data => [criterion_report.net_revenue, criterion_report.expenditure], :size => '600x200', :labels => ['Revenue', 'Expenditure'])
@@ -98,5 +98,9 @@ ActiveAdmin.register CriterionReport do
     criterion_report = CriterionReport.find(params[:id])
     criterion_report.update_report_data
     redirect_to_back
+  end
+
+  action_item :only => :show do
+    span link_to('Update', update_report_admin_criterion_report_path(criterion_report), :method => :put)
   end
 end
