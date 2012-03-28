@@ -43,7 +43,7 @@ ActiveAdmin.register CriterionMail do
     before_filter :check_authorization
     
     def check_authorization
-      if current_admin_user.admin?
+      if current_admin_user.all_other?
         if %w[index show edit update destroy].include?(action_name)
           flash[:error] = 'You are not authorized to perform this action'
           redirect_to_back

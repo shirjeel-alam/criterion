@@ -31,10 +31,13 @@ class CriterionSms < ActiveRecord::Base
 		request.set_form_data(:phone => to, :msg => message, :type => 0)
 		response = http.request(request)
 
-		if response.body == 'true'
+		result = ActiveSupport::JSON.decode(response.body)['result']
+		if result == 'true'
 			update_attribute(:status, true)
-		else
+		elsif result == 'false'
 			update_attribute(:status, false)
+		else
+			raise 'Unknown Response SendSMS PK'
 		end
 	end
 

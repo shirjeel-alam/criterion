@@ -3,8 +3,8 @@ ActiveAdmin.register Course do
 
   filter :id
   filter :name
-  filter :status, :as => :select, :collection => lambda { Course.statuses }
-  filter :level, :as => :select, :collection => lambda { Course.levels }
+  # filter :status, :as => :select, :collection => lambda { Course.statuses }
+  # filter :level, :as => :select, :collection => lambda { Course.levels }
   filter :monthly_fee
 
   scope :all, :default => true do |courses|

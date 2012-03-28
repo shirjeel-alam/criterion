@@ -47,7 +47,7 @@ class Enrollment < ActiveRecord::Base
       self.status = course.status
     else
       self.start_date = start_date < course.start_date ? course.start_date : start_date
-      self.status = start_date < Date.today ? NOT_STARTED : IN_PROGRESS unless completed? || cancelled?
+      self.status = start_date > Date.today ? NOT_STARTED : IN_PROGRESS unless completed? || cancelled?
     end
   end
   

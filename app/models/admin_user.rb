@@ -9,6 +9,7 @@ class AdminUser < ActiveRecord::Base
 
   belongs_to :user, :polymorphic => :true
   has_many :criterion_mails, :as => :mailable
+  has_many :sent_messages, :as => :sender, :class_name => 'CriterionSms'
   has_one :criterion_account
 
   validates :role, :presence => true, :inclusion => { :in => [SUPER_ADMIN, ADMIN, TEACHER, STUDENT, STAFF, PARTNER] }
@@ -47,6 +48,10 @@ class AdminUser < ActiveRecord::Base
 
   def super_admin_or_partner?
     super_admin? || partner?
+  end
+
+  def all_other?
+    admin? || teacher? || student? || staff?
   end
 
   def create_criterion_account

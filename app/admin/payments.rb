@@ -3,10 +3,10 @@ ActiveAdmin.register Payment do
 
   filter :id
   filter :amount
-  filter :status, :as => :select, :collection => lambda { Payment.statuses }
-  filter :payment_type, :as => :select, :collection => lambda { Payment.payment_types }
-  filter :payment_method, :as => :select, :collection => lambda { Payment.payment_methods }
-  filter :category, :as => :select, :collection => lambda { Category.categories }
+  # filter :status, :as => :select, :collection => lambda { Payment.statuses }
+  # filter :payment_type, :as => :select, :collection => lambda { Payment.payment_types }
+  # filter :payment_method, :as => :select, :collection => lambda { Payment.payment_methods }
+  # filter :category, :as => :select, :collection => lambda { Category.categories }
 
   scope :all
   scope :paid

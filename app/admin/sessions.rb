@@ -2,9 +2,9 @@ ActiveAdmin.register Session do
   menu :parent => 'More Menus', :if => proc { current_admin_user.super_admin_or_partner? }
 
   filter :id
-  filter :period, :as => :select, :collection => lambda { Session.periods }
+  # filter :period, :as => :select, :collection => lambda { Session.periods }
   filter :year
-  filter :status, :as => :select, :collection => lambda { Session.statuses }
+  # filter :status, :as => :select, :collection => lambda { Session.statuses }
   filter :registration_fee
   
   index do
