@@ -26,9 +26,13 @@ class Enrollment < ActiveRecord::Base
   scope :completed, where(:status => COMPLETED)
   scope :cancelled, where(:status => CANCELLED)
 
-  def student_id
-    student.id rescue nil
-  end
+  # def student_id
+  #   student.id rescue nil
+  # end
+
+  # def student_name
+  #   student.name rescue nil
+  # end
 
   def set_status
     if course.not_started?

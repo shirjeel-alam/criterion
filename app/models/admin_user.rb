@@ -91,7 +91,7 @@ class AdminUser < ActiveRecord::Base
       when STAFF
         'Staff'
       when PARTNER
-        'partner'
+        'Partner'
   	end
   end
 

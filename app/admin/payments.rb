@@ -70,6 +70,7 @@ ActiveAdmin.register Payment do
         row(:net_amount) { number_to_currency(payment.net_amount, :unit => 'Rs. ', :precision => 0) }
         row(:status) { status_tag(payment.status_label, payment.status_tag) }
         row(:payment_type) { status_tag(payment.type_label, payment.type_tag) }
+        row(:payment_method) { status_tag(payment.payment_method_label, payment.payment_method_tag) }
         row(:payment_date) { date_format(payment.payment_date) }
         row(:category) { payment.category.name_label rescue nil }
         row(:additional_info) { payment.additional_info }
@@ -133,23 +134,35 @@ ActiveAdmin.register Payment do
       if params[:teacher_id]
         @account_holder = Teacher.find(params[:teacher_id])
         @payment = @account_holder.transactions.build(:payment_type => params[:payment_type], :status => Payment::PAID, :payment_date => Date.today)
+        session[:holder_type] = 'Teacher'
       elsif params[:staff_id]
         @account_holder = Staff.find(params[:staff_id])
         @payment = @account_holder.transactions.build(:payment_type => params[:payment_type], :status => Payment::PAID, :payment_date => Date.today)
+        session[:holder_type] = 'Staff'
       elsif params[:partner_id]
         @account_holder = Partner.find(params[:partner_id])
         @payment = @account_holder.transactions.build(:payment_type => params[:payment_type], :status => Payment::PAID, :payment_date => Date.today)
+        session[:holder_type] = 'Partner'
       elsif params[:category_id]
         @payment = Payment.new(:payment_type => params[:payment_type],  :category_id => params[:category_id],:status => Payment::PAID, :payment_date => Date.today)
       else
         @payment = Payment.new(params[:payment])
       end
+
+      session[:holder_id] = params[:teacher_id] || params[:staff_id] || params[:partner_id] || params[:category_id]
+      session[:limited] = true if params[:teacher_id] || params[:staff_id] || params[:partner_id] || params[:category_id]
     end
 
     def create
+      binding.pry
+      params[:payment].delete :other_account unless params[:payment][:payment_method] == Payment::INTERNAL
       @payment = Payment.new(params[:payment])
       
       if @payment.save
+        session.delete :holder_id
+        session.delete :holder_type
+        session.delete :limited
+
         if @payment.payable.present?
           flash[:notice] = @payment.credit? ? 'Account debited successfully' : 'Account credited successfully'
           redirect_to send("admin_#{@payment.payable_type.downcase}_path", @payment.payable)
@@ -161,6 +174,13 @@ ActiveAdmin.register Payment do
           redirect_to admin_expenditures_path
         end
       else
+        if session[:holder_type] == 'Teacher'
+          @account_holder = Teacher.find(session[:holder_id])
+        elsif session[:holder_type] == 'Staff'
+          @account_holder = Staff.find(session[:holder_id])
+        elsif session[:holder_type] == 'Partner'
+          @account_holder = Partner.find(session[:holder_id])
+        end
         render :new
       end
     end

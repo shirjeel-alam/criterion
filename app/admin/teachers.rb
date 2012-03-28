@@ -103,18 +103,20 @@ ActiveAdmin.register Teacher do
     panel 'Payments (Deposits)' do
       table_for teacher.transactions.debit.each do |t|
         t.column(:id) { |deposit| link_to(deposit.id, admin_payment_path(deposit)) }
+        t.column(:payment_date) { |deposit| date_format(deposit.payment_date) }
+        t.column(:narration) { |deposit| truncate(deposit.additional_info, :length => 75) }
         t.column(:amount) { |deposit| number_to_currency(deposit.amount, :unit => 'Rs. ', :precision => 0) }
         t.column(:status) { |deposit| status_tag(deposit.status_label, deposit.status_tag) }
-        t.column(:payment_date) { |deposit| date_format(deposit.payment_date) }
       end
     end if teacher.transactions.debit.present?
 
     panel 'Payments (Withdrawal)' do
       table_for teacher.transactions.credit.each do |t|
         t.column(:id) { |withdrawal| link_to(withdrawal.id, admin_payment_path(withdrawal)) }
+        t.column(:payment_date) { |withdrawal| date_format(withdrawal.payment_date) }
+        t.column(:narration) { |withdrawal| truncate(withdrawal.additional_info, :length => 75) }
         t.column(:amount) { |withdrawal| number_to_currency(withdrawal.amount, :unit => 'Rs. ', :precision => 0) }
         t.column(:status) { |withdrawal| status_tag(withdrawal.status_label, withdrawal.status_tag) }
-        t.column(:payment_date) { |withdrawal| date_format(withdrawal.payment_date) }
       end
     end if teacher.transactions.credit.present?
 
@@ -130,9 +132,11 @@ ActiveAdmin.register Teacher do
     before_filter :check_authorization
     
     def check_authorization
-      unless current_admin_user.super_admin_or_partner? || current_admin_user.admin?
-        flash[:error] = 'You are not authorized to perform this action'
-        redirect_to_back
+      if current_admin_user.admin?
+        if %w[edit destroy].include?(action_name)
+          flash[:error] = 'You are not authorized to perform this action'
+          redirect_to_back
+        end
       end
     end
   end

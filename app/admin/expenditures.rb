@@ -6,6 +6,8 @@ ActiveAdmin.register Payment, :as => 'Expenditure' do
 	filter :id
 	filter :amount
 	filter :period
+	filter :category
+	filter :payment_method
 	# Check these
 	# filter :category, :as => :select, :collection => lambda { Category.categories }
 	# filter :payment_method, :as => :select, :collection => lambda { Payment.payment_methods }
@@ -36,37 +38,28 @@ ActiveAdmin.register Payment, :as => 'Expenditure' do
 		column 'ID', :sortable => :id do |payment|
 			link_to(payment.id, admin_payment_path(payment))
 		end
-		column :period, :sortable => :period do |payment|
-			payment.period_label
+		column :payment_date, :sortable => :payment_date do |payment|
+      date_format(payment.payment_date)
+    end
+		column :category, :sortable => :category_id do |payment|
+			payment.category.name_label rescue nil
 		end
 		column :amount, :sortable => :amount do |payment|
 			number_to_currency(payment.amount, :unit => 'Rs. ', :precision => 0)
 		end
-		column :discount, :sortable => :discount do |payment|
-			number_to_currency(payment.discount, :unit => 'Rs. ', :precision => 0)
-		end
 		column :status, :sortable => :status do |payment|
 			status_tag(payment.status_label, payment.status_tag)
 		end
-		column :payment_type, :sortable => :payment_type do |payment|
-			status_tag(payment.type_label, payment.type_tag)
-		end
-		column :payment_date, :sortable => :payment_date do |payment|
-      date_format(payment.payment_date)
-    end
     column :payment_method, :sortable => :payment_method do |payment|
       status_tag(payment.payment_method_label, payment.payment_method_tag)
     end
-		column :payable do |payment|
-			if payment.payable.is_a?(Enrollment)
-				link_to(payment.payable.student.name, admin_student_path(payment.payable.student)) rescue nil
-			elsif payment.payable.is_a?(Teacher)
-				link_to(payment.payable.name, admin_teacher_path(payment.payable)) rescue nil
-			end
-		end
-		column :category, :sortable => :category_id do |payment|
-			payment.category.name_label rescue nil
-		end
+		# column :payable do |payment|
+		# 	if payment.payable.is_a?(Enrollment)
+		# 		link_to(payment.payable.student.name, admin_student_path(payment.payable.student)) rescue nil
+		# 	elsif payment.payable.is_a?(Teacher)
+		# 		link_to(payment.payable.name, admin_teacher_path(payment.payable)) rescue nil
+		# 	end
+		# end
 		# column nil do |payment|
 		# 	span link_to('View', admin_payment_path(payment))	
 		# 	span link_to('Edit', edit_admin_payment_path(payment))

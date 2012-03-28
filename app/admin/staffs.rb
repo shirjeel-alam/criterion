@@ -44,20 +44,22 @@ ActiveAdmin.register Staff do
     end
 
     panel 'Payments (Deposits)' do
-      table_for staff.transactions.debit.each do |t|
+      table_for teacher.transactions.debit.each do |t|
         t.column(:id) { |deposit| link_to(deposit.id, admin_payment_path(deposit)) }
+        t.column(:payment_date) { |deposit| date_format(deposit.payment_date) }
+        t.column(:narration) { |deposit| truncate(deposit.additional_info, :length => 75) }
         t.column(:amount) { |deposit| number_to_currency(deposit.amount, :unit => 'Rs. ', :precision => 0) }
         t.column(:status) { |deposit| status_tag(deposit.status_label, deposit.status_tag) }
-        t.column(:payment_date) { |deposit| date_format(deposit.payment_date) }
       end
     end if staff.transactions.debit.present?
 
     panel 'Payments (Withdrawal)' do
-      table_for staff.transactions.credit.each do |t|
+      table_for teacher.transactions.credit.each do |t|
         t.column(:id) { |withdrawal| link_to(withdrawal.id, admin_payment_path(withdrawal)) }
+        t.column(:payment_date) { |withdrawal| date_format(withdrawal.payment_date) }
+        t.column(:narration) { |withdrawal| truncate(withdrawal.additional_info, :length => 75) }
         t.column(:amount) { |withdrawal| number_to_currency(withdrawal.amount, :unit => 'Rs. ', :precision => 0) }
         t.column(:status) { |withdrawal| status_tag(withdrawal.status_label, withdrawal.status_tag) }
-        t.column(:payment_date) { |withdrawal| date_format(withdrawal.payment_date) }
       end
     end if staff.transactions.credit.present?
 
@@ -70,6 +72,8 @@ ActiveAdmin.register Staff do
   end
 
   controller do
+    # active_admin_config.clear_action_items!
+
     before_filter :check_authorization
     
     def check_authorization
