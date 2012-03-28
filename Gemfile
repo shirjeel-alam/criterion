@@ -1,7 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.1.3'
-gem 'execjs'
+gem 'rails', '3.2.2'
 gem 'therubyracer'
 
 gem 'mysql2'
@@ -43,9 +42,9 @@ end
 group :development, :test do
   # Pretty printed test output
   gem 'ruby-debug19', :require => 'ruby-debug'
+  gem 'pry-rails'
   gem 'turn', :require => false
   gem 'thin'
-  gem 'pry'
 end
 
 group :prouduction do
