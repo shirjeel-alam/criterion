@@ -85,4 +85,28 @@ $(document).ready(function() {
   });
 
   /*** END ***/
+
+  /*** Internal Payments ***/
+
+  $('#payment_other_account_input').hide();
+  
+  // CASH
+  $('#payment_payment_method_0').on('click', function(){
+    $('#payment_other_account_input').hide();
+    $('#payment_other_account').trigger("liszt:updated");
+  });
+
+  // CHEQUE
+  $('#payment_payment_method_1').on('click', function(){
+    $('#payment_other_account_input').hide();
+    $('#payment_other_account').trigger("liszt:updated");
+  });
+
+  // INTERNAL
+  $('#payment_payment_method_2').on('click', function(){
+    $('#payment_other_account_input').show();
+    $('#payment_other_account').trigger("liszt:updated");
+  });
+
+  /*** END ***/
 });

@@ -53,20 +53,6 @@ ActiveAdmin.register Payment, :as => 'Expenditure' do
     column :payment_method, :sortable => :payment_method do |payment|
       status_tag(payment.payment_method_label, payment.payment_method_tag)
     end
-		# column :payable do |payment|
-		# 	if payment.payable.is_a?(Enrollment)
-		# 		link_to(payment.payable.student.name, admin_student_path(payment.payable.student)) rescue nil
-		# 	elsif payment.payable.is_a?(Teacher)
-		# 		link_to(payment.payable.name, admin_teacher_path(payment.payable)) rescue nil
-		# 	end
-		# end
-		# column nil do |payment|
-		# 	span link_to('View', admin_payment_path(payment))	
-		# 	span link_to('Edit', edit_admin_payment_path(payment))
-		# 	span link_to('Delete', admin_payment_path(payment), :method => :delete)
-		# end
-
-		# default_actions
 	end
 
 	action_item :only => :index do

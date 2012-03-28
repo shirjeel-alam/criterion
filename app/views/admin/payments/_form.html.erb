@@ -2,7 +2,7 @@
   f.inputs do
     if params[:teacher_id] || params[:staff_id] || params[:partner_id] || params[:category_id] || session[:limited]
       f.input :amount, :required => true, :input_html => { :maxlength => 10 }
-      f.input :payment_method, :as => :radio, :collection => Payment.payment_methods(current_admin_user.admin?), :required => true
+      f.input :payment_method, :as => :radio, :collection => Payment.payment_methods(current_admin_user.admin? || @payment.payment_type), :required => true
       if current_admin_user.super_admin_or_partner?
         f.input :other_account, :label => "Account To #{@payment.type_label}", :as => :select, :collection => CriterionAccount.accounts(@account_holder.criterion_account), :required => true, :include_blank => false, :input_html => { :class => 'chosen-select' }
       end
@@ -17,7 +17,7 @@
       f.input :period, :as => :datepicker, :required =>  true, :hint => 'Only month and year are significant'
       f.input :amount, :required => true, :input_html => { :maxlength => 10 }
       f.input :category_id, :as => :select, :collection => Category.categories, :required => true, :include_blank => false, :input_html => { :class => 'chosen-select' }
-      f.input :payment_method, :as => :radio, :collection => Payment.payment_methods, :required => true
+      f.input :payment_method, :as => :radio, :collection => Payment.payment_methods(true), :required => true
       f.input :additional_info
       f.input :status, :as => :hidden
       f.input :payment_type, :as => :hidden
