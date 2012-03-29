@@ -88,7 +88,9 @@ $(document).ready(function() {
 
   /*** Internal Payments ***/
 
-  $('#payment_other_account_input').hide();
+  if(!$('#payment_payment_method_2').is(':checked')) {
+    $('#payment_other_account_input').hide();
+  }
   
   // CASH
   $('#payment_payment_method_0').on('click', function(){
