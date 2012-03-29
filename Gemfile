@@ -3,7 +3,6 @@ source 'http://rubygems.org'
 gem 'rails', '3.2.2'
 gem 'therubyracer'
 
-gem 'mysql2'
 gem 'faker'
 gem 'airbrake'
 gem 'validates_timeliness'
@@ -40,6 +39,8 @@ group :assets do
 end
 
 group :development, :test do
+  gem 'mysql2'
+
   # Pretty printed test output
   gem 'ruby-debug19', :require => 'ruby-debug'
   gem 'pry-rails'
