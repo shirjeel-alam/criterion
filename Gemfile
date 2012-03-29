@@ -30,6 +30,7 @@ gem 'googlecharts'
 
 # For heroku db:push and db:pull
 # gem 'taps'
+gem 'thin'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -45,10 +46,9 @@ group :development, :test do
   gem 'ruby-debug19', :require => 'ruby-debug'
   gem 'pry-rails'
   gem 'turn', :require => false
-  gem 'thin'
 end
 
-group :prouduction do
+group :production do
   gem 'heroku'
   gem 'pg'
 end
