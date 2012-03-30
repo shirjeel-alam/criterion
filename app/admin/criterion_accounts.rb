@@ -18,15 +18,12 @@ ActiveAdmin.register CriterionAccount do
         link_to(account_holder.user.name, admin_student_path(account_holder.user)) rescue nil
       when AdminUser::PARTNER
         link_to(account_holder.user.name, admin_partner_path(account_holder.user)) rescue nil
-      else
-      	link_to(account_holder.email, admin_admin_user_path(account_holder))
+      when AdminUser::ADMIN, AdminUser::STAFF
+        link_to(account_holder.user.name, admin_staff_path(account_holder.user)) rescue account_holder.email
       end if account_holder.present?
     end
     column :account_type, :sortable => :account_type do |account|
       account.account_type_label
-    end
-    column 'Initial Balance', :sortable => :balance do |account|
-    	status_tag(number_to_currency(account.initial_balance, :unit => 'Rs. ', :precision => 0), account.initial_balance_tag)
     end
     column 'Balance' do |account|
       status_tag(number_to_currency(account.balance, :unit => 'Rs. ', :precision => 0), account.balance_tag)
