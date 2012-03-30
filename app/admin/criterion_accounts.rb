@@ -19,7 +19,9 @@ ActiveAdmin.register CriterionAccount do
       when AdminUser::PARTNER
         link_to(account_holder.user.name, admin_partner_path(account_holder.user)) rescue nil
       when AdminUser::ADMIN, AdminUser::STAFF
-        link_to(account_holder.user.name, admin_staff_path(account_holder.user)) rescue account_holder.email
+        link_to(account_holder.user.name, admin_staff_path(account_holder.user)) rescue nil
+      else
+        link_to(account_holder.email, admin_admin_user_path(account_holder)) rescue nil
       end if account_holder.present?
     end
     column :account_type, :sortable => :account_type do |account|
