@@ -3,8 +3,8 @@ require 'rufus/scheduler'
 
 scheduler = Rufus::Scheduler.start_new
 
-scheduler.every '59m' do
-	Net::HTTP.get_response(URI.parse('http://criterion-institute.heroku.com/admin/login'))
+scheduler.every '50m' do
+	Net::HTTP.get_response(URI.parse('http://criterion-institute.herokuapp.com/admin/login'))
 end
 
 scheduler.every '4h' do
