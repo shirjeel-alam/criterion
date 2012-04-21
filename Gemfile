@@ -1,7 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.2.2'
-gem 'therubyracer'
+gem 'rails', '3.2.3'
 
 gem 'faker'
 gem 'airbrake'
