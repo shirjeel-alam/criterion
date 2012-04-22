@@ -5,6 +5,7 @@
 //= require best_in_place
 //= require tinymce-jquery
 //= require chosen-jquery
+//= require fancybox
 
 $(document).ready(function() {
 
