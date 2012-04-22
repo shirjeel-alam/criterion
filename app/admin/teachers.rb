@@ -15,6 +15,13 @@ ActiveAdmin.register Teacher do
     column :share, :sortable => :share do |teacher|
       number_to_percentage(teacher.share * 100, :precision => 0)
     end if current_admin_user.super_admin_or_partner?
+    column 'Contact Number' do |teacher|
+      if teacher.phone_numbers.present?
+        teacher.phone_numbers.each { |number| div number.label } 
+      else
+        'No Phone Numbers Present'
+      end
+    end
     column 'Balance', :sortable => :balance do |teacher|
       status_tag(number_to_currency(teacher.balance, :unit => 'Rs. ', :precision => 0), teacher.balance_tag) rescue nil
     end
@@ -44,6 +51,20 @@ ActiveAdmin.register Teacher do
         row(:name) { teacher.name }
         row(:email) { teacher.email }
         row(:share) { number_to_percentage(teacher.share * 100, :precision => 0) } if current_admin_user.super_admin_or_partner?
+        row(:phone_numbers) do
+          if teacher.phone_numbers.present? 
+            teacher.phone_numbers.each do |number|
+              div do
+                span number.label
+                # span link_to('View', admin_phone_number_path(number))
+                span link_to('Edit', edit_admin_phone_number_path(number))
+                span link_to('Delete', admin_phone_number_path(number), method: :delete, confirm: 'Are you sure?')
+              end
+            end
+          else
+            'No Phone Numbers Present'
+          end
+        end
         row(:balance) { status_tag(number_to_currency(teacher.balance, :unit => 'Rs. ', :precision => 0), teacher.balance_tag) rescue nil }
       end
     end
@@ -124,6 +145,7 @@ ActiveAdmin.register Teacher do
   end
 
   action_item :only => :show do
+    span link_to('Add PhoneNumber', new_admin_phone_number_path(phone_number: { contactable_id: teacher.id, contactable_type: teacher.class.name }))
     span link_to('Debit Account (Withdrawal)', new_admin_payment_path(:teacher_id => teacher, :payment_type => Payment::CREDIT))
     span link_to('Credit Account (Deposit)', new_admin_payment_path(:teacher_id => teacher, :payment_type => Payment::DEBIT)) if current_admin_user.super_admin_or_partner?
   end

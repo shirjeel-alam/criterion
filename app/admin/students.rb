@@ -28,6 +28,20 @@ ActiveAdmin.register Student do
         row(:name) { student.name }
         row(:email) { student.email }
         row(:address) { student.address }
+        row(:phone_numbers) do
+          if student.phone_numbers.present? 
+            student.phone_numbers.each do |number|
+              div do
+                span number.label
+                # span link_to('View', admin_phone_number_path(number))
+                span link_to('Edit', edit_admin_phone_number_path(number))
+                span link_to('Delete', admin_phone_number_path(number), method: :delete, confirm: 'Are you sure?')
+              end
+            end
+          else
+            'No Phone Numbers Present'
+          end
+        end
       end
     end
 
@@ -173,10 +187,11 @@ ActiveAdmin.register Student do
     end
     
     f.buttons
-  end    
+  end
     
   action_item :only => :show do
-    link_to('Add Enrollment', new_admin_enrollment_path(:student_id => student))
+    span link_to('Add Enrollment', new_admin_enrollment_path(:student_id => student))
+    span link_to('Add PhoneNumber', new_admin_phone_number_path(phone_number: { contactable_id: student.id, contactable_type: student.class.name }))
   end
 
   controller do

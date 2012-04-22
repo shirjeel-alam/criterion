@@ -7,17 +7,20 @@ gem 'faker'
 gem 'airbrake'
 gem 'validates_timeliness'
 
+gem 'formtastic', '~> 2.1.1'
 gem 'activeadmin'
 gem 'sass-rails'
 gem 'meta_search'
 
 gem 'jquery-rails'
 gem 'best_in_place'
-gem 'tinymce-rails', :git => 'git://github.com/spohlenz/tinymce-rails.git'
+gem 'tinymce-rails'
 gem 'chosen-rails'
 
 gem 'rufus-scheduler'
 gem 'googlecharts'
+
+gem 'thin'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
@@ -30,7 +33,6 @@ gem 'googlecharts'
 
 # For heroku db:push and db:pull
 # gem 'taps'
-gem 'thin'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -46,6 +48,8 @@ group :development, :test do
   gem 'ruby-debug19', :require => 'ruby-debug'
   gem 'pry-rails'
   gem 'turn', :require => false
+
+  gem 'annotate', git: 'https://github.com/ctran/annotate_models.git'
 end
 
 group :production do

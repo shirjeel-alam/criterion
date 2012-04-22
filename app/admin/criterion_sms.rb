@@ -21,7 +21,10 @@ ActiveAdmin.register CriterionSms do
 				link_to(receiver.name, admin_teacher_path(receiver))
 			end rescue nil
 		end
-		
+    column :status, sortable: :status do |sms| 
+      status_tag(sms.status_label, sms.status_tag)
+    end
+    
 		default_actions	
 	end
 

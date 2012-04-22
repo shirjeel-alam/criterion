@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: students
+#
+#  id         :integer(4)      not null, primary key
+#  name       :string(255)
+#  email      :string(255)
+#  address    :string(255)
+#  created_at :datetime
+#  updated_at :datetime
+#
+
 class Student < ActiveRecord::Base
   has_many :enrollments, :dependent => :destroy
   has_many :courses, :through => :enrollments

@@ -15,6 +15,13 @@ ActiveAdmin.register Partner do
     column :share, :sortable => :share do |partner|
       number_to_percentage(partner.share * 100, :precision => 0)
     end
+    column 'Contact Number' do |partner|
+      if partner.phone_numbers.present?
+        partner.phone_numbers.each { |number| div number.label } 
+      else
+        'No Phone Numbers Present'
+      end
+    end
     column 'Balance', :sortable => :balance do |partner|
       status_tag(number_to_currency(partner.balance, :unit => 'Rs. ', :precision => 0), partner.balance_tag) rescue nil
     end
@@ -38,12 +45,26 @@ ActiveAdmin.register Partner do
   end
   
   show :title => :name do
-    panel 'Staff Details' do
+    panel 'Partner Details' do
       attributes_table_for partner do
         row(:id) { partner.id }
         row(:name) { partner.name }
         row(:email) { partner.email }
         row(:share) { number_to_percentage(partner.share * 100, :precision => 0) }
+        row(:phone_numbers) do
+          if partner.phone_numbers.present? 
+            partner.phone_numbers.each do |number|
+              div do
+                span number.label
+                # span link_to('View', admin_phone_number_path(number))
+                span link_to('Edit', edit_admin_phone_number_path(number))
+                span link_to('Delete', admin_phone_number_path(number), method: :delete, confirm: 'Are you sure?')
+              end
+            end
+          else
+            'No Phone Numbers Present'
+          end
+        end
         row(:balance) { status_tag(number_to_currency(partner.balance, :unit => 'Rs. ', :precision => 0), partner.balance_tag) rescue nil }
       end
     end
@@ -69,9 +90,10 @@ ActiveAdmin.register Partner do
     end if partner.transactions.credit.present?
 
     active_admin_comments
-  end 
+  end
 
   action_item :only => :show do
+    span link_to('Add PhoneNumber', new_admin_phone_number_path(phone_number: { contactable_id: partner.id, contactable_type: partner.class.name }))
     span link_to('Debit Account (Withdrawal)', new_admin_payment_path(:partner_id => partner, :payment_type => Payment::CREDIT))
     span link_to('Credit Account (Deposit)', new_admin_payment_path(:partner_id => partner, :payment_type => Payment::DEBIT)) if current_admin_user.super_admin_or_partner?
   end

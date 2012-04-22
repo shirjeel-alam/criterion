@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: enrollments
+#
+#  id              :integer(4)      not null, primary key
+#  student_id      :integer(4)
+#  course_id       :integer(4)
+#  created_at      :datetime
+#  updated_at      :datetime
+#  status          :integer(4)
+#  enrollment_date :date
+#  start_date      :date
+#
+
 class Enrollment < ActiveRecord::Base  
   NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED = 0, 1, 2, 3
   
@@ -25,14 +39,6 @@ class Enrollment < ActiveRecord::Base
   scope :in_progress, where(:status => IN_PROGRESS)
   scope :completed, where(:status => COMPLETED)
   scope :cancelled, where(:status => CANCELLED)
-
-  # def student_id
-  #   student.id rescue nil
-  # end
-
-  # def student_name
-  #   student.name rescue nil
-  # end
 
   def set_status
     if course.not_started?
@@ -81,7 +87,8 @@ class Enrollment < ActiveRecord::Base
 
   def void_payments
     payments_to_be_void = payments.due.collect { |payment| payment if payment.period.future? & payment.due? }.compact
-    payments_to_be_void << payments.due.detect { |payment| payment if payment.period.beginning_of_month == Date.today.beginning_of_month } if (Date.today - Date.today.beginning_of_month).to_i < 10 && payment.due?
+    payments_to_be_void << payments.due.detect { |payment| payment if payment.period.beginning_of_month == Date.today.beginning_of_month && (Date.today - Date.today.beginning_of_month).to_i < 10 }
+    payments_to_be_void = payments_to_be_void.compact
     payments_to_be_void.each do |payment|
       payment.void!
     end

@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: criterion_reports
+#
+#  id            :integer(4)      not null, primary key
+#  report_date   :date
+#  gross_revenue :integer(4)
+#  discounts     :integer(4)
+#  net_revenue   :integer(4)
+#  expenditure   :integer(4)
+#  balance       :integer(4)
+#  created_at    :datetime
+#  updated_at    :datetime
+#
+
 class CriterionReport < ActiveRecord::Base
 	validates :report_date, :presence => true, :uniqueness => true, :timeliness => { :type => :date, :on_or_before => lambda { Date.today } }
 

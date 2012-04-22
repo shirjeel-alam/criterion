@@ -1,3 +1,21 @@
+# == Schema Information
+#
+# Table name: courses
+#
+#  id          :integer(4)      not null, primary key
+#  name        :string(255)
+#  teacher_id  :integer(4)
+#  session_id  :integer(4)
+#  monthly_fee :integer(4)
+#  status      :integer(4)
+#  start_date  :date
+#  end_date    :date
+#  created_at  :datetime
+#  updated_at  :datetime
+#  course_date :date
+#  level       :integer(4)
+#
+
 class Course < ActiveRecord::Base
   NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED = 0, 1, 2, 3
   O_LEVEL, AS_LEVEL, A2_LEVEL = 0, 1, 2

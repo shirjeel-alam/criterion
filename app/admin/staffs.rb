@@ -11,6 +11,13 @@ ActiveAdmin.register Staff do
     end
     column :name
     column :email
+    column 'Contact Number' do |staff|
+      if staff.phone_numbers.present?
+        staff.phone_numbers.each { |number| div number.label } 
+      else
+        'No Phone Numbers Present'
+      end
+    end
     column 'Balance', :sortable => :balance do |staff|
       status_tag(number_to_currency(staff.balance, :unit => 'Rs. ', :precision => 0), staff.balance_tag) rescue nil
     end
@@ -39,6 +46,20 @@ ActiveAdmin.register Staff do
         row(:id) { staff.id }
         row(:name) { staff.name }
         row(:email) { staff.email }
+        row(:phone_numbers) do
+          if staff.phone_numbers.present? 
+            staff.phone_numbers.each do |number|
+              div do
+                span number.label
+                # span link_to('View', admin_phone_number_path(number))
+                span link_to('Edit', edit_admin_phone_number_path(number))
+                span link_to('Delete', admin_phone_number_path(number), method: :delete, confirm: 'Are you sure?')
+              end
+            end
+          else
+            'No Phone Numbers Present'
+          end
+        end
         row(:balance) { status_tag(number_to_currency(staff.balance, :unit => 'Rs. ', :precision => 0), staff.balance_tag) rescue nil }
       end
     end
@@ -67,6 +88,7 @@ ActiveAdmin.register Staff do
   end
 
   action_item :only => :show do
+    span link_to('Add PhoneNumber', new_admin_phone_number_path(phone_number: { contactable_id: staff.id, contactable_type: staff.class.name }))
     span link_to('Debit Account (Withdrawal)', new_admin_payment_path(:staff_id => staff, :payment_type => Payment::CREDIT))
     span link_to('Credit Account (Deposit)', new_admin_payment_path(:staff_id => staff, :payment_type => Payment::DEBIT)) if current_admin_user.super_admin_or_partner?
   end

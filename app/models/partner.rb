@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: partners
+#
+#  id         :integer(4)      not null, primary key
+#  name       :string(255)
+#  email      :string(255)
+#  share      :float
+#  created_at :datetime
+#  updated_at :datetime
+#
+
 class Partner < ActiveRecord::Base
 	has_many :transactions, :as => :payable, :class_name => 'Payment', :dependent => :destroy
   has_many :phone_numbers, :as => :contactable, :dependent => :destroy

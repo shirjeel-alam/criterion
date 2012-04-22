@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: phone_numbers
+#
+#  id               :integer(4)      not null, primary key
+#  number           :string(255)
+#  category         :integer(4)
+#  contactable_id   :integer(4)
+#  contactable_type :string(255)
+#  created_at       :datetime
+#  updated_at       :datetime
+#
+
 class PhoneNumber < ActiveRecord::Base
   MOBILE, HOME, WORK, GENERAL = 0, 1, 2, 3
 
@@ -28,6 +41,10 @@ class PhoneNumber < ActiveRecord::Base
 
   def general?
     category == GENERAL
+  end
+
+  def sent_sms
+    CriterionSms.where(to: number)
   end
 
   ### Class Methods ###
@@ -67,5 +84,4 @@ class PhoneNumber < ActiveRecord::Base
   def strip_number
     self.number = number.strip
   end
-
 end

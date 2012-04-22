@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: teachers
+#
+#  id         :integer(4)      not null, primary key
+#  name       :string(255)
+#  email      :string(255)
+#  share      :float
+#  created_at :datetime
+#  updated_at :datetime
+#
+
 class Teacher < ActiveRecord::Base
   has_many :courses
   has_many :payments, :through => :courses

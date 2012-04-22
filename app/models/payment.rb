@@ -1,3 +1,23 @@
+# == Schema Information
+#
+# Table name: payments
+#
+#  id              :integer(4)      not null, primary key
+#  payable_id      :integer(4)
+#  payable_type    :string(255)
+#  period          :date
+#  amount          :integer(4)
+#  status          :integer(4)
+#  payment_type    :boolean(1)
+#  created_at      :datetime
+#  updated_at      :datetime
+#  discount        :integer(4)
+#  payment_date    :date
+#  category_id     :integer(4)
+#  payment_method  :integer(4)
+#  additional_info :text
+#
+
 class Payment < ActiveRecord::Base
   DUE, PAID, VOID, REFUNDED = 0, 1, 2, 3
   CREDIT, DEBIT = true, false

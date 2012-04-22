@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: criterion_accounts
+#
+#  id              :integer(4)      not null, primary key
+#  admin_user_id   :integer(4)
+#  initial_balance :integer(4)      default(0)
+#  created_at      :datetime
+#  updated_at      :datetime
+#  account_type    :integer(4)
+#
+
 class CriterionAccount < ActiveRecord::Base
 	BANK, CRITERION, TEACHER, STAFF, PARTNER = 0, 1, 2, 3, 4
 

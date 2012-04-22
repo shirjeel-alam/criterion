@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: account_entries
+#
+#  id                   :integer(4)      not null, primary key
+#  criterion_account_id :integer(4)
+#  payment_id           :integer(4)
+#  amount               :integer(4)
+#  entry_type           :boolean(1)
+#  created_at           :datetime
+#  updated_at           :datetime
+#
+
 class AccountEntry < ActiveRecord::Base
 	CREDIT, DEBIT = true, false
 	
