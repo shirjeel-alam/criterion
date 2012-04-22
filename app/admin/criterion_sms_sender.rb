@@ -12,7 +12,7 @@ ActiveAdmin.register CriterionSms, :as => 'Criterion SMS Sender' do
 	end
 
 	index do 
-		div render :partial => 'criterion_sms_sender', :locals => { :courses => Course.active, :teachers => Teacher.all }
+		div render :partial => 'criterion_sms_sender', :locals => { :courses => Course.active, :teachers => Teacher.all, :scope => params[:scope] }
 	end
 
 	controller do

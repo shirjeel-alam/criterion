@@ -1,4 +1,4 @@
-<% scope = params[:scope].present? ? params[:scope] : 'courses' %>
+<% scope ||= 'courses' %>
 
 <% if scope == 'courses' %>
 	<%= form_tag(new_admin_criterion_sm_path, :method => :get) do %>

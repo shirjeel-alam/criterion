@@ -26,7 +26,7 @@ class Payment < ActiveRecord::Base
   belongs_to :payable, :polymorphic => :true
   belongs_to :category
   belongs_to :sessions_student
-  has_many :account_entries
+  has_many :account_entries, dependent: :destroy
   
   before_validation :check_payment, :on => :create, :if => "payable_type == 'Enrollment'"
   after_create :create_account_entry

@@ -28,6 +28,8 @@ class Student < ActiveRecord::Base
 
   validates :name, :presence => true
   validates :email, :presence => true
+
+  after_create :send_sms
   
   def enrolled_courses
     Course.active.collect { |c| c if c.has_enrollment?(self) }.compact.uniq
@@ -58,6 +60,13 @@ class Student < ActiveRecord::Base
 
   def set_email
     self.email = "#{name.strip.gsub(' ', '.').downcase}@criterion.edu" unless email.present?
+  end
+
+  def send_sms
+    phone_numbers.mobile.each do |phone_number|
+      sms_data = { to: phone_number.number, message: "Dear Student, Your Student ID is #{id}" }
+      received_messages.create(sms_data)
+    end
   end
  
   ### Class Methods ###

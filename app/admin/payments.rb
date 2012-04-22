@@ -124,9 +124,11 @@ ActiveAdmin.register Payment do
     before_filter :check_authorization, :except => [:new, :create]
 
     def check_authorization
-      unless current_admin_user.super_admin_or_partner?
-        flash[:error] = 'You are not authorized to perform this action'
-        redirect_to_back
+      if current_admin_user.admin?
+        if %w[index new create show destroy].include?(action_name)
+          flash[:error] = 'You are not authorized to perform this action'
+          redirect_to_back
+        end
       end
     end
 

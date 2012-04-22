@@ -48,7 +48,7 @@ class CriterionSms < ActiveRecord::Base
 	end
 
 	def associate_receiver
-		self.receiver = PhoneNumber.find_by_number(to).contactable rescue nil
+		self.receiver = (PhoneNumber.find_by_number(to).contactable rescue nil) unless receiver.present?
 	end
 
 	def send_sms
