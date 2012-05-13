@@ -53,6 +53,10 @@ group :development, :test do
   gem 'annotate', git: 'https://github.com/ctran/annotate_models.git'
 end
 
+group :development do
+  gem 'mailcatcher'
+end
+
 group :production do
   gem 'heroku'
   gem 'pg'
