@@ -159,7 +159,6 @@ ActiveAdmin.register Payment do
     end
 
     def create
-      params[:payment].delete :other_account unless params[:payment][:payment_method] == Payment::INTERNAL
       @payment = Payment.new(params[:payment])
       
       if @payment.save
