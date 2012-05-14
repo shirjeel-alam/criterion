@@ -142,7 +142,7 @@ class Course < ActiveRecord::Base
   end
 
   def emails
-    students.collect { |student| ["#{student.name} - #{student.email}", student.email]  if student.email.present? }.compact.uniq
+    students.collect { |student| ["#{student.name} - #{student.email}", student.email] if student.email.present? }.compact.uniq
   end
 
   def phone_numbers

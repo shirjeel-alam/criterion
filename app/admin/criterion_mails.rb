@@ -60,7 +60,9 @@ ActiveAdmin.register CriterionMail do
         @criterion_mail = CriterionMail.new(:from => current_admin_user.email, :to => @courses.collect { |course| course.emails.collect(&:second) }.flatten)
       elsif params[:teachers].present?
         @teachers = Teacher.find(params[:teachers].collect(&:second))
-        @criterion_mail = CriterionMail.new(:from => current_admin_user.email, :to => @teachers.collect(&:email))
+        @courses = @teachers.collect(&:courses).flatten
+        @emails = (@teachers.collect(&:email) + @courses.collect { |course| course.emails.collect(&:second) }.flatten).flatten.uniq
+        @criterion_mail = CriterionMail.new(:from => current_admin_user.email, :to => @emails)
       else
         super
       end

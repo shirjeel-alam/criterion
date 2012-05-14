@@ -60,7 +60,7 @@ ActiveAdmin.register CriterionSms do
       elsif params[:teachers].present?
         @teachers = Teacher.find(params[:teachers].collect(&:second))
         @courses = @teachers.collect(&:courses).flatten
-        @numbers = (@teachers.collect { |teacher| teacher.phone_numbers.mobile.first.number if teacher.phone_numbers.mobile.first.present? }.compact.uniq + @courses.collect { |course| course.phone_numbers.collect(&:second) }.flatten).flatten
+        @numbers = (@teachers.collect { |teacher| teacher.phone_numbers.mobile.first.number if teacher.phone_numbers.mobile.first.present? }.compact.uniq + @courses.collect { |course| course.phone_numbers.collect(&:second) }.flatten).flatten.uniq
         @criterion_sms = CriterionSms.new(:to => @numbers )
       else
         @criterion_sms = current_admin_user.sent_messages.build
