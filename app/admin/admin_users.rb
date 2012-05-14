@@ -44,4 +44,15 @@ ActiveAdmin.register AdminUser do
     
     f.buttons
   end
+
+  controller do
+    before_filter :check_authorization
+
+    def check_authorization
+      if current_admin_user.all_other?
+        flash[:error] = 'You are not authorized to perform this action'
+        redirect_to_back
+      end
+    end
+  end
 end

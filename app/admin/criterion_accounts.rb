@@ -89,4 +89,17 @@ ActiveAdmin.register CriterionAccount do
   action_item :only => :show do
     span link_to('Appropriate To Partner(s)', new_admin_payment_path(:payment_type => Payment::CREDIT, :category_id => Category.find_by_name('appropriated'))) if criterion_account.criterion_account?
   end
+
+  controller do
+    before_filter :check_authorization
+
+    def check_authorization
+      if current_admin_user.all_other?
+        unless request.path == admin_criterion_account_path(current_admin_user.criterion_account)
+          flash[:error] = 'You are not authorized to perform this action'
+          redirect_to_back
+        end
+      end
+    end
+  end
 end

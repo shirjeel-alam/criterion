@@ -128,6 +128,9 @@ ActiveAdmin.register Payment do
         if %w[index new create show destroy].include?(action_name)
           flash[:error] = 'You are not authorized to perform this action'
           redirect_to_back
+        elsif current_admin_user.all_other?
+          flash[:error] = 'You are not authorized to perform this action'
+          redirect_to_back
         end
       end
     end

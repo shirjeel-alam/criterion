@@ -203,7 +203,10 @@ ActiveAdmin.register Student do
           flash[:error] = 'You are not authorized to perform this action'
           redirect_to_back
         end
-      end
+      elsif current_admin_user.all_other?
+        flash[:error] = 'You are not authorized to perform this action'
+        redirect_to_back
+      end 
     end
   end
 end
