@@ -29,6 +29,7 @@ class Payment < ActiveRecord::Base
   has_many :account_entries, dependent: :destroy
   
   before_validation :check_payment, :on => :create, :if => "payable_type == 'Enrollment'"
+  before_validation :check_appropriated_amount, :on => :create, :if => 'appropriated?'
   after_create :create_account_entry
 
   validates :amount, :presence => true, :numericality => { :only_integer => true, :greater_than => 0 }
@@ -57,7 +58,11 @@ class Payment < ActiveRecord::Base
   attr_accessor :other_account
   
   def check_payment
-    errors.add(:duplicate, "Entry already exists") if Payment.where(:period => period.beginning_of_month..period.end_of_month, :payable_id => payable_id, :payable_type => payable_type, :payment_type => payment_type).present?
+    errors.add(:duplicate, 'Entry already exists') if Payment.where(:period => period.beginning_of_month..period.end_of_month, :payable_id => payable_id, :payable_type => payable_type, :payment_type => payment_type).present?
+  end
+
+  def check_appropriated_amount
+    errors.add(:amount, 'Amount exceeds Criterion Account balance') if amount > CriterionAccount.criterion_account.balance
   end
 
   def session

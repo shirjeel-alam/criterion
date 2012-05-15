@@ -87,7 +87,7 @@ ActiveAdmin.register CriterionAccount do
   end
 
   action_item :only => :show do
-    span link_to('Appropriate To Partner(s)', new_admin_payment_path(:payment_type => Payment::CREDIT, :category_id => Category.find_by_name('appropriated'))) if criterion_account.criterion_account?
+    span link_to('Appropriate To Partner(s)', new_admin_payment_path(payment: { payment_type: Payment::CREDIT, category_id: Category.find_by_name('appropriated').id, status: Payment::PAID, payment_date: Date.today, payment_method: Payment::INTERNAL })) if criterion_account.criterion_account?
   end
 
   controller do

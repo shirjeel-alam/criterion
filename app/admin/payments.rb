@@ -149,7 +149,7 @@ ActiveAdmin.register Payment do
         @payment = @account_holder.transactions.build(:payment_type => params[:payment_type], :status => Payment::PAID, :payment_date => Date.today)
         session[:holder_type] = 'Partner'
       elsif params[:category_id]
-        @payment = Payment.new(:payment_type => params[:payment_type],  :category_id => params[:category_id],:status => Payment::PAID, :payment_date => Date.today)
+        @payment = Payment.new(:payment_type => params[:payment_type],  :category_id => params[:category_id], :status => Payment::PAID, :payment_date => Date.today)
       else
         @payment = Payment.new(params[:payment])
       end

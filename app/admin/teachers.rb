@@ -160,7 +160,7 @@ ActiveAdmin.register Teacher do
           redirect_to_back
         end
       elsif current_admin_user.teacher?
-        unless request.path == admin_teacher_path(current_admin_user.user) && action_name = 'show'
+        unless request.path == admin_teacher_path(current_admin_user.user) && action_name == 'show'
           flash[:error] = 'You are not authorized to perform this action'
           redirect_to_back
         end
