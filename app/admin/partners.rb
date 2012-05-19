@@ -70,7 +70,7 @@ ActiveAdmin.register Partner do
     end
 
     panel 'Payments (Deposits)' do
-      table_for teacher.transactions.debit.each do |t|
+      table_for partner.transactions.debit.each do |t|
         t.column(:id) { |deposit| link_to(deposit.id, admin_payment_path(deposit)) }
         t.column(:payment_date) { |deposit| date_format(deposit.payment_date) }
         t.column(:narration) { |deposit| truncate(deposit.additional_info, :length => 75) }
@@ -80,7 +80,7 @@ ActiveAdmin.register Partner do
     end if partner.transactions.debit.present?
 
     panel 'Payments (Withdrawal)' do
-      table_for teacher.transactions.credit.each do |t|
+      table_for partner.transactions.credit.each do |t|
         t.column(:id) { |withdrawal| link_to(withdrawal.id, admin_payment_path(withdrawal)) }
         t.column(:payment_date) { |withdrawal| date_format(withdrawal.payment_date) }
         t.column(:narration) { |withdrawal| truncate(withdrawal.additional_info, :length => 75) }
