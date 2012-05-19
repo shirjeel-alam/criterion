@@ -174,6 +174,14 @@ ActiveAdmin.register Course do
           flash[:error] = 'You are not authorized to perform this action'
           redirect_to_back
         end
+      elsif current_admin_user.teacher?
+        unless (action_name == 'index') || (action_name == 'show' && current_admin_user.user.courses.collect(&:id).include?(params[:id].to_i))
+          flash[:error] = 'You are not authorized to perform this action'
+          redirect_to_back
+        end
+      elsif current_admin_user.all_other?
+        flash[:error] = 'You are not authorized to perform this action'
+        redirect_to_back
       end
     end
   end

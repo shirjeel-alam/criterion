@@ -1,5 +1,5 @@
 ActiveAdmin.register CriterionMail, :as => 'Criterion Mailer' do
-	menu :parent => 'Criterion', :priority => 2, :if => proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? }
+	menu label: 'Send E-Mail', :parent => 'Criterion', :priority => 2, :if => proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? || current_admin_user.teacher? }
 
 	actions :index
 
