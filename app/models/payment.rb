@@ -138,6 +138,7 @@ class Payment < ActiveRecord::Base
   end
 
   def create_account_entry
+    binding.pry
     if payable.is_a?(Enrollment)
       if paid?
         CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
@@ -158,14 +159,14 @@ class Payment < ActiveRecord::Base
       end
     elsif payable.is_a?(Teacher) || payable.is_a?(Partner)
       if debit?
-        if other_account.present?
+        if internal? && other_account.present?
           CriterionAccount.find(other_account).account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
         else
           CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
         end
         payable.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
       elsif credit?
-        if other_account.present?
+        if internal? && other_account.present?
           CriterionAccount.find(other_account).account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
         else
           CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
@@ -174,14 +175,14 @@ class Payment < ActiveRecord::Base
       end
     elsif payable.is_a?(Staff)
       if debit?
-        if other_account.present?
+        if internal? && other_account.present?
           CriterionAccount.find(other_account).account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
         else
           CriterionAccount.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
         end
         payable.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
       elsif credit?
-        if other_account.present?
+        if internal? && other_account.present?
           CriterionAccount.find(other_account).account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
         else
           CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
