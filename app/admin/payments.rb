@@ -121,11 +121,11 @@ ActiveAdmin.register Payment do
   end
 
   controller do
-    before_filter :check_authorization, :except => [:new, :create]
+    before_filter :check_authorization, :except => [:new, :create, :show]
 
     def check_authorization
       if current_admin_user.admin?
-        if %w[index new create show destroy].include?(action_name)
+        if %w[index edit update destroy].include?(action_name)
           flash[:error] = 'You are not authorized to perform this action'
           redirect_to_back
         end
