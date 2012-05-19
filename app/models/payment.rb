@@ -138,7 +138,6 @@ class Payment < ActiveRecord::Base
   end
 
   def create_account_entry
-    binding.pry
     if payable.is_a?(Enrollment)
       if paid?
         CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
