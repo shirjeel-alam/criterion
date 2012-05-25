@@ -44,12 +44,7 @@ end
 
 group :development, :test do
   gem 'mysql2'
-
-  # Pretty printed test output
-  gem 'ruby-debug19', :require => 'ruby-debug'
   gem 'pry-rails'
-  gem 'turn', :require => false
-
   gem 'annotate', git: 'https://github.com/ctran/annotate_models.git'
 end
 
