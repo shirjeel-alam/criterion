@@ -12,8 +12,12 @@ module ApplicationHelper
     link_to_function(name, "add_fields(this, \"#{association}\", \"#{escape_javascript(fields)}\")", class: 'add_fields')
   end
   
-  def date_format(date)
-    date.present? ? date.strftime('%d %B, %Y') : 'N/A'
+  def date_format(date, month_and_year_only = false)
+    if month_and_year_only
+      date.present? ? date.strftime('%B %Y') : 'N/A'
+    else
+      date.present? ? date.strftime('%d %B, %Y') : 'N/A'
+    end
   end
 
   def time_format(time)

@@ -167,6 +167,10 @@ class Enrollment < ActiveRecord::Base
     end
   end
 
+  def payment(month)
+    payments.where(period: month.beginning_of_month..month.end_of_month).first
+  end
+
   ### View Helpers ###
 
   def title

@@ -103,6 +103,20 @@ ActiveAdmin.register Course do
       end
     end if course.enrollments.present?
 
+    panel 'Course Fees Table' do
+      months = course.months_between(course.start_date, course.end_date)
+      table_for course.enrollments do |t|
+        t.column(:student) { |enrollment| link_to(enrollment.student.name, admin_student_path(enrollment.student)) }
+        t.column(:join_date) { |enrollment| date_format(enrollment.start_date) }
+        months.each do |month|
+          t.column(date_format(month, true)) do |enrollment| 
+            payment = enrollment.payment(month)
+            payment.present? ? status_tag(payment.status_label, payment.status_tag) : '-'
+          end
+        end
+      end
+    end if course.enrollments.present?
+
     active_admin_comments
   end
   
