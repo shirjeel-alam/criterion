@@ -7,17 +7,17 @@ namespace :criterion do
     
     REGISTRATION_FEE = [1000, 800, 1200]
     
-    args.with_defaults(:period => 50)
+    args.with_defaults(period: 50)
     
     args[:period].to_i.times do |i|
       curr_year = (Date.today + (i + 1).years).year
-      Session.create(:period => MAY_JUNE, :year => curr_year, :registration_fee => REGISTRATION_FEE[rand(REGISTRATION_FEE.length)])
-      Session.create(:period => OCT_NOV, :year => curr_year, :registration_fee => REGISTRATION_FEE[rand(REGISTRATION_FEE.length)])
+      Session.create(period: MAY_JUNE, year: curr_year, registration_fee: REGISTRATION_FEE[rand(REGISTRATION_FEE.length)])
+      Session.create(period: OCT_NOV, year: curr_year, registration_fee: REGISTRATION_FEE[rand(REGISTRATION_FEE.length)])
     end
   end
 
   desc "Generate development data"
-  task :generate_development_data => :environment do
+  task generate_development_data: :environment do
     # 3 Students, 3 Teachers, 3 Courses, 6 Sessions
     
     Rake::Task["db:migrate:reset"].reenable  
@@ -31,18 +31,18 @@ namespace :criterion do
     Rake::Task["criterion:generate_sessions"].invoke(2)  
 
     3.times do
-      student = Student.create(:name => Faker::Name.name, :address => Faker::Address.street_address)
-      PhoneNumber.create(:number => Faker::PhoneNumber.phone_number[0..10], :category => rand(4), :contactable_id => student.id, :contactable_type => student.class.name)
+      student = Student.create(name: Faker::Name.name, address: Faker::Address.street_address)
+      PhoneNumber.create(number: Faker::PhoneNumber.phone_number[0..10], category: rand(4), contactable_id: student.id, contactable_type: student.class.name)
       
-      teacher = Teacher.create(:name => Faker::Name.name, :share => SHARE[rand(SHARE.length)])
-      PhoneNumber.create(:number => Faker::PhoneNumber.phone_number[0..10], :category => rand(4), :contactable_id => teacher.id, :contactable_type => teacher.class.name)
+      teacher = Teacher.create(name: Faker::Name.name, share: SHARE[rand(SHARE.length)])
+      PhoneNumber.create(number: Faker::PhoneNumber.phone_number[0..10], category: rand(4), contactable_id: teacher.id, contactable_type: teacher.class.name)
       
-      Course.create(:name => COURSE_NAME[rand(COURSE_NAME.length)], :teacher_id => Teacher.all[rand(Teacher.count)].id, :session_id => Session.all[rand(Session.count)].id, :monthly_fee => MONTHLY_FEE[rand(MONTHLY_FEE.length)])
+      Course.create(name: COURSE_NAME[rand(COURSE_NAME.length)], teacher_id: Teacher.all[rand(Teacher.count)].id, session_id: Session.all[rand(Session.count)].id, monthly_fee: MONTHLY_FEE[rand(MONTHLY_FEE.length)])
     end
   end
 
   desc "Generate default categories"
-  task :generate_categories => :environment do
+  task generate_categories: :environment do
     ['student fee', 'teacher fee', 'bills', 'stationery', 'misc'].each do |category|
       Category.find_or_create_by_name(category)
     end
