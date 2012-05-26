@@ -18,8 +18,8 @@ ActiveRecord::Schema.define(:version => 20120219173405) do
     t.integer  "payment_id"
     t.integer  "amount"
     t.boolean  "entry_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",           :null => false
+    t.datetime "updated_at",           :null => false
   end
 
   create_table "active_admin_comments", :force => true do |t|
@@ -28,8 +28,8 @@ ActiveRecord::Schema.define(:version => 20120219173405) do
     t.integer  "author_id"
     t.string   "author_type"
     t.text     "body"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
     t.string   "namespace"
   end
 
@@ -38,22 +38,22 @@ ActiveRecord::Schema.define(:version => 20120219173405) do
   add_index "active_admin_comments", ["resource_type", "resource_id"], :name => "index_admin_notes_on_resource_type_and_resource_id"
 
   create_table "admin_users", :force => true do |t|
-    t.string   "email",                                 :default => "",   :null => false
-    t.string   "encrypted_password",     :limit => 128, :default => "",   :null => false
+    t.string   "email",                  :default => "",   :null => false
+    t.string   "encrypted_password",     :default => "",   :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",                         :default => 0
+    t.integer  "sign_in_count",          :default => 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                               :null => false
+    t.datetime "updated_at",                               :null => false
     t.integer  "role"
     t.integer  "user_id"
     t.string   "user_type"
-    t.boolean  "status",                                :default => true
+    t.boolean  "status",                 :default => true
   end
 
   add_index "admin_users", ["email"], :name => "index_admin_users_on_email", :unique => true
@@ -61,8 +61,8 @@ ActiveRecord::Schema.define(:version => 20120219173405) do
 
   create_table "categories", :force => true do |t|
     t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "courses", :force => true do |t|
@@ -73,8 +73,8 @@ ActiveRecord::Schema.define(:version => 20120219173405) do
     t.integer  "status"
     t.date     "start_date"
     t.date     "end_date"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
     t.date     "course_date"
     t.integer  "level"
   end
@@ -82,8 +82,8 @@ ActiveRecord::Schema.define(:version => 20120219173405) do
   create_table "criterion_accounts", :force => true do |t|
     t.integer  "admin_user_id"
     t.integer  "initial_balance", :default => 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
     t.integer  "account_type"
   end
 
@@ -96,8 +96,8 @@ ActiveRecord::Schema.define(:version => 20120219173405) do
     t.text     "body"
     t.integer  "mailable_id"
     t.string   "mailable_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
   end
 
   create_table "criterion_reports", :force => true do |t|
@@ -107,8 +107,8 @@ ActiveRecord::Schema.define(:version => 20120219173405) do
     t.integer  "net_revenue"
     t.integer  "expenditure"
     t.integer  "balance"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
   end
 
   create_table "criterion_sms", :force => true do |t|
@@ -119,15 +119,15 @@ ActiveRecord::Schema.define(:version => 20120219173405) do
     t.integer  "receiver_id"
     t.string   "receiver_type"
     t.boolean  "status"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
   end
 
   create_table "enrollments", :force => true do |t|
     t.integer  "student_id"
     t.integer  "course_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
     t.integer  "status"
     t.date     "enrollment_date"
     t.date     "start_date"
@@ -137,8 +137,8 @@ ActiveRecord::Schema.define(:version => 20120219173405) do
     t.string   "name"
     t.string   "email"
     t.float    "share"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "payments", :force => true do |t|
@@ -148,8 +148,8 @@ ActiveRecord::Schema.define(:version => 20120219173405) do
     t.integer  "amount"
     t.integer  "status"
     t.boolean  "payment_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
     t.integer  "discount"
     t.date     "payment_date"
     t.integer  "category_id"
@@ -162,48 +162,48 @@ ActiveRecord::Schema.define(:version => 20120219173405) do
     t.integer  "category"
     t.integer  "contactable_id"
     t.string   "contactable_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
   end
 
   create_table "session_students", :force => true do |t|
     t.integer  "student_id"
     t.integer  "session_id"
     t.integer  "payment_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "sessions", :force => true do |t|
     t.integer  "period"
     t.integer  "year"
     t.integer  "registration_fee"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
     t.integer  "status"
   end
 
   create_table "staffs", :force => true do |t|
     t.string   "name"
     t.string   "email"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "students", :force => true do |t|
     t.string   "name"
     t.string   "email"
     t.string   "address"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "teachers", :force => true do |t|
     t.string   "name"
     t.string   "email"
     t.float    "share"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
 end
