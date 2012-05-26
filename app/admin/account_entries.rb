@@ -1,5 +1,5 @@
 ActiveAdmin.register AccountEntry do
-  menu :parent => 'More Menus', :if => proc { current_admin_user.super_admin_or_partner? }
+  menu parent: 'More Menus', if: proc { current_admin_user.super_admin_or_partner? }
 
   show do
   	panel 'Account Entry Details' do
@@ -8,7 +8,7 @@ ActiveAdmin.register AccountEntry do
         row(:criterion_account) { |account_entry| link_to(account_entry.criterion_account.title, admin_criterion_account_path(account_entry.criterion_account)) }
         row(:payment) { |account_entry| link_to(account_entry.payment_id, admin_payment_path(account_entry.payment)) }
         row(:entry_type) { |account_entry| status_tag(account_entry.entry_type_label, account_entry.entry_type_tag) }
-        row(:amount) { |account_entry| number_to_currency(account_entry.amount, :unit => 'Rs. ', :precision => 0) }
+        row(:amount) { |account_entry| number_to_currency(account_entry.amount, unit: 'Rs. ', precision: 0) }
   		end
   	end
 

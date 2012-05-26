@@ -14,7 +14,7 @@
 #
 
 class CriterionReport < ActiveRecord::Base
-	validates :report_date, :presence => true, :uniqueness => true, :timeliness => { :type => :date, :on_or_before => lambda { Date.today } }
+	validates :report_date, presence: true, uniqueness: true, timeliness: { type: :date, on_or_before: lambda { Date.today } }
 
 	before_create :calc_report_data
 
@@ -49,7 +49,7 @@ class CriterionReport < ActiveRecord::Base
 
 	def update_report_data
 		calc_report_data
-		self.attributes = { :updated_at => Time.now }
+		self.attributes = { updated_at: Time.now }
 		save
 	end
 

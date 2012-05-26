@@ -14,18 +14,18 @@
 class PhoneNumber < ActiveRecord::Base
   MOBILE, HOME, WORK, GENERAL = 0, 1, 2, 3
 
-  belongs_to :contactable, :polymorphic => true
+  belongs_to :contactable, polymorphic: true
 
   before_validation :strip_number
 
-  validates :number, :presence => true, :uniqueness => true, :numericality => true
-  validates :number, :format => { :with => /^03\d{9}$/ }, :if => :mobile?
-  validates :category, :presence => true, :inclusion => { :in => [MOBILE, HOME, WORK, GENERAL] }
+  validates :number, presence: true, uniqueness: true, numericality: true
+  validates :number, format: { with: /^03\d{9}$/ }, if: :mobile?
+  validates :category, presence: true, inclusion: { in: [MOBILE, HOME, WORK, GENERAL] }
 
-  scope :mobile, where(:category => MOBILE)
-  scope :home, where(:category => HOME)
-  scope :work, where(:category => WORK)
-  scope :general, where(:category => GENERAL)
+  scope :mobile, where(category: MOBILE)
+  scope :home, where(category: HOME)
+  scope :work, where(category: WORK)
+  scope :general, where(category: GENERAL)
 
   def mobile?
     category == MOBILE

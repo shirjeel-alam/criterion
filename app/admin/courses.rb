@@ -1,5 +1,5 @@
 ActiveAdmin.register Course do
-  menu :priority => 2
+  menu priority: 2
 
   filter :id
   filter :name
@@ -7,9 +7,9 @@ ActiveAdmin.register Course do
   # filter :level, :as => :select, :collection => lambda { Course.levels }
   filter :monthly_fee
 
-  scope :all, :default => true do |courses|
+  scope :all, default: true do |courses|
     if current_admin_user.teacher?
-      courses.where(:teacher_id => current_admin_user.user.id)
+      courses.where(teacher_id: current_admin_user.user.id)
     else
       courses
     end
@@ -17,7 +17,7 @@ ActiveAdmin.register Course do
 
   scope :not_started do |courses|
     if current_admin_user.teacher?
-      courses.not_started.where(:teacher_id => current_admin_user.user.id)
+      courses.not_started.where(teacher_id: current_admin_user.user.id)
     else
       courses.not_started
     end
@@ -25,7 +25,7 @@ ActiveAdmin.register Course do
 
   scope :in_progress do |courses|
     if current_admin_user.teacher?
-      courses.in_progress.where(:teacher_id => current_admin_user.user.id)
+      courses.in_progress.where(teacher_id: current_admin_user.user.id)
     else
       courses.in_progress
     end
@@ -33,7 +33,7 @@ ActiveAdmin.register Course do
 
   scope :completed do |courses|
     if current_admin_user.teacher?
-      courses.completed.where(:teacher_id => current_admin_user.user.id)
+      courses.completed.where(teacher_id: current_admin_user.user.id)
     else
       courses.completed
     end
@@ -41,7 +41,7 @@ ActiveAdmin.register Course do
 
   scope :cancelled do |courses|
     if current_admin_user.teacher?
-      courses.cancelled.where(:teacher_id => current_admin_user.user.id)
+      courses.cancelled.where(teacher_id: current_admin_user.user.id)
     else
       courses.cancelled
     end
@@ -52,7 +52,7 @@ ActiveAdmin.register Course do
       link_to(course.id, admin_course_path(course))
     end
     column :name
-    column :level, :sortable => :level do |course|
+    column :level, sortable: :level do |course|
       course.level_label
     end
     column :session do |course|
@@ -61,23 +61,23 @@ ActiveAdmin.register Course do
     column :teacher do |course|
       course.teacher.present? ? course.teacher.name : 'N/A'
     end
-    column :monthly_fee, :sortable => :monthly_fee do |course|
-      number_to_currency(course.monthly_fee, :unit => 'Rs. ', :precision => 0)
+    column :monthly_fee, sortable: :monthly_fee do |course|
+      number_to_currency(course.monthly_fee, unit: 'Rs. ', precision: 0)
     end
-    column :status, :sortable => :status do |course|
+    column :status, sortable: :status do |course|
       status_tag(course.status_label, course.status_tag)
     end
-    column :start_date, :sortable => :start_date do |course|
+    column :start_date, sortable: :start_date do |course|
       date_format(course.start_date)
     end
-    column :end_date, :sortable => :end_date do |course|
+    column :end_date, sortable: :end_date do |course|
       date_format(course.end_date)
     end
     
     default_actions
   end
   
-  show :title => :title do
+  show title: :title do
     panel 'Course Details' do
       attributes_table_for course do
         row(:id) { course.id }
@@ -108,57 +108,57 @@ ActiveAdmin.register Course do
   
   form do |f|
     f.inputs do
-      f.input :name, :required => true
-      f.input :level, :as => :radio, :collection => Course.levels, :required => true
-      f.input :session, :as => :select, :collection => Session.get_active, :include_blank => false, :required => true, :input_html => { :class => 'chosen-select' }
-      f.input :teacher, :as => :select, :collection => Teacher.get_all, :include_blank => false, :required => true, :input_html => { :class => 'chosen-select' }
-      f.input :monthly_fee, :required => true
-      f.input :status, :as => :select, :collection => Course.statuses, :include_blank => false, :input_html => { :class => 'chosen-select' }
-      f.input :start_date, :as => :datepicker, :order => [:day, :month, :year]
-      f.input :end_date, :as => :datepicker, :order => [:day, :month, :year], :hint => 'Will be automatically set if left blank'
+      f.input :name, required: true
+      f.input :level, as: :radio, collection: Course.levels, required: true
+      f.input :session, as: :select, collection: Session.get_active, include_blank: false, required: true, input_html: { class: 'chosen-select' }
+      f.input :teacher, as: :select, collection: Teacher.get_all, include_blank: false, required: true, input_html: { class: 'chosen-select' }
+      f.input :monthly_fee, required: true
+      f.input :status, as: :select, collection: Course.statuses, include_blank: false, input_html: { class: 'chosen-select' }
+      f.input :start_date, as: :datepicker, order: [:day, :month, :year]
+      f.input :end_date, as: :datepicker, order: [:day, :month, :year], hint: 'Will be automatically set if left blank'
     end
     
     f.buttons
   end
   
-  member_action :start, :method => :put do
+  member_action :start, method: :put do
     course = Course.find(params[:id])
     if course.start!
       flash[:notice] = 'Course Started'
     else
       flash[:error] = 'Error Starting Course'
     end
-    redirect_to :action => :show
+    redirect_to action: :show
   end
 
-  member_action :cancel, :method => :put do
+  member_action :cancel, method: :put do
     course = Course.find(params[:id])
     if course.cancel!
       flash[:notice] = 'Course Cancelled'
     else
       flash[:error] = 'Error Cancelling Course'
     end
-    redirect_to :action => :show
+    redirect_to action: :show
   end
   
-  member_action :finish, :method => :put do
+  member_action :finish, method: :put do
     course = Course.find(params[:id])
     if course.complete!
       flash[:notice] = 'Course Finished'
     else
       flash[:error] = 'Error Finishing Course'
     end
-    redirect_to :action => :show
+    redirect_to action: :show
   end
   
-  action_item :only => :show do
-    span link_to('Add Enrollment', new_admin_enrollment_path(:course_id => course)) unless (course.completed? || course.cancelled?)
+  action_item only: :show do
+    span link_to('Add Enrollment', new_admin_enrollment_path(course_id: course)) unless (course.completed? || course.cancelled?)
     span do
       if course.not_started?
-        span link_to('Start Course', start_admin_course_path(course), :method => :put, :confirm => 'Are you sure?')
+        span link_to('Start Course', start_admin_course_path(course), method: :put, confirm: 'Are you sure?')
       elsif course.started?
-        span link_to('Cancel Course', cancel_admin_course_path(course), :method => :put, :confirm => 'Are you sure?')
-        span link_to('Finish Course', finish_admin_course_path(course), :method => :put, :confirm => 'Are you sure?')  
+        span link_to('Cancel Course', cancel_admin_course_path(course), method: :put, confirm: 'Are you sure?')
+        span link_to('Finish Course', finish_admin_course_path(course), method: :put, confirm: 'Are you sure?')  
       end
     end
   end

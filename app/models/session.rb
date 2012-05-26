@@ -14,10 +14,10 @@
 class Session < ActiveRecord::Base
   NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED = 0, 1, 2, 3
 
-  has_many :courses, :dependent => :destroy
+  has_many :courses, dependent: :destroy
   has_many :session_students
-  has_many :students, :through => :session_students
-  has_many :registration_fees, :through => :session_students
+  has_many :students, through: :session_students
+  has_many :registration_fees, through: :session_students
 
   accepts_nested_attributes_for :courses
 
@@ -26,16 +26,16 @@ class Session < ActiveRecord::Base
 
   before_validation :set_status
   
-  validates :period, :presence => true, :inclusion => { :in => [MAY_JUNE, OCT_NOV] }, :uniqueness => { :scope => :year }
-  validates :status, :presence => true, :inclusion => { :in => [NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED] }
-  validates :year, :presence => true, :numericality => { :only_integer => true }
-  validates :registration_fee, :presence => true, :numericality => { :only_integer => true, :greater_than => 0 }
+  validates :period, presence: true, inclusion: { in: [MAY_JUNE, OCT_NOV] }, uniqueness: { scope: :year }
+  validates :status, presence: true, inclusion: { in: [NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED] }
+  validates :year, presence: true, numericality: { only_integer: true }
+  validates :registration_fee, presence: true, numericality: { only_integer: true, greater_than: 0 }
 
-  scope :active, where(:status => [NOT_STARTED, IN_PROGRESS])
-  scope :not_started, where(:status => NOT_STARTED)
-  scope :in_progress, where(:status => IN_PROGRESS)
-  scope :completed, where(:status => COMPLETED)
-  scope :cancelled, where(:status => CANCELLED)
+  scope :active, where(status: [NOT_STARTED, IN_PROGRESS])
+  scope :not_started, where(status: NOT_STARTED)
+  scope :in_progress, where(status: IN_PROGRESS)
+  scope :completed, where(status: COMPLETED)
+  scope :cancelled, where(status: CANCELLED)
   
   def active?
     year >= Date.today.year

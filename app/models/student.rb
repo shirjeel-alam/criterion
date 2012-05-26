@@ -11,23 +11,23 @@
 #
 
 class Student < ActiveRecord::Base
-  has_many :enrollments, :dependent => :destroy
-  has_many :courses, :through => :enrollments
-  has_many :payments, :through => :enrollments
+  has_many :enrollments, dependent: :destroy
+  has_many :courses, through: :enrollments
+  has_many :payments, through: :enrollments
   has_many :session_students
-  has_many :sessions, :through => :session_students
-  has_many :registration_fees, :through => :session_students
-  has_many :phone_numbers, :as => :contactable, :dependent => :destroy
-  has_one :admin_user, :as => :user, :dependent => :destroy
-  has_many :received_messages, :as => :receiver, :class_name => 'CriterionSms'
+  has_many :sessions, through: :session_students
+  has_many :registration_fees, through: :session_students
+  has_many :phone_numbers, as: :contactable, dependent: :destroy
+  has_one :admin_user, as: :user, dependent: :destroy
+  has_many :received_messages, as: :receiver, class_name: 'CriterionSms'
   
   accepts_nested_attributes_for :enrollments
   accepts_nested_attributes_for :phone_numbers
   
   before_validation :set_email
 
-  validates :name, :presence => true
-  validates :email, :presence => true
+  validates :name, presence: true
+  validates :email, presence: true
 
   after_create :send_sms
   
@@ -40,7 +40,7 @@ class Student < ActiveRecord::Base
   end
 
   def evaluate_discount(session)
-    session_courses = courses.where(:session_id => session.id)
+    session_courses = courses.where(session_id: session.id)
     enrollment_count = session_courses.count
 
     discount = case enrollment_count
@@ -52,7 +52,7 @@ class Student < ActiveRecord::Base
       500 #900 # 300 / course
     end
 
-    session_enrollments = enrollments.where(:course_id => session_courses.collect(&:id))
+    session_enrollments = enrollments.where(course_id: session_courses.collect(&:id))
     session_enrollments.each do |enrollment|
       enrollment.apply_discount(discount)
     end

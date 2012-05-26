@@ -89,6 +89,9 @@ GEM
     googlecharts (1.6.8)
     haml (3.1.6)
     has_scope (0.5.1)
+    hash_syntax (1.0.0)
+      object_regex (~> 1.0.1)
+      trollop (~> 1.16.2)
     heroku (2.26.1)
       heroku-api (~> 0.2.1)
       launchy (>= 0.3.2)
@@ -137,6 +140,7 @@ GEM
     multi_json (1.3.5)
     mysql2 (0.3.11)
     netrc (0.7.2)
+    object_regex (1.0.1)
     orm_adapter (0.0.7)
     pg (0.13.2)
     polyamorous (0.5.0)
@@ -214,6 +218,7 @@ GEM
     treetop (1.4.10)
       polyglot
       polyglot (>= 0.3.1)
+    trollop (1.16.2)
     tzinfo (0.3.33)
     uglifier (1.2.4)
       execjs (>= 0.3.0)
@@ -237,6 +242,7 @@ DEPENDENCIES
   fancybox-rails
   formtastic (~> 2.1.1)
   googlecharts
+  hash_syntax
   heroku
   jquery-rails
   mailcatcher

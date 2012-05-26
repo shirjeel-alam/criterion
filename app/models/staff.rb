@@ -10,12 +10,12 @@
 #
 
 class Staff < ActiveRecord::Base
-	has_many :transactions, :as => :payable, :class_name => 'Payment', :dependent => :destroy
-  has_many :phone_numbers, :as => :contactable, :dependent => :destroy
-  has_many :criterion_mails, :as => :mailable
-  has_one :admin_user, :as => :user, :dependent => :destroy
-  has_many :received_messages, :as => :receiver, :class_name => 'CriterionSms'
-  has_many :sent_messages, :as => :sender, :class_name => 'CriterionSms'
+	has_many :transactions, as: :payable, class_name: 'Payment', dependent: :destroy
+  has_many :phone_numbers, as: :contactable, dependent: :destroy
+  has_many :criterion_mails, as: :mailable
+  has_one :admin_user, as: :user, dependent: :destroy
+  has_many :received_messages, as: :receiver, class_name: 'CriterionSms'
+  has_many :sent_messages, as: :sender, class_name: 'CriterionSms'
 
   accepts_nested_attributes_for :phone_numbers
 
@@ -23,9 +23,9 @@ class Staff < ActiveRecord::Base
   after_create :create_admin_user
   after_save :update_admin_user_email
 
-  validates :name, :presence => true
-  validates :email, :presence => true
-  validates :admin_user_confirmation, :presence => true
+  validates :name, presence: true
+  validates :email, presence: true
+  validates :admin_user_confirmation, presence: true
 
   attr_accessor :admin_user_confirmation
 
@@ -38,8 +38,8 @@ class Staff < ActiveRecord::Base
   end
 
   def create_admin_user
-    admin_user_attributes = { :email => email, :password => AdminUser::DEFAULT_PASSWORD, :role => AdminUser::ADMIN, :user => self }
-    admin_user_attributes.merge!(:role => AdminUser::STAFF, :status => AdminUser::DEACTIVE) if admin_user_confirmation == 'false'
+    admin_user_attributes = { email: email, password: AdminUser::DEFAULT_PASSWORD, role: AdminUser::ADMIN, user: self }
+    admin_user_attributes.merge!(role: AdminUser::STAFF, status: AdminUser::DEACTIVE) if admin_user_confirmation == 'false'
     AdminUser.create!(admin_user_attributes) 
   end
 

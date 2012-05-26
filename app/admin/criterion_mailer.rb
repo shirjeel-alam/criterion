@@ -1,9 +1,9 @@
-ActiveAdmin.register CriterionMail, :as => 'Criterion Mailer' do
-	menu label: 'Send E-Mail', :parent => 'Criterion', :priority => 2, :if => proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? || current_admin_user.teacher? }
+ActiveAdmin.register CriterionMail, as: 'Criterion Mailer' do
+	menu label: 'Send E-Mail', parent: 'Criterion', priority: 2, if: proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? || current_admin_user.teacher? }
 
 	actions :index
 
-	scope :courses, :default => true do |courses|
+	scope :courses, default: true do |courses|
 		Course.active
 	end
 
@@ -12,7 +12,7 @@ ActiveAdmin.register CriterionMail, :as => 'Criterion Mailer' do
 	end
 
 	index do
-		div render :partial => 'criterion_mailer', :locals => { :courses => Course.active, :teachers => Teacher.all }
+		div render partial: 'criterion_mailer', locals: { courses: Course.active, teachers: Teacher.all }
 	end
 
 	controller do

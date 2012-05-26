@@ -1,17 +1,17 @@
 ActiveAdmin.register Student do
-  menu :priority => 2, :if => proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? }
+  menu priority: 2, if: proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? }
 
   filter :id
   filter :name
   filter :email
   
   index do
-    column 'ID', :sortable => :id do |student|
+    column 'ID', sortable: :id do |student|
       link_to(student.id, admin_student_path(student))
     end
     column :name
     column :email
-    column 'Address', :sortable => :address do |student|
+    column 'Address', sortable: :address do |student|
       student.address_label
     end
     column 'Contact Number' do |student|
@@ -21,7 +21,7 @@ ActiveAdmin.register Student do
     default_actions
   end
   
-  show :title => :name do
+  show title: :name do
     panel 'Student Details' do
       attributes_table_for student do
         row(:id) { student.id }
@@ -84,7 +84,7 @@ ActiveAdmin.register Student do
         tbody do
           flip = true
           result.each do |cumulative_payment|
-            tr :class => "#{flip ? 'odd' : 'even'} header" do
+            tr class: "#{flip ? 'odd' : 'even'} header" do
               cumulative_gross_amount = cumulative_payment.second.sum { |p| p.paid? || p.void? ? 0 : p.amount }
               cumulative_discount = cumulative_payment.second.sum { |p| p.paid? || p.void? ? 0 : (p.discount.present? ? p.discount : 0) }
               cumulative_net_amount = cumulative_gross_amount - cumulative_discount
@@ -92,30 +92,30 @@ ActiveAdmin.register Student do
               td image_tag('down_arrow.png')
               td cumulative_payment.first.strftime('%B %Y')
               td nil
-              td number_to_currency(cumulative_gross_amount, :unit => 'Rs. ', :precision => 0)
-              td number_to_currency(cumulative_discount, :unit => 'Rs. ', :precision => 0)
-              td number_to_currency(cumulative_net_amount, :unit => 'Rs. ', :precision => 0)
+              td number_to_currency(cumulative_gross_amount, unit: 'Rs. ', precision: 0)
+              td number_to_currency(cumulative_discount, unit: 'Rs. ', precision: 0)
+              td number_to_currency(cumulative_net_amount, unit: 'Rs. ', precision: 0)
               td status_tag(cumulative_net_amount > 0 ? 'Due' : 'Paid', cumulative_net_amount > 0 ? :error : :ok)
-              td cumulative_net_amount > 0 ? link_to('Make Payment (Cumulative)', pay_cumulative_admin_payments_path(:payments => cumulative_payment.second)) : nil
+              td cumulative_net_amount > 0 ? link_to('Make Payment (Cumulative)', pay_cumulative_admin_payments_path(payments: cumulative_payment.second)) : nil
             end
             
             flip = !flip
             cumulative_payment.second.each do |payment|
-              tr :class => "#{flip ? 'odd' : 'even'} content" do
+              tr class: "#{flip ? 'odd' : 'even'} content" do
                 td link_to(payment.id, admin_payment_path(payment))
                 td payment.period_label
                 td link_to(payment.payable.course.name, admin_course_path(payment.payable.course))
-                td number_to_currency(best_in_place_if((current_admin_user.super_admin_or_partner? || current_admin_user.admin?) && payment.due?, payment, :amount, :type => :input, :path => [:admin, payment]), :unit => 'Rs. ', :precision => 0)
-                td number_to_currency(best_in_place_if((current_admin_user.super_admin_or_partner? || current_admin_user.admin?) && payment.due?, payment, :discount, :type => :input, :path => [:admin, payment]), :unit => 'Rs. ', :precision => 0)
-                td number_to_currency(payment.net_amount, :unit => 'Rs. ', :precision => 0)
+                td number_to_currency(best_in_place_if((current_admin_user.super_admin_or_partner? || current_admin_user.admin?) && payment.due?, payment, :amount, type: :input, path: [:admin, payment]), unit: 'Rs. ', precision: 0)
+                td number_to_currency(best_in_place_if((current_admin_user.super_admin_or_partner? || current_admin_user.admin?) && payment.due?, payment, :discount, type: :input, path: [:admin, payment]), unit: 'Rs. ', precision: 0)
+                td number_to_currency(payment.net_amount, unit: 'Rs. ', precision: 0)
                 td status_tag(payment.status_label, payment.status_tag)
                 td do
                   ul do
                     if payment.due?
                       li span link_to('Make Payment', pay_admin_payment_path(payment))
-                      li span link_to('Void Payment', void_admin_payment_path(payment), :method => :put)
+                      li span link_to('Void Payment', void_admin_payment_path(payment), method: :put)
                     elsif payment.paid?
-                      li span link_to('Refund Payment', refund_admin_payment_path(payment), :method => :put)
+                      li span link_to('Refund Payment', refund_admin_payment_path(payment), method: :put)
                     end
                   end
                 end
@@ -171,26 +171,26 @@ ActiveAdmin.register Student do
     
   form do |f|
     f.inputs do
-      f.input :name, :required => true
+      f.input :name, required: true
       f.input :email
       f.input :address
       
       f.has_many :phone_numbers do |fp|
         fp.input :number
-        fp.input :category, :as => :select, :collection => PhoneNumber.categories, :include_blank => false, :input_html => { :class => 'chosen-select' }
+        fp.input :category, as: :select, collection: PhoneNumber.categories, include_blank: false, input_html: { class: 'chosen-select' }
       end
       
       f.has_many :enrollments do |fe|
-        fe.input :course_id, :as => :select, :include_blank => false, :collection => Course.get_active, :input_html => { :class => 'chosen-select' }
-        fe.input :start_date, :as => :datepicker, :label => 'Start Date', :input_html => { :class => 'date_input' }
+        fe.input :course_id, as: :select, include_blank: false, collection: Course.get_active, input_html: { class: 'chosen-select' }
+        fe.input :start_date, as: :datepicker, label: 'Start Date', input_html: { class: 'date_input' }
       end
     end
     
     f.buttons
   end
     
-  action_item :only => :show do
-    span link_to('Add Enrollment', new_admin_enrollment_path(:student_id => student))
+  action_item only: :show do
+    span link_to('Add Enrollment', new_admin_enrollment_path(student_id: student))
     span link_to('Add PhoneNumber', new_admin_phone_number_path(phone_number: { contactable_id: student.id, contactable_type: student.class.name }))
   end
 

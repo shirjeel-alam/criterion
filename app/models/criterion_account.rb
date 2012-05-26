@@ -18,7 +18,7 @@ class CriterionAccount < ActiveRecord::Base
 
 	before_create :set_account_type
 
-	validates :admin_user_id, :uniqueness => true, :allow_nil => true
+	validates :admin_user_id, uniqueness: true, allow_nil: true
 
 	def set_account_type
 		case admin_user.role

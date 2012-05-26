@@ -17,8 +17,8 @@ class AccountEntry < ActiveRecord::Base
 	belongs_to :criterion_account
 	belongs_to :payment
 
-	scope :credit, where(:entry_type => CREDIT)
-  scope :debit, where(:entry_type => DEBIT)
+	scope :credit, where(entry_type: CREDIT)
+  scope :debit, where(entry_type: DEBIT)
 
   def credit?
     entry_type == CREDIT

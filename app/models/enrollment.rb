@@ -18,15 +18,15 @@ class Enrollment < ActiveRecord::Base
   belongs_to :course
   belongs_to :student
 
-  has_one :teacher, :through => :course
-  has_one :session, :through => :course
+  has_one :teacher, through: :course
+  has_one :session, through: :course
   
-  has_many :payments, :as => :payable, :dependent => :destroy
+  has_many :payments, as: :payable, dependent: :destroy
   
-  validates :course_id, :uniqueness => { :scope => :student_id }
-  validates :status, :presence => true, :inclusion => { :in => [NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED] }
-  validates :start_date, :timeliness => { :type => :date, :allow_blank => true }
-  validates :enrollment_date, :timeliness => { :type => :date, :allow_blank => true }
+  validates :course_id, uniqueness: { scope: :student_id }
+  validates :status, presence: true, inclusion: { in: [NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED] }
+  validates :start_date, timeliness: { type: :date, allow_blank: true }
+  validates :enrollment_date, timeliness: { type: :date, allow_blank: true }
 
   before_validation :set_start_date, :set_status
   
@@ -35,10 +35,10 @@ class Enrollment < ActiveRecord::Base
   before_save :update_status
   after_save :create_payments, :evaluate_discount
   
-  scope :not_started, where(:status => NOT_STARTED)
-  scope :in_progress, where(:status => IN_PROGRESS)
-  scope :completed, where(:status => COMPLETED)
-  scope :cancelled, where(:status => CANCELLED)
+  scope :not_started, where(status: NOT_STARTED)
+  scope :in_progress, where(status: IN_PROGRESS)
+  scope :completed, where(status: COMPLETED)
+  scope :cancelled, where(status: CANCELLED)
 
   def set_status
     if course.not_started?
@@ -78,9 +78,9 @@ class Enrollment < ActiveRecord::Base
       months = course.start_date > start_date ? months_between(course.start_date, course.end_date) : months_between(start_date, course.end_date)
       
       # First month payment
-      Payment.create(:period => months.first, :amount => first_month_payment, :status => Payment::DUE, :payment_type => Payment::DEBIT, :payable_id => id, :payable_type => self.class.name)
+      Payment.create(period: months.first, amount: first_month_payment, status: Payment::DUE, payment_type: Payment::DEBIT, payable_id: id, payable_type: self.class.name)
       months[1...months.length].each do |date|
-        Payment.create(:period => date, :amount => course.monthly_fee, :status => Payment::DUE, :payment_type => Payment::DEBIT, :payable_id => id, :payable_type => self.class.name)
+        Payment.create(period: date, amount: course.monthly_fee, status: Payment::DUE, payment_type: Payment::DEBIT, payable_id: id, payable_type: self.class.name)
       end
     end
   end
@@ -138,15 +138,15 @@ class Enrollment < ActiveRecord::Base
   end
 
   def start!
-    self.update_attributes(:status => IN_PROGRESS, :enrollment_date => Date.today, :start_date => Date.today)
+    self.update_attributes(status: IN_PROGRESS, enrollment_date: Date.today, start_date: Date.today)
   end
 
   def complete!
-    self.update_attributes(:status => COMPLETED, :enrollment_date => Date.today)
+    self.update_attributes(status: COMPLETED, enrollment_date: Date.today)
   end
 
   def cancel!
-    self.update_attributes(:status => CANCELLED, :enrollment_date => Date.today)
+    self.update_attributes(status: CANCELLED, enrollment_date: Date.today)
     void_payments
   end
 

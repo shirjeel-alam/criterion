@@ -23,6 +23,8 @@ gem 'googlecharts'
 
 gem 'thin'
 
+gem 'hash_syntax'
+
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 

@@ -23,29 +23,29 @@ class Course < ActiveRecord::Base
   belongs_to :teacher
   belongs_to :session
   
-  has_many :enrollments, :dependent => :destroy
-  has_many :payments, :through => :enrollments
-  has_many :students, :through => :enrollments
+  has_many :enrollments, dependent: :destroy
+  has_many :payments, through: :enrollments
+  has_many :students, through: :enrollments
   
   before_validation :set_end_date
 
   before_save :update_status
   after_save :update_session, :create_payments
   
-  validates :name, :presence => true
-  validates :teacher_id, :presence => true
-  validates :session_id, :presence => true
-  validates :status, :presence => true, :inclusion => { :in => [NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED] }
-  validates :monthly_fee, :presence => true, :numericality => { :only_integer => true, :greater_than => 0 }
-  validates :start_date, :timeliness => { :type => :date, :before => lambda { end_date }, :allow_blank => true } 
-  validates :end_date, :timeliness => { :type => :date, :allow_blank => true }
-  validates :level, :presence => true, :inclusion => { :in => [O_LEVEL, AS_LEVEL, A2_LEVEL] }
+  validates :name, presence: true
+  validates :teacher_id, presence: true
+  validates :session_id, presence: true
+  validates :status, presence: true, inclusion: { in: [NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED] }
+  validates :monthly_fee, presence: true, numericality: { only_integer: true, greater_than: 0 }
+  validates :start_date, timeliness: { type: :date, before: lambda { end_date }, allow_blank: true } 
+  validates :end_date, timeliness: { type: :date, allow_blank: true }
+  validates :level, presence: true, inclusion: { in: [O_LEVEL, AS_LEVEL, A2_LEVEL] }
 
-  scope :active, where(:status => [NOT_STARTED, IN_PROGRESS])
-  scope :not_started, where(:status => NOT_STARTED)
-  scope :in_progress, where(:status => IN_PROGRESS)
-  scope :completed, where(:status => COMPLETED)
-  scope :cancelled, where(:status => CANCELLED)
+  scope :active, where(status: [NOT_STARTED, IN_PROGRESS])
+  scope :not_started, where(status: NOT_STARTED)
+  scope :in_progress, where(status: IN_PROGRESS)
+  scope :completed, where(status: COMPLETED)
+  scope :cancelled, where(status: CANCELLED)
   
   def update_status
     if start_date.blank? || start_date > Date.today
@@ -83,7 +83,7 @@ class Course < ActiveRecord::Base
   
   def calculate_month_revenue(date)
     revenue = 0
-    curr_payments = payments.paid.where(:period => date.beginning_of_month..date.end_of_month)
+    curr_payments = payments.paid.where(period: date.beginning_of_month..date.end_of_month)
     curr_payments.each do |payment|
       revenue += payment.amount
     end
@@ -107,17 +107,17 @@ class Course < ActiveRecord::Base
   end
 
   def start!
-    self.update_attributes(:status => IN_PROGRESS, :course_date => Date.today, :start_date => Date.today)
+    self.update_attributes(status: IN_PROGRESS, course_date: Date.today, start_date: Date.today)
     start_enrollments
   end
 
   def complete!
-    self.update_attributes(:status => COMPLETED, :course_date => Date.today, :end_date => Date.today)
+    self.update_attributes(status: COMPLETED, course_date: Date.today, end_date: Date.today)
     complete_enrollments
   end
 
   def cancel!
-    self.update_attributes(:status => CANCELLED, :course_date => Date.today)
+    self.update_attributes(status: CANCELLED, course_date: Date.today)
     cancel_enrollments
   end
   

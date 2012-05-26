@@ -1,5 +1,5 @@
 ActiveAdmin.register Payment do
-  menu :parent => 'More Menus', :if => proc { current_admin_user.super_admin_or_partner? }
+  menu parent: 'More Menus', if: proc { current_admin_user.super_admin_or_partner? }
 
   filter :id
   filter :amount
@@ -18,28 +18,28 @@ ActiveAdmin.register Payment do
   scope :cheque
 
   index do
-    column 'ID', :sortable => :id do |payment|
+    column 'ID', sortable: :id do |payment|
       link_to(payment.id, admin_payment_path(payment))
     end
-    column :period, :sortable => :period do |payment|
+    column :period, sortable: :period do |payment|
       payment.period_label
     end
-    column :amount, :sortable => :amount do |payment|
-      number_to_currency(payment.amount, :unit => 'Rs. ', :precision => 0)
+    column :amount, sortable: :amount do |payment|
+      number_to_currency(payment.amount, unit: 'Rs. ', precision: 0)
     end
-    column :discount, :sortable => :discount do |payment|
-      number_to_currency(payment.discount, :unit => 'Rs. ', :precision => 0)
+    column :discount, sortable: :discount do |payment|
+      number_to_currency(payment.discount, unit: 'Rs. ', precision: 0)
     end
-    column :status, :sortable => :status do |payment|
+    column :status, sortable: :status do |payment|
       status_tag(payment.status_label, payment.status_tag)
     end
-    column :payment_type, :sortable => :payment_type do |payment|
+    column :payment_type, sortable: :payment_type do |payment|
       status_tag(payment.type_label, payment.type_tag)
     end
-    column :payment_date, :sortable => :payment_date do |payment|
+    column :payment_date, sortable: :payment_date do |payment|
       date_format(payment.payment_date)
     end
-    column :payment_method, :sortable => :payment_method do |payment|
+    column :payment_method, sortable: :payment_method do |payment|
       status_tag(payment.payment_method_label, payment.payment_method_tag)
     end
     column :payable do |payment|
@@ -49,14 +49,14 @@ ActiveAdmin.register Payment do
         link_to(payment.payable.name, admin_teacher_path(payment.payable)) rescue nil
       end
     end
-    column :category, :sortable => :category_id do |payment|
+    column :category, sortable: :category_id do |payment|
       payment.category.name_label rescue nil
     end
 
     # default_actions
   end
 
-  form :partial => 'form'
+  form partial: 'form'
 
   show do
     panel 'Payment Details' do
@@ -65,9 +65,9 @@ ActiveAdmin.register Payment do
         row(:payable) { payment.payable }
         row(:payable_type) { payment.payable_type }
         row(:period) { payment.period_label }
-        row(:amount) { number_to_currency(payment.amount, :unit => 'Rs. ', :precision => 0) }
-        row(:discount) { number_to_currency(payment.discount, :unit => 'Rs. ', :precision => 0) }
-        row(:net_amount) { number_to_currency(payment.net_amount, :unit => 'Rs. ', :precision => 0) }
+        row(:amount) { number_to_currency(payment.amount, unit: 'Rs. ', precision: 0) }
+        row(:discount) { number_to_currency(payment.discount, unit: 'Rs. ', precision: 0) }
+        row(:net_amount) { number_to_currency(payment.net_amount, unit: 'Rs. ', precision: 0) }
         row(:status) { status_tag(payment.status_label, payment.status_tag) }
         row(:payment_type) { status_tag(payment.type_label, payment.type_tag) }
         row(:payment_method) { status_tag(payment.payment_method_label, payment.payment_method_tag) }
@@ -82,19 +82,19 @@ ActiveAdmin.register Payment do
         t.column(:id) { |account_entry| link_to(account_entry.id, admin_account_entry_path(account_entry)) }
         t.column(:criterion_account) { |account_entry| link_to(account_entry.criterion_account.title, admin_criterion_account_path(account_entry.criterion_account)) }
         t.column(:entry_type) { |account_entry| status_tag(account_entry.entry_type_label, account_entry.entry_type_tag) }
-        t.column(:amount) { |account_entry| number_to_currency(account_entry.amount, :unit => 'Rs. ', :precision => 0) }
+        t.column(:amount) { |account_entry| number_to_currency(account_entry.amount, unit: 'Rs. ', precision: 0) }
       end
     end if payment.account_entries.present?
 
     active_admin_comments
   end
   
-  member_action :pay, :method => :get do
+  member_action :pay, method: :get do
     @payment = Payment.find(params[:id])
-    @payment.attributes = { :status => Payment::PAID, :payment_date => Date.today }
+    @payment.attributes = { status: Payment::PAID, payment_date: Date.today }
   end
 
-  member_action :paid, :method => :put do
+  member_action :paid, method: :put do
     @payment = Payment.find(params[:id])
     @payment.attributes = params[:payment]
 
@@ -109,24 +109,24 @@ ActiveAdmin.register Payment do
     end
   end
 
-  member_action :void, :method => :put do
+  member_action :void, method: :put do
     payment = Payment.find(params[:id])
     payment.void! ? flash[:notice] = 'Payment successfully voided.' : flash[:notice] = 'Error in processing payment.'
     redirect_to_back
   end
   
-  member_action :refund, :method => :put do
+  member_action :refund, method: :put do
     payment = Payment.find(params[:id])
     payment.refund! ? flash[:notice] = 'Payment successfully refunded.' : flash[:notice] = 'Error in processing payment.'
     redirect_to_back
   end
 
-  collection_action :pay_cumulative, :method => :get do
+  collection_action :pay_cumulative, method: :get do
   	@payments = Payment.find(params[:payments])
     session[:payment_ids] = @payments.collect(&:id)
   end
 
-  collection_action :paid_cumulative, :method => :post do
+  collection_action :paid_cumulative, method: :post do
     @payments = Payment.find(session[:payment_ids])
     @student = @payments.first.payable.student
 
@@ -147,7 +147,7 @@ ActiveAdmin.register Payment do
   end
 
   controller do
-    before_filter :check_authorization, :except => [:new, :create, :show]
+    before_filter :check_authorization, except: [:new, :create, :show]
 
     def check_authorization
       if current_admin_user.admin?
@@ -164,18 +164,18 @@ ActiveAdmin.register Payment do
     def new
       if params[:teacher_id]
         @account_holder = Teacher.find(params[:teacher_id])
-        @payment = @account_holder.transactions.build(:payment_type => params[:payment_type], :status => Payment::PAID, :payment_date => Date.today)
+        @payment = @account_holder.transactions.build(payment_type: params[:payment_type], status: Payment::PAID, payment_date: Date.today)
         session[:holder_type] = 'Teacher'
       elsif params[:staff_id]
         @account_holder = Staff.find(params[:staff_id])
-        @payment = @account_holder.transactions.build(:payment_type => params[:payment_type], :status => Payment::PAID, :payment_date => Date.today)
+        @payment = @account_holder.transactions.build(payment_type: params[:payment_type], status: Payment::PAID, payment_date: Date.today)
         session[:holder_type] = 'Staff'
       elsif params[:partner_id]
         @account_holder = Partner.find(params[:partner_id])
-        @payment = @account_holder.transactions.build(:payment_type => params[:payment_type], :status => Payment::PAID, :payment_date => Date.today)
+        @payment = @account_holder.transactions.build(payment_type: params[:payment_type], status: Payment::PAID, payment_date: Date.today)
         session[:holder_type] = 'Partner'
       elsif params[:category_id]
-        @payment = Payment.new(:payment_type => params[:payment_type],  :category_id => params[:category_id], :status => Payment::PAID, :payment_date => Date.today)
+        @payment = Payment.new(payment_type: params[:payment_type],  category_id: params[:category_id], status: Payment::PAID, payment_date: Date.today)
       else
         @payment = Payment.new(params[:payment])
       end

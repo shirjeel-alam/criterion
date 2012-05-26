@@ -1,5 +1,5 @@
 ActiveAdmin.register CriterionMail do
-  menu :parent => 'More Menus', :if => proc { current_admin_user.super_admin_or_partner? }
+  menu parent: 'More Menus', if: proc { current_admin_user.super_admin_or_partner? }
 
   filter :id
   filter :from
@@ -8,10 +8,10 @@ ActiveAdmin.register CriterionMail do
   filter :bcc
   filter :subject
   filter :body
-  filter :created_at, :label => 'MAIL SENT BETWEEN'
+  filter :created_at, label: 'MAIL SENT BETWEEN'
 
   index do
-    column 'ID', :sortable => :id do |mail|
+    column 'ID', sortable: :id do |mail|
       link_to(mail.id, admin_criterion_mail_path(mail))
     end
     column :from
@@ -28,13 +28,13 @@ ActiveAdmin.register CriterionMail do
     default_actions
   end
 
-  form :partial => 'form'
+  form partial: 'form'
 
   show do
     criterion_mail.to = criterion_mail.to.split(',') rescue nil
     criterion_mail.cc = criterion_mail.cc.split(',') rescue nil
     criterion_mail.bcc = criterion_mail.bcc.split(',') rescue nil
-    render :partial => 'form', :locals => { :disabled => true }
+    render partial: 'form', locals: { disabled: true }
   end
 
   controller do
@@ -54,15 +54,15 @@ ActiveAdmin.register CriterionMail do
     def new
       if params[:course].present?
         @course = Course.find(params[:course])
-        @criterion_mail = CriterionMail.new(:from => current_admin_user.email, :to => @course.emails.collect(&:second))
+        @criterion_mail = CriterionMail.new(from: current_admin_user.email, to: @course.emails.collect(&:second))
       elsif params[:courses].present?
         @courses = Course.find(params[:courses].collect(&:second))
-        @criterion_mail = CriterionMail.new(:from => current_admin_user.email, :to => @courses.collect { |course| course.emails.collect(&:second) }.flatten)
+        @criterion_mail = CriterionMail.new(from: current_admin_user.email, to: @courses.collect { |course| course.emails.collect(&:second) }.flatten)
       elsif params[:teachers].present?
         @teachers = Teacher.find(params[:teachers].collect(&:second))
         @courses = @teachers.collect(&:courses).flatten
         @emails = (@teachers.collect(&:email) + @courses.collect { |course| course.emails.collect(&:second) }.flatten).flatten.uniq
-        @criterion_mail = CriterionMail.new(:from => current_admin_user.email, :to => @emails)
+        @criterion_mail = CriterionMail.new(from: current_admin_user.email, to: @emails)
       else
         super
       end

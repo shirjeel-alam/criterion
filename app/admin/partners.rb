@@ -1,5 +1,5 @@
 ActiveAdmin.register Partner do
- 	menu :priority => 2, :if => proc { current_admin_user.super_admin_or_partner? }
+ 	menu priority: 2, if: proc { current_admin_user.super_admin_or_partner? }
   
   filter :id
   filter :name
@@ -12,8 +12,8 @@ ActiveAdmin.register Partner do
     end
     column :name
     column :email
-    column :share, :sortable => :share do |partner|
-      number_to_percentage(partner.share * 100, :precision => 0)
+    column :share, sortable: :share do |partner|
+      number_to_percentage(partner.share * 100, precision: 0)
     end
     column 'Contact Number' do |partner|
       if partner.phone_numbers.present?
@@ -22,8 +22,8 @@ ActiveAdmin.register Partner do
         'No Phone Numbers Present'
       end
     end
-    column 'Balance', :sortable => :balance do |partner|
-      status_tag(number_to_currency(partner.balance, :unit => 'Rs. ', :precision => 0), partner.balance_tag) rescue nil
+    column 'Balance', sortable: :balance do |partner|
+      status_tag(number_to_currency(partner.balance, unit: 'Rs. ', precision: 0), partner.balance_tag) rescue nil
     end
 
     default_actions
@@ -31,26 +31,26 @@ ActiveAdmin.register Partner do
 
   form do |f|
     f.inputs do
-      f.input :name, :required => true
-      f.input :email, :required => true
-      f.input :share, :required => true, :step => 0.05
+      f.input :name, required: true
+      f.input :email, required: true
+      f.input :share, required: true, step: 0.05
 
       f.has_many :phone_numbers do |fp|
         fp.input :number
-        fp.input :category, :as => :select, :collection => PhoneNumber.categories, :include_blank => false, :input_html => { :class => 'chosen-select' }
+        fp.input :category, as: :select, collection: PhoneNumber.categories, include_blank: false, input_html: { class: 'chosen-select' }
       end
     end
 
     f.buttons
   end
   
-  show :title => :name do
+  show title: :name do
     panel 'Partner Details' do
       attributes_table_for partner do
         row(:id) { partner.id }
         row(:name) { partner.name }
         row(:email) { partner.email }
-        row(:share) { number_to_percentage(partner.share * 100, :precision => 0) }
+        row(:share) { number_to_percentage(partner.share * 100, precision: 0) }
         row(:phone_numbers) do
           if partner.phone_numbers.present? 
             partner.phone_numbers.each do |number|
@@ -65,7 +65,7 @@ ActiveAdmin.register Partner do
             'No Phone Numbers Present'
           end
         end
-        row(:balance) { status_tag(number_to_currency(partner.balance, :unit => 'Rs. ', :precision => 0), partner.balance_tag) rescue nil }
+        row(:balance) { status_tag(number_to_currency(partner.balance, unit: 'Rs. ', precision: 0), partner.balance_tag) rescue nil }
       end
     end
 
@@ -73,8 +73,8 @@ ActiveAdmin.register Partner do
       table_for partner.transactions.debit.each do |t|
         t.column(:id) { |deposit| link_to(deposit.id, admin_payment_path(deposit)) }
         t.column(:payment_date) { |deposit| date_format(deposit.payment_date) }
-        t.column(:narration) { |deposit| truncate(deposit.additional_info, :length => 75) }
-        t.column(:amount) { |deposit| number_to_currency(deposit.amount, :unit => 'Rs. ', :precision => 0) }
+        t.column(:narration) { |deposit| truncate(deposit.additional_info, length: 75) }
+        t.column(:amount) { |deposit| number_to_currency(deposit.amount, unit: 'Rs. ', precision: 0) }
         t.column(:status) { |deposit| status_tag(deposit.status_label, deposit.status_tag) }
       end
     end if partner.transactions.debit.present?
@@ -83,8 +83,8 @@ ActiveAdmin.register Partner do
       table_for partner.transactions.credit.each do |t|
         t.column(:id) { |withdrawal| link_to(withdrawal.id, admin_payment_path(withdrawal)) }
         t.column(:payment_date) { |withdrawal| date_format(withdrawal.payment_date) }
-        t.column(:narration) { |withdrawal| truncate(withdrawal.additional_info, :length => 75) }
-        t.column(:amount) { |withdrawal| number_to_currency(withdrawal.amount, :unit => 'Rs. ', :precision => 0) }
+        t.column(:narration) { |withdrawal| truncate(withdrawal.additional_info, length: 75) }
+        t.column(:amount) { |withdrawal| number_to_currency(withdrawal.amount, unit: 'Rs. ', precision: 0) }
         t.column(:status) { |withdrawal| status_tag(withdrawal.status_label, withdrawal.status_tag) }
       end
     end if partner.transactions.credit.present?
@@ -92,10 +92,10 @@ ActiveAdmin.register Partner do
     active_admin_comments
   end
 
-  action_item :only => :show do
+  action_item only: :show do
     span link_to('Add PhoneNumber', new_admin_phone_number_path(phone_number: { contactable_id: partner.id, contactable_type: partner.class.name }))
-    span link_to('Debit Account (Withdrawal)', new_admin_payment_path(:partner_id => partner, :payment_type => Payment::CREDIT))
-    span link_to('Credit Account (Deposit)', new_admin_payment_path(:partner_id => partner, :payment_type => Payment::DEBIT)) if current_admin_user.super_admin_or_partner?
+    span link_to('Debit Account (Withdrawal)', new_admin_payment_path(partner_id: partner, payment_type: Payment::CREDIT))
+    span link_to('Credit Account (Deposit)', new_admin_payment_path(partner_id: partner, payment_type: Payment::DEBIT)) if current_admin_user.super_admin_or_partner?
   end
 
   controller do

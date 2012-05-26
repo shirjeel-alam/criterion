@@ -1,5 +1,5 @@
 ActiveAdmin.register Enrollment do
-  menu :priority => 2, :if => proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? }
+  menu priority: 2, if: proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? }
   
   filter :id
   #NOTE: MetaSearch issue
@@ -14,7 +14,7 @@ ActiveAdmin.register Enrollment do
   scope :cancelled
   
   index do
-    column 'ID', :sortable => :id do |enrollment|
+    column 'ID', sortable: :id do |enrollment|
       link_to(enrollment.id, admin_enrollment_path(enrollment))
     end
     column :student do |enrollment|
@@ -29,19 +29,19 @@ ActiveAdmin.register Enrollment do
     column :session do |enrollment|
       enrollment.course.session.label rescue nil
     end
-    column :start_date, :sortable => :start_date do |enrollment|
+    column :start_date, sortable: :start_date do |enrollment|
       date_format(enrollment.start_date)
     end
-    column :status, :sortable => :status do |enrollment|
+    column :status, sortable: :status do |enrollment|
       status_tag(enrollment.status_label, enrollment.status_tag)
     end
       
     default_actions
   end
   
-  form :partial => 'form'
+  form partial: 'form'
   
-  show :title => :title do
+  show title: :title do
     panel 'Enrollment Details' do
       attributes_table_for enrollment do
         row(:id) { enrollment.id }
@@ -58,17 +58,17 @@ ActiveAdmin.register Enrollment do
       table_for enrollment.payments.order(:id) do |t|
         t.column(:id) { |payment| link_to(payment.id, admin_payment_path(payment)) }
         t.column(:period) { |payment| payment.period_label}
-        t.column(:gross_amount) { |payment| number_to_currency(best_in_place_if((current_admin_user.super_admin_or_partner? || current_admin_user.admin?) && payment.due?, payment, :amount, :type => :input, :path => [:admin, payment]), :unit => 'Rs. ', :precision => 0) }
-        t.column(:discount) { |payment| number_to_currency(best_in_place_if((current_admin_user.super_admin_or_partner? || current_admin_user.admin?) && payment.due?, payment, :discount, :type => :input, :path => [:admin, payment]), :unit => 'Rs. ', :precision => 0) }
-        t.column(:net_amount) { |payment| number_to_currency(payment.net_amount, :unit => 'Rs. ', :precision => 0) }
+        t.column(:gross_amount) { |payment| number_to_currency(best_in_place_if((current_admin_user.super_admin_or_partner? || current_admin_user.admin?) && payment.due?, payment, :amount, type: :input, path: [:admin, payment]), unit: 'Rs. ', precision: 0) }
+        t.column(:discount) { |payment| number_to_currency(best_in_place_if((current_admin_user.super_admin_or_partner? || current_admin_user.admin?) && payment.due?, payment, :discount, type: :input, path: [:admin, payment]), unit: 'Rs. ', precision: 0) }
+        t.column(:net_amount) { |payment| number_to_currency(payment.net_amount, unit: 'Rs. ', precision: 0) }
         t.column(:status) { |payment| status_tag(payment.status_label, payment.status_tag) }
         t.column(:actions) do |payment| 
           ul do
             if payment.due?
               li span link_to('Make Payment', pay_admin_payment_path(payment))
-              li span link_to('Void Payment', void_admin_payment_path(payment), :method => :put)
+              li span link_to('Void Payment', void_admin_payment_path(payment), method: :put)
             elsif payment.paid?
-              li span link_to('Refund Payment', refund_admin_payment_path(payment), :method => :put)
+              li span link_to('Refund Payment', refund_admin_payment_path(payment), method: :put)
             end
           end
         end
@@ -122,7 +122,7 @@ ActiveAdmin.register Enrollment do
 
         count = 0
         @course_ids.each do |course_id|
-          params[:enrollment].merge!(:course_id => course_id)
+          params[:enrollment].merge!(course_id: course_id)
           @enrollment = Enrollment.new(params[:enrollment])
 
           count += 1 if @enrollment.save
@@ -137,7 +137,7 @@ ActiveAdmin.register Enrollment do
 
         count = 0
         @student_ids.each do |student_id|
-          params[:enrollment].merge!(:student_id => student_id)
+          params[:enrollment].merge!(student_id: student_id)
           @enrollment = Enrollment.new(params[:enrollment])
 
           count += 1 if @enrollment.save
@@ -164,38 +164,38 @@ ActiveAdmin.register Enrollment do
     end
   end
 
-  member_action :start, :method => :put do
+  member_action :start, method: :put do
     enrollment = Enrollment.find(params[:id])
     if enrollment.start!
       flash[:error] = 'Enrollment Started'
     else
       flash[:error] = 'Error Starting Enrollment'
     end
-    redirect_to :action => :show
+    redirect_to action: :show
   end
 
-  member_action :cancel, :method => :put do
+  member_action :cancel, method: :put do
     enrollment = Enrollment.find(params[:id])
     if enrollment.cancel!
       flash[:error] = 'Enrollment Cancelled'
     else
       flash[:error] = 'Error Cancelling Enrollment'
     end
-    redirect_to :action => :show
+    redirect_to action: :show
   end
 
-  member_action :refresh, :method => :put do
+  member_action :refresh, method: :put do
     Enrollment.find(params[:id]).save
-    redirect_to :action => :show
+    redirect_to action: :show
   end
   
-  action_item :only => :show do
-    span link_to('Refresh Enrollment', refresh_admin_enrollment_path(enrollment), :method => :put)
+  action_item only: :show do
+    span link_to('Refresh Enrollment', refresh_admin_enrollment_path(enrollment), method: :put)
 
     if enrollment.not_started?
-      span link_to('Start Enrollment', start_admin_enrollment_path(enrollment), :method => :put, :confirm => 'Are you sure?')
+      span link_to('Start Enrollment', start_admin_enrollment_path(enrollment), method: :put, confirm: 'Are you sure?')
     elsif enrollment.started?
-      span link_to('Cancel Enrollment', cancel_admin_enrollment_path(enrollment), :method => :put, :confirm => 'Are you sure?')
+      span link_to('Cancel Enrollment', cancel_admin_enrollment_path(enrollment), method: :put, confirm: 'Are you sure?')
     end
   end
 end
