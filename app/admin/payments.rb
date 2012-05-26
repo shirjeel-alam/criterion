@@ -142,7 +142,7 @@ ActiveAdmin.register Payment do
       end
     end
 
-    flash[:notice] = "#{count} payment(s) successfully made."
+    flash[:notice] = "#{count} of #{@payments.count} payment(s) successfully made."
     redirect_to admin_student_path(@student)
   end
 
