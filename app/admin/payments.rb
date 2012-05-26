@@ -89,10 +89,24 @@ ActiveAdmin.register Payment do
     active_admin_comments
   end
   
-  member_action :pay, :method => :put do
-    payment = Payment.find(params[:id])
-    payment.pay! ? flash[:notice] = 'Payment successfully made.' : flash[:notice] = 'Error in processing payment.'
-    redirect_to_back
+  member_action :pay, :method => :get do
+    @payment = Payment.find(params[:id])
+    @payment.attributes = { :status => Payment::PAID, :payment_date => Date.today }
+  end
+
+  member_action :paid, :method => :put do
+    @payment = Payment.find(params[:id])
+    @payment.attributes = params[:payment]
+
+    if @payment.save
+      @payment.create_account_entry
+      @payment.send_fee_received_sms
+      flash[:notice] = 'Payment successfully paid.'
+      redirect_to send("admin_#{@payment.payable_type.downcase}_path", @payment.payable)
+    else
+      flash[:notice] = 'Error in processing payment.'
+      redirect_to send("admin_#{@payment.payable_type.downcase}_path", @payment.payable)
+    end
   end
 
   member_action :void, :method => :put do
@@ -107,17 +121,29 @@ ActiveAdmin.register Payment do
     redirect_to_back
   end
 
-  collection_action :pay_cumulative, :method => :put do
-  	payments = Payment.find(params[:payments])
-  	count = 0
-  	payments.each do |payment|
-  		if payment.due?
-  			payment.pay!
-  			count += 1
-  		end
-  	end
-  	flash[:notice] = "#{count} payment(s) successfully made."
-  	redirect_to_back
+  collection_action :pay_cumulative, :method => :get do
+  	@payments = Payment.find(params[:payments])
+    session[:payment_ids] = @payments.collect(&:id)
+  end
+
+  collection_action :paid_cumulative, :method => :post do
+    @payments = Payment.find(session[:payment_ids])
+    @student = @payments.first.payable.student
+
+    count = 0
+    @payments.each do |payment|
+      if payment.due?
+        payment.attributes = params[:payment]
+        if payment.save
+          payment.create_account_entry
+          payment.send_fee_received_sms
+          count += 1
+        end
+      end
+    end
+
+    flash[:notice] = "#{count} payment(s) successfully made."
+    redirect_to admin_student_path(@student)
   end
 
   controller do

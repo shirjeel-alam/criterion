@@ -65,7 +65,7 @@ ActiveAdmin.register Enrollment do
         t.column(:actions) do |payment| 
           ul do
             if payment.due?
-              li span link_to('Make Payment', pay_admin_payment_path(payment), :method => :put)
+              li span link_to('Make Payment', pay_admin_payment_path(payment))
               li span link_to('Void Payment', void_admin_payment_path(payment), :method => :put)
             elsif payment.paid?
               li span link_to('Refund Payment', refund_admin_payment_path(payment), :method => :put)
@@ -73,6 +73,12 @@ ActiveAdmin.register Enrollment do
           end
         end
       end
+
+      # div style: 'display:none' do
+      #   div id: 'reject_modal' do
+      #     render 'user_history_form', user: user
+      #   end
+      # end
     end
 
     active_admin_comments

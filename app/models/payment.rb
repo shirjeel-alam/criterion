@@ -36,7 +36,7 @@ class Payment < ActiveRecord::Base
   validates :status, :presence => true, :inclusion => { :in => [DUE, PAID, VOID, REFUNDED] }
   validates :discount, :numericality => { :only_integer => true, :greater_than => 0 }, :allow_blank => true
   validates :payment_date, :timeliness => { :type => :date, :allow_blank => true }
-  validates :payment_method, :inclusion => { :in => [CASH, CHEQUE, INTERNAL] }, :allow_blank => true
+  validates :payment_method, :inclusion => { :in => [CASH, CHEQUE, INTERNAL] }, :if => 'paid?'
   
   scope :paid, where(:status => PAID)
   scope :due, where(:status => DUE)
@@ -198,6 +198,17 @@ class Payment < ActiveRecord::Base
         CriterionAccount.bank_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::CREDIT)
         CriterionAccount.criterion_account.account_entries.create!(:payment_id => self.id, :amount => net_amount, :entry_type => AccountEntry::DEBIT)
       end
+    end
+  end
+
+  def send_fee_received_sms
+    student = payable.student
+    course_name = payable.course.title
+    month_and_year = period_label
+
+    student.phone_numbers.mobile.each do |phone_number|
+      sms_data = { to: phone_number.number, message: "Dear Student, Your payment of Rs. #{net_amount} against #{course_name} for the period #{month_and_year} has been received. Thank You" }
+      student.received_messages.create(sms_data)
     end
   end
   

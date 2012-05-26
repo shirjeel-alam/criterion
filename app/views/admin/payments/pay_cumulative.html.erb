@@ -1,0 +1,9 @@
+<%= semantic_form_for [:admin, Payment.new(:payment_date => Date.today, :status => Payment::PAID)], :url => paid_cumulative_admin_payments_path, :builder => ActiveAdmin::FormBuilder do |f|
+  f.inputs do
+    f.input :payment_method, :as => :radio, :collection => Payment.payment_methods(true), :required => true
+    f.input :payment_date, :as => :datepicker, :required =>  true
+    f.input :status, :as => :hidden
+  end
+  
+  f.buttons
+end %>

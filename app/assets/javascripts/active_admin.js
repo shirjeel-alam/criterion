@@ -112,4 +112,12 @@ $(document).ready(function() {
   });
 
   /*** END ***/
+
+  /*** FancyBox ***/
+
+  $('a.fancybox').fancybox({
+    'hideOnContentClick': false
+  });
+
+  /*** END ***/
 });

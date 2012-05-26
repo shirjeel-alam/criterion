@@ -96,7 +96,7 @@ ActiveAdmin.register Student do
               td number_to_currency(cumulative_discount, :unit => 'Rs. ', :precision => 0)
               td number_to_currency(cumulative_net_amount, :unit => 'Rs. ', :precision => 0)
               td status_tag(cumulative_net_amount > 0 ? 'Due' : 'Paid', cumulative_net_amount > 0 ? :error : :ok)
-              td cumulative_net_amount > 0 ? link_to('Make Payment (Cumulative)', pay_cumulative_admin_payments_path(:payments => cumulative_payment.second), :method => :put) : nil
+              td cumulative_net_amount > 0 ? link_to('Make Payment (Cumulative)', pay_cumulative_admin_payments_path(:payments => cumulative_payment.second)) : nil
             end
             
             flip = !flip
@@ -112,7 +112,7 @@ ActiveAdmin.register Student do
                 td do
                   ul do
                     if payment.due?
-                      li span link_to('Make Payment', pay_admin_payment_path(payment), :method => :put)
+                      li span link_to('Make Payment', pay_admin_payment_path(payment))
                       li span link_to('Void Payment', void_admin_payment_path(payment), :method => :put)
                     elsif payment.paid?
                       li span link_to('Refund Payment', refund_admin_payment_path(payment), :method => :put)

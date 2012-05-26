@@ -1,0 +1,9 @@
+<%= semantic_form_for [:admin, @payment], :url => paid_admin_payment_path, :builder => ActiveAdmin::FormBuilder do |f|
+  f.inputs do
+    f.input :payment_method, :as => :radio, :collection => Payment.payment_methods(true), :required => true
+    f.input :payment_date, :as => :datepicker, :required =>  true
+    f.input :status, :as => :hidden
+  end
+  
+  f.buttons
+end %>
