@@ -73,12 +73,6 @@ ActiveAdmin.register Enrollment do
           end
         end
       end
-
-      # div style: 'display:none' do
-      #   div id: 'reject_modal' do
-      #     render 'user_history_form', user: user
-      #   end
-      # end
     end
 
     active_admin_comments

@@ -86,7 +86,7 @@ class Enrollment < ActiveRecord::Base
   end
 
   def void_payments
-    payments_to_be_void = payments.due.collect { |payment| payment if payment.period.future? & payment.due? }.compact
+    payments_to_be_void = payments.due.collect { |payment| payment if payment.period.future? && payment.due? }.compact
     payments_to_be_void << payments.due.detect { |payment| payment if payment.period.beginning_of_month == Date.today.beginning_of_month && (Date.today - Date.today.beginning_of_month).to_i < 10 }
     payments_to_be_void = payments_to_be_void.compact
     payments_to_be_void.each do |payment|
