@@ -33,7 +33,6 @@ ActiveAdmin.register Student do
             student.phone_numbers.each do |number|
               div do
                 span number.label
-                # span link_to('View', admin_phone_number_path(number))
                 span link_to('Edit', edit_admin_phone_number_path(number))
                 span link_to('Delete', admin_phone_number_path(number), method: :delete, confirm: 'Are you sure?')
               end
@@ -46,15 +45,16 @@ ActiveAdmin.register Student do
     end
 
     # panel 'Payment (Registration Fees)' do
-    #   table_for session.registration_fees.each do |t|
-    #     t.column(:id) { |registration_fee| link_to(registration_fee.id, admin_payment_path(registration_fee)) }
+    #   binding.pry
+    #   table_for student.session_students.each do |t|   
+    #     t.column(:id) { |session_student| link_to(registration_fee.id, admin_payment_path(registration_fee)) }
     #     t.column(:session) { |registration_fee| link_to(registration_fee.session.label, admin_session_path(registration_fee.session)) }
     #     t.column(:amount) { |registration_fee| number_to_currency(registration_fee.amount, :unit => 'Rs. ', :precision => 0) }
     #     t.column(:status) { |registration_fee| status_tag(registration_fee.status_label, registration_fee.status_tag) }
     #     t.column do |registration_fee|
     #       if registration_fee.due?
     #         li link_to('Make Payment', pay_admin_payment_path(registration_fee), :method => :put)
-    #         li link_to('Void Payment', void_admin_payment_path(registration_fee), :method => :put)
+    #         li link_to('Void Payment', void_admin_payment_path(registration_fee), :method => :put, confirm: 'Are you sure?')
     #       end
     #     end
     #   end
@@ -113,9 +113,9 @@ ActiveAdmin.register Student do
                   ul do
                     if payment.due?
                       li span link_to('Make Payment', pay_admin_payment_path(payment))
-                      li span link_to('Void Payment', void_admin_payment_path(payment), method: :put)
+                      li span link_to('Void Payment', void_admin_payment_path(payment), method: :put, confirm: 'Are you sure?')
                     elsif payment.paid?
-                      li span link_to('Refund Payment', refund_admin_payment_path(payment), method: :put)
+                      li span link_to('Refund Payment', refund_admin_payment_path(payment), method: :put, confirm: 'Are you sure?')
                     end
                   end
                 end

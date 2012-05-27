@@ -66,9 +66,9 @@ ActiveAdmin.register Enrollment do
           ul do
             if payment.due?
               li span link_to('Make Payment', pay_admin_payment_path(payment))
-              li span link_to('Void Payment', void_admin_payment_path(payment), method: :put)
+              li span link_to('Void Payment', void_admin_payment_path(payment), method: :put, confirm: 'Are you sure?')
             elsif payment.paid?
-              li span link_to('Refund Payment', refund_admin_payment_path(payment), method: :put)
+              li span link_to('Refund Payment', refund_admin_payment_path(payment), method: :put, confirm: 'Are you sure?')
             end
           end
         end
