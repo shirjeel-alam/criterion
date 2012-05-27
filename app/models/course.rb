@@ -146,7 +146,12 @@ class Course < ActiveRecord::Base
   end
 
   def phone_numbers
-    students.collect { |student| ["#{student.name} - #{student.phone_numbers.mobile.first.number}", student.phone_numbers.mobile.first.number] if student.phone_numbers.mobile.first.present? }.compact.uniq
+    numbers = students.collect do |student|
+      student.phone_numbers.mobile.collect do |phone_number|
+        ["#{student.name} - #{phone_number.number}", phone_number.number]
+      end
+    end
+    numbers.flatten(1)
   end
 
   def start_enrollments

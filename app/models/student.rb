@@ -39,6 +39,7 @@ class Student < ActiveRecord::Base
     Course.active.collect { |c| c unless c.has_enrollment?(self) }.compact.uniq
   end
 
+  # NOTE: Needs major re-work
   def evaluate_discount(session)
     session_courses = courses.where(session_id: session.id)
     enrollment_count = session_courses.count
