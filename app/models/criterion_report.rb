@@ -19,32 +19,31 @@ class CriterionReport < ActiveRecord::Base
 	before_create :calc_report_data
 
 	def calc_report_data
-		self.gross_revenue = calc_gross_revenue
-		self.discounts = calc_discounts
+    self.gross_revenue = calc_gross_revenue
+    self.discounts = calc_discounts
 		self.net_revenue = calc_net_revenue
-
 		self.expenditure = calc_expenditure
 		self.balance = calc_balance
 	end
 
 	def calc_gross_revenue
-		Payment.debit.paid.cash_or_cheque.on(report_date).sum(:amount) rescue nil
+    payments(AccountEntry::DEBIT, [Payment::CASH, Payment::CHEQUE]).sum(:amount)
 	end
 
 	def calc_discounts
-		Payment.debit.paid.cash_or_cheque.on(report_date).sum(:discount) rescue nil
+		payments(AccountEntry::DEBIT, [Payment::CASH, Payment::CHEQUE]).sum(:discount)
 	end
 
 	def calc_net_revenue
-		(gross_revenue - discounts) rescue nil
+		gross_revenue - discounts
 	end
 
 	def calc_expenditure
-		Payment.credit.paid.cash.on(report_date).sum(:amount) rescue nil
+    payments(AccountEntry::CREDIT, [Payment::CASH]).sum(:amount)
 	end
 
 	def calc_balance
-		(net_revenue - expenditure) rescue nil
+		net_revenue - expenditure
 	end
 
 	def update_report_data
@@ -61,5 +60,9 @@ class CriterionReport < ActiveRecord::Base
 
   def title
   	"Criterion Report - #{report_date.strftime('%d %B, %Y')}"
+  end
+
+  def payments(entry_type, payment_method)
+    Payment.joins(:account_entries).where('account_entries.criterion_account_id = ? AND account_entries.entry_type = ? AND payments.payment_method IN (?) AND account_entries.created_at BETWEEN ? AND ?', CriterionAccount.bank_account.id, entry_type, payment_method, report_date.beginning_of_day, report_date.end_of_day)
   end
 end

@@ -33,7 +33,7 @@ ActiveAdmin.register CriterionReport do
 		end
 		column nil do |report|
 			span link_to('View', admin_criterion_report_path(report), class: :member_link)
-			span link_to('Update', update_report_admin_criterion_report_path(report), method: :put, class: :member_link)
+			span link_to_unless(report.report_date.past?, 'Update', update_report_admin_criterion_report_path(report), method: :put, class: :member_link)
 		end
 	end
 
@@ -51,7 +51,7 @@ ActiveAdmin.register CriterionReport do
 		end
 
 		panel 'Payments (Revenue)' do
-			table_for Payment.debit.paid.cash_or_cheque.on(criterion_report.report_date).order(:id) do |t|
+			table_for criterion_report.payments(AccountEntry::DEBIT, [Payment::CASH, Payment::CHEQUE]).order('payments.id') do |t|
         t.column(:id) { |payment| link_to(payment.id, admin_payment_path(payment)) }
         t.column(:period) { |payment| payment.period_label}
         t.column(:gross_amount) { |payment| number_to_currency(payment.amount, unit: 'Rs. ', precision: 0) }
@@ -66,10 +66,10 @@ ActiveAdmin.register CriterionReport do
         end
         t.column(:category) { |payment| payment.category.name_label rescue nil }
       end
-		end if Payment.debit.paid.cash_or_cheque.on(criterion_report.report_date).present?
+		end
 
 		panel 'Payments (Expenditure)' do
-			table_for Payment.credit.paid.cash.on(criterion_report.report_date).order(:id) do |t|
+			table_for criterion_report.payments(AccountEntry::CREDIT, [Payment::CASH]).order('payments.id') do |t|
         t.column(:id) { |payment| link_to(payment.id, admin_payment_path(payment)) }
         t.column(:period) { |payment| payment.period_label}
         t.column(:amount) { |payment| number_to_currency(payment.amount, unit: 'Rs. ', precision: 0) }
@@ -84,12 +84,12 @@ ActiveAdmin.register CriterionReport do
         end
         t.column(:category) { |payment| payment.category.name_label rescue nil }
       end
-		end if Payment.credit.paid.cash.on(criterion_report.report_date).present?
+		end
 
 		panel 'Graphs' do
 			chart = Gchart.pie_3d(data: [criterion_report.net_revenue, criterion_report.expenditure], size: '600x200', labels: ['Revenue', 'Expenditure'])
       image_tag(chart)
-     end
+    end
 
 		active_admin_comments
 	end
