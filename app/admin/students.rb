@@ -44,21 +44,20 @@ ActiveAdmin.register Student do
       end
     end
 
-    # panel 'Payment (Registration Fees)' do
-    #   binding.pry
-    #   table_for student.session_students.each do |t|   
-    #     t.column(:id) { |session_student| link_to(registration_fee.id, admin_payment_path(registration_fee)) }
-    #     t.column(:session) { |registration_fee| link_to(registration_fee.session.label, admin_session_path(registration_fee.session)) }
-    #     t.column(:amount) { |registration_fee| number_to_currency(registration_fee.amount, :unit => 'Rs. ', :precision => 0) }
-    #     t.column(:status) { |registration_fee| status_tag(registration_fee.status_label, registration_fee.status_tag) }
-    #     t.column do |registration_fee|
-    #       if registration_fee.due?
-    #         li link_to('Make Payment', pay_admin_payment_path(registration_fee), :method => :put)
-    #         li link_to('Void Payment', void_admin_payment_path(registration_fee), :method => :put, confirm: 'Are you sure?')
-    #       end
-    #     end
-    #   end
-    # end
+    panel 'Payment (Registration Fees)' do
+      table_for student.session_students.each do |t|
+        t.column(:id) { |session_student| link_to(session_student.registration_fee.id, admin_payment_path(session_student.registration_fee)) }
+        t.column(:session) { |session_student| link_to(session_student.session.label, admin_session_path(session_student.session)) }
+        t.column(:amount) { |session_student| number_to_currency(session_student.registration_fee.amount, unit: 'Rs. ', precision: 0) }
+        t.column(:status) { |session_student| status_tag(session_student.registration_fee.status_label, session_student.registration_fee.status_tag) }
+        t.column do |session_student|
+          if session_student.registration_fee.due?
+            li link_to('Make Payment', pay_admin_payment_path(session_student.registration_fee), method: :get)
+            li link_to('Void Payment', void_admin_payment_path(session_student.registration_fee), method: :put, confirm: 'Are you sure?')
+          end
+        end
+      end
+    end
     
     panel 'Payments' do
       temp_payments = student.payments.collect do |payment|

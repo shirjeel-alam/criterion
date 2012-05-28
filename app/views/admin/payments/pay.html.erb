@@ -1,7 +1,7 @@
 <%= semantic_form_for [:admin, @payment], :url => paid_admin_payment_path do |f| %>
   <%= f.inputs do %>
-    <%= f.input :payment_method, :as => :radio, :collection => Payment.payment_methods(true), :required => true %>
-    <%= f.input :payment_date, :as => :string, :required =>  true, :input_html => { :class => 'datepicker' } %>
+    <%= f.input :payment_method, :as => :radio, collection: Payment.payment_methods(true), required: true %>
+    <%= f.input :payment_date, :as => :string, required:  true, input_html: { class: 'datepicker' } %>
     <%= f.input :status, :as => :hidden %>
   <% end %>
   
