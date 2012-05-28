@@ -201,14 +201,25 @@ class Payment < ActiveRecord::Base
     end
   end
 
+  # Handle when registration fee paid
   def send_fee_received_sms
-    student = payable.student
-    course_name = payable.course.title
-    month_and_year = period_label
+    if payable.is_a?(SessionStudent)
+      student = payable.student
+      session = payable.session
 
-    student.phone_numbers.mobile.each do |phone_number|
-      sms_data = { to: phone_number.number, message: "Dear Student, Your payment of Rs. #{net_amount} against #{course_name} for the period #{month_and_year} has been received. Thank You" }
-      student.received_messages.create(sms_data)
+      student.phone_numbers.mobile.each do |phone_number|
+        sms_data = { to: phone_number.number, message: "Dear Student, Your payment of Rs. #{net_amount} as registration fee for #{session.label} has been received. Thank You" }
+        student.received_messages.create(sms_data)
+      end      
+    elsif payable.is_a?(Enrollment)
+      student = payable.student
+      course_name = payable.course.title
+      month_and_year = period_label
+
+      student.phone_numbers.mobile.each do |phone_number|
+        sms_data = { to: phone_number.number, message: "Dear Student, Your payment of Rs. #{net_amount} against #{course_name} for the period #{month_and_year} has been received. Thank You" }
+        student.received_messages.create(sms_data)
+      end
     end
   end
   

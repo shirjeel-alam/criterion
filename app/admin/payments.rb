@@ -102,10 +102,18 @@ ActiveAdmin.register Payment do
       @payment.create_account_entry
       @payment.send_fee_received_sms
       flash[:notice] = 'Payment successfully paid.'
-      redirect_to send("admin_#{@payment.payable_type.downcase}_path", @payment.payable)
+      if @payment.payable.is_a?(SessionStudent) || @payment.payable.is_a?(Enrollment)
+        redirect_to admin_student_path(@payment.payable.student)
+      else
+        redirect_to send("admin_#{@payment.payable_type.downcase}_path", @payment.payable)
+      end
     else
       flash[:notice] = 'Error in processing payment.'
-      redirect_to send("admin_#{@payment.payable_type.downcase}_path", @payment.payable)
+      if @payment.payable.is_a?(SessionStudent) || @payment.payable.is_a?(Enrollment)
+        redirect_to admin_student_path(@payment.payable.student)
+      else
+        redirect_to send("admin_#{@payment.payable_type.downcase}_path", @payment.payable)
+      end
     end
   end
 
