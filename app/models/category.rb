@@ -26,11 +26,11 @@ class Category < ActiveRecord::Base
 	end
 
   def self.monthly_fee
-    Category.find_by_name(name: 'monthly fee')
+    Category.find_by_name('monthly fee')
   end
 
   def self.registration_fee
-    Category.find_by_name(name: 'registration fee')
+    Category.find_by_name('registration fee')
   end
 
 	### View Helpers ###
