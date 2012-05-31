@@ -221,5 +221,13 @@ ActiveAdmin.register Student do
         redirect_to_back
       end 
     end
+
+    def create
+      @student = Student.new(params[:student])
+      unless @student.valid?
+        flash[:error] = @student.errors[:base].first
+      end
+      create!
+    end
   end
 end

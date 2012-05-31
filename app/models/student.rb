@@ -24,6 +24,7 @@ class Student < ActiveRecord::Base
   accepts_nested_attributes_for :enrollments
   accepts_nested_attributes_for :phone_numbers
   
+  before_validation :check_mobile_number
   before_validation :set_email
 
   validates :name, presence: true
@@ -59,10 +60,6 @@ class Student < ActiveRecord::Base
     end
   end
 
-  def set_email
-    self.email = "#{name.strip.gsub(' ', '.').downcase}@criterion.edu" unless email.present?
-  end
-
   def send_sms
     phone_numbers.mobile.each do |phone_number|
       sms_data = { to: phone_number.number, message: "Dear Student, Your Student ID is #{id}, kindly use this ID for all future correspondence" }
@@ -84,5 +81,15 @@ class Student < ActiveRecord::Base
   
   def address_label
     address.present? ? address : 'N/A'
+  end
+
+  private
+
+  def set_email
+    self.email = "#{name.strip.gsub(' ', '.').downcase}@criterion.edu" unless email.present?
+  end
+
+  def check_mobile_number
+    errors.add(:base, 'Please add a mobile number') if phone_numbers.blank?
   end
 end
