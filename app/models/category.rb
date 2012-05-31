@@ -25,6 +25,14 @@ class Category < ActiveRecord::Base
 		Category.all.collect { |category| [category.name_label, category.id] }
 	end
 
+  def self.monthly_fee
+    Category.find_by_name(name: 'monthly fee')
+  end
+
+  def self.registration_fee
+    Category.find_by_name(name: 'registration fee')
+  end
+
 	### View Helpers ###
 
 	def name_label

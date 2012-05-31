@@ -64,7 +64,7 @@ ActiveAdmin.register Student do
         payment.period = payment.period.beginning_of_month
         payment
       end
-      result = temp_payments.group_by(&:period)
+      result = temp_payments.sort_by(&:period).group_by(&:period)
       
       table do
         thead do
@@ -84,8 +84,8 @@ ActiveAdmin.register Student do
           flip = true
           result.each do |cumulative_payment|
             tr class: "#{flip ? 'odd' : 'even'} header" do
-              cumulative_gross_amount = cumulative_payment.second.sum { |p| p.paid? || p.void? ? 0 : p.amount }
-              cumulative_discount = cumulative_payment.second.sum { |p| p.paid? || p.void? ? 0 : (p.discount.present? ? p.discount : 0) }
+              cumulative_gross_amount = cumulative_payment.second.sum { |p| p.due? ? p.amount : 0 }
+              cumulative_discount = cumulative_payment.second.sum { |p| p.due? ? (p.discount.present? ? p.discount : 0) : 0 }
               cumulative_net_amount = cumulative_gross_amount - cumulative_discount
 
               td image_tag('down_arrow.png')
@@ -164,6 +164,20 @@ ActiveAdmin.register Student do
         t.column(:status) { |enrollment| status_tag(enrollment.status_label, enrollment.status_tag) }
       end 
     end if student.enrollments.cancelled.present?
+
+    # panel 'Course Fees Table' do
+    #   months = course.months_between(course.start_date, course.end_date)
+    #   table_for course.enrollments do |t|
+    #     t.column(:student) { |enrollment| link_to(enrollment.student.name, admin_student_path(enrollment.student)) }
+    #     t.column(:join_date) { |enrollment| date_format(enrollment.start_date) }
+    #     months.each do |month|
+    #       t.column(date_format(month, true)) do |enrollment| 
+    #         payment = enrollment.payment(month)
+    #         payment.present? ? status_tag(payment.status_label, payment.status_tag) : '-'
+    #       end
+    #     end
+    #   end
+    # end if course.enrollments.present?
 
     active_admin_comments
   end

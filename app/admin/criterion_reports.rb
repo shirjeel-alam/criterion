@@ -53,36 +53,40 @@ ActiveAdmin.register CriterionReport do
 		panel 'Payments (Revenue)' do
 			table_for criterion_report.payments(AccountEntry::DEBIT, [Payment::CASH, Payment::CHEQUE]).order('payments.id') do |t|
         t.column(:id) { |payment| link_to(payment.id, admin_payment_path(payment)) }
-        t.column(:period) { |payment| payment.period_label}
-        t.column(:gross_amount) { |payment| number_to_currency(payment.amount, unit: 'Rs. ', precision: 0) }
-        t.column(:discount) { |payment| number_to_currency(payment.discount, unit: 'Rs. ', precision: 0) }
-        t.column(:net_amount) { |payment| number_to_currency(payment.net_amount, unit: 'Rs. ', precision: 0) }
         t.column(:paid_by) do |payment|
-        	if payment.payable.is_a?(Enrollment)
+        	if payment.payable.is_a?(Enrollment) || payment.payable.is_a?(SessionStudent)
 						link_to(payment.payable.student.name, admin_student_path(payment.payable.student)) rescue nil
 					elsif payment.payable.is_a?(Teacher)
 						link_to(payment.payable.name, admin_teacher_path(payment.payable)) rescue nil
+          elsif payment.payable.is_a?(Partner)
+            link_to(payment.payable.name, admin_partner_path(payment.payable)) rescue nil
 					end
         end
         t.column(:category) { |payment| payment.category.name_label rescue nil }
+        t.column(:payment_method) { |payment| status_tag(payment.payment_method_label, payment.payment_method_tag) }
+        # t.column(:gross_amount) { |payment| number_to_currency(payment.amount, unit: 'Rs. ', precision: 0) }
+        # t.column(:discount) { |payment| number_to_currency(payment.discount, unit: 'Rs. ', precision: 0) }
+        t.column(:net_amount) { |payment| number_to_currency(payment.net_amount, unit: 'Rs. ', precision: 0) }
+        # t.column(:period) { |payment| payment.period_label}
       end
 		end
 
 		panel 'Payments (Expenditure)' do
 			table_for criterion_report.payments(AccountEntry::CREDIT, [Payment::CASH]).order('payments.id') do |t|
         t.column(:id) { |payment| link_to(payment.id, admin_payment_path(payment)) }
-        t.column(:period) { |payment| payment.period_label}
-        t.column(:amount) { |payment| number_to_currency(payment.amount, unit: 'Rs. ', precision: 0) }
-        t.column(:discount) { |payment| number_to_currency(payment.discount, unit: 'Rs. ', precision: 0) }
-        t.column(:payment_method) { |payment| status_tag(payment.payment_method_label, payment.payment_method_tag) }
         t.column(:paid_to) do |payment|
-        	if payment.payable.is_a?(Enrollment)
+        	if payment.payable.is_a?(Enrollment) || payment.payable.is_a?(SessionStudent)
 						link_to(payment.payable.student.name, admin_student_path(payment.payable.student)) rescue nil
 					elsif payment.payable.is_a?(Teacher)
 						link_to(payment.payable.name, admin_teacher_path(payment.payable)) rescue nil
+          elsif payment.payable.is_a?(Partner)
+            link_to(payment.payable.name, admin_partner_path(payment.payable)) rescue nil
 					end
         end
         t.column(:category) { |payment| payment.category.name_label rescue nil }
+        t.column(:payment_method) { |payment| status_tag(payment.payment_method_label, payment.payment_method_tag) }
+        t.column(:amount) { |payment| number_to_currency(payment.amount, unit: 'Rs. ', precision: 0) }
+        # t.column(:period) { |payment| payment.period_label}
       end
 		end
 

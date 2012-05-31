@@ -43,10 +43,12 @@ ActiveAdmin.register Payment do
       status_tag(payment.payment_method_label, payment.payment_method_tag)
     end
     column :payable do |payment|
-      if payment.payable.is_a?(Enrollment)
+      if payment.payable.is_a?(Enrollment) || payment.payable.is_a?(SessionStudent)
         link_to(payment.payable.student.name, admin_student_path(payment.payable.student)) rescue nil
       elsif payment.payable.is_a?(Teacher)
         link_to(payment.payable.name, admin_teacher_path(payment.payable)) rescue nil
+      elsif payment.payable.is_a?(Partner)
+        link_to(payment.payable.name, admin_partner_path(payment.payable)) rescue nil
       end
     end
     column :category, sortable: :category_id do |payment|
@@ -62,7 +64,15 @@ ActiveAdmin.register Payment do
     panel 'Payment Details' do
       attributes_table_for payment do
         row(:id) { payment.id }
-        row(:payable) { payment.payable }
+        row(:payable) do
+          if payment.payable.is_a?(Enrollment) || payment.payable.is_a?(SessionStudent)
+            link_to(payment.payable.student.name, admin_student_path(payment.payable.student)) rescue nil
+          elsif payment.payable.is_a?(Teacher)
+            link_to(payment.payable.name, admin_teacher_path(payment.payable)) rescue nil
+          elsif payment.payable.is_a?(Partner)
+            link_to(payment.payable.name, admin_partner_path(payment.payable)) rescue nil
+          end
+        end
         row(:payable_type) { payment.payable_type }
         row(:period) { payment.period_label }
         row(:amount) { number_to_currency(payment.amount, unit: 'Rs. ', precision: 0) }

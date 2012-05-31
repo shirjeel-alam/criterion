@@ -42,7 +42,7 @@ Partner.create!(name: 'Ali Rana', email: 'ali_ahmed101@hotmail.com', share: 0.5)
 ### Categories ###
 Category.destroy_all
 
-['Stationery', 'Gas Bill', 'Electricity Bill', 'Water Bill', 'Internet', 'Rent', 'Repairs & Maintenance', 'Office Boy', 'Capital Expenditure', 'Appropriated'].each do |category|
+['Monthly Fee', 'Registration Fee', 'Stationery', 'Gas Bill', 'Electricity Bill', 'Water Bill', 'Internet', 'Rent', 'Repairs & Maintenance', 'Office Boy', 'Capital Expenditure', 'Appropriated'].each do |category|
 	Category.create!(name: category)
 end
 

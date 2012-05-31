@@ -31,6 +31,7 @@ class Payment < ActiveRecord::Base
   before_validation :check_payment, on: :create, if: "payable_type == 'Enrollment'"
   before_validation :check_appropriated_amount, on: :create, if: 'appropriated?'
   after_create :create_account_entry
+  before_save :set_category
 
   validates :amount, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :status, presence: true, inclusion: { in: [DUE, PAID, VOID, REFUNDED] }
@@ -318,5 +319,15 @@ class Payment < ActiveRecord::Base
     else # Must be an expenditure
       category.try(:name_label)
     end rescue nil
+  end
+
+  private
+
+  def set_category
+    if payable.is_a?(Enrollment)
+      self.category = Category.monthly_fee
+    elsif payable.is_a?(SessionStudent)
+      self.category = Category.registration_fee
+    end
   end
 end
