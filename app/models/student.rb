@@ -40,29 +40,27 @@ class Student < ActiveRecord::Base
     Course.active.collect { |c| c unless c.has_enrollment?(self) }.compact.uniq
   end
 
-  # NOTE: Needs major re-work
   def evaluate_discount(session)
-    session_courses = courses.where(session_id: session.id)
-    enrollment_count = session_courses.count
+    # Handles cases for enrollments on same level i.e. O-Level, AS-Level, A-Level
+    session_courses = courses.where(session_id: session.id).group_by(&:level)
+    session_courses.each do |session_course|
+      discount = case session_course.second.count
+      when 0, 1
+        nil
+      when 2
+        250
+      else
+        500
+      end
 
-    discount = case enrollment_count
-    when 0, 1
-      nil
-    when 2
-      250 #500 # 250 / course
-    else
-      500 #900 # 300 / course
-    end
-
-    session_enrollments = enrollments.where(course_id: session_courses.collect(&:id))
-    session_enrollments.each do |enrollment|
-      enrollment.apply_discount(discount)
+      session_enrollments = enrollments.where(course_id: session_course.second.collect(&:id))
+      session_enrollments.map { |enrollment| enrollment.apply_discount(discount) }
     end
   end
 
   def send_sms
     phone_numbers.mobile.each do |phone_number|
-      sms_data = { to: phone_number.number, message: "Dear Student, Your Student ID is #{id}, kindly use this ID for all future correspondence" }
+      sms_data = { to: phone_number.number, message: "Dear Student, Your Student ID is #{id}, kindly use this ID for all future correspondence. Criterion Educational Institute" }
       received_messages.create(sms_data)
     end
   end

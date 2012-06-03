@@ -40,6 +40,8 @@ class Enrollment < ActiveRecord::Base
   scope :completed, where(status: COMPLETED)
   scope :cancelled, where(status: CANCELLED)
 
+  delegate :end_date, to: :course
+
   def set_status
     if course.not_started?
       self.status = NOT_STARTED
@@ -64,12 +66,19 @@ class Enrollment < ActiveRecord::Base
   def first_month_payment
     user_date = course.start_date > start_date ? course.start_date : start_date
 
-    if (user_date - user_date.beginning_of_month).to_i < 10
+    if (user_date - user_date.beginning_of_month).to_i < 8
       course.monthly_fee
-    elsif (user_date.end_of_month - user_date).to_i < 10
+    elsif (user_date.end_of_month - user_date).to_i < 8
       0
     else
-      ((user_date.end_of_month - user_date).to_f / (user_date.end_of_month - user_date.beginning_of_month).to_f * course.monthly_fee).to_i
+      fmp = ((user_date.end_of_month - user_date).to_f / (user_date.end_of_month - user_date.beginning_of_month).to_f * course.monthly_fee).to_i
+      diff = fmp % 100
+      if diff >= 50
+        fmp += (fmp - diff)
+      else
+        fmp -= diff
+      end
+      fmp
     end
   end
 
@@ -87,7 +96,7 @@ class Enrollment < ActiveRecord::Base
 
   def void_payments
     payments_to_be_void = payments.due.collect { |payment| payment if payment.period.future? && payment.due? }.compact
-    payments_to_be_void << payments.due.detect { |payment| payment if payment.period.beginning_of_month == Date.today.beginning_of_month && (Date.today - Date.today.beginning_of_month).to_i < 10 }
+    payments_to_be_void << payments.due.detect { |payment| payment if payment.period.beginning_of_month == Date.today.beginning_of_month && (Date.today - Date.today.beginning_of_month).to_i < 8 }
     payments_to_be_void = payments_to_be_void.compact
     payments_to_be_void.each do |payment|
       payment.void!
@@ -99,7 +108,9 @@ class Enrollment < ActiveRecord::Base
   end
 
   def apply_discount(discount)
-    discountable_payments = payments.collect { |payment| payment if payment.period.future? & payment.due? }.compact
+    discountable_payments = payments.collect { |payment| payment if payment.period.future? && payment.due? }.compact
+    discountable_payments << payments.due.detect { |payment| payment if payment.period.beginning_of_month == Date.today.beginning_of_month && (Date.today - Date.today.beginning_of_month).to_i < 8 }
+    discountable_payments = discountable_payments.compact
     discountable_payments.each do |payment|
       payment.update_attribute(:discount, discount)
     end
@@ -169,6 +180,10 @@ class Enrollment < ActiveRecord::Base
 
   def payment(month)
     payments.where(period: month.beginning_of_month..month.end_of_month).first
+  end
+
+  def session_id
+    course.session.id
   end
 
   ### View Helpers ###

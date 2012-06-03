@@ -75,6 +75,12 @@ ActiveAdmin.register Enrollment do
       end
     end
 
+    div style: 'display:none' do
+      div id: 'set_discount' do
+        render 'set_discount'
+      end
+    end
+
     active_admin_comments
   end
   
@@ -178,12 +184,22 @@ ActiveAdmin.register Enrollment do
     redirect_to action: :show
   end
 
+  member_action :set_discount, method: :put do
+    enrollment = Enrollment.find(params[:id])
+    discount = params[:discount].to_i
+    discount = nil if discount == 0
+    enrollment.apply_discount(discount)
+    flash[:notice] = 'Discount successfully set'
+    redirect_to action: :show
+  end
+
   member_action :refresh, method: :put do
     Enrollment.find(params[:id]).save
     redirect_to action: :show
   end
   
   action_item only: :show do
+    span link_to('Set Discount', '#set_discount', class: 'fancybox')
     span link_to('Refresh Enrollment', refresh_admin_enrollment_path(enrollment), method: :put)
 
     if enrollment.not_started?

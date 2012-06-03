@@ -4,15 +4,8 @@ ActiveAdmin::Dashboards.build do
   #   controller.redirect_to(admin_teacher_path(current_admin_user.user))
   # end
 
-  section :disable_dasboard, if: proc { current_admin_user.all_other? } do
-    case current_admin_user.role
-    when AdminUser::TEACHER
-      controller.redirect_to admin_teacher_path(current_admin_user.user)
-    when AdminUser::PARTNER
-      link_to(admin.user.name, admin_partner_path(admin.user)) rescue nil
-    when AdminUser::ADMIN, AdminUser::STAFF
-      link_to(admin.user.name, admin_staff_path(admin.user)) rescue nil
-    end
+  section :disable_dasboard, if: proc { current_admin_user.teacher? } do
+    controller.redirect_to admin_teacher_path(current_admin_user.user)
   end
 
   # Define your dashboard sections here. Each block will be

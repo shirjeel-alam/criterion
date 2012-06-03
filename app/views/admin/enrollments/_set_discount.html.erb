@@ -1,0 +1,8 @@
+<%= semantic_form_for [:admin, @enrollment], url: set_discount_admin_enrollment_path do |f| %>
+  <%= label_tag :discount %>
+  <%= number_field_tag :discount %>
+  
+  <%= f.buttons do %>
+    <%= f.commit_button 'Set Discount' %>
+  <% end %>
+<% end %>

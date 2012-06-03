@@ -165,19 +165,27 @@ ActiveAdmin.register Student do
       end 
     end if student.enrollments.cancelled.present?
 
-    # panel 'Course Fees Table' do
-    #   months = course.months_between(course.start_date, course.end_date)
-    #   table_for course.enrollments do |t|
-    #     t.column(:student) { |enrollment| link_to(enrollment.student.name, admin_student_path(enrollment.student)) }
-    #     t.column(:join_date) { |enrollment| date_format(enrollment.start_date) }
-    #     months.each do |month|
-    #       t.column(date_format(month, true)) do |enrollment| 
-    #         payment = enrollment.payment(month)
-    #         payment.present? ? status_tag(payment.status_label, payment.status_tag) : '-'
-    #       end
-    #     end
-    #   end
-    # end if course.enrollments.present?
+    panel 'Student Fees Table' do
+      sessions = student.enrollments.all.sort_by(&:session_id).group_by(&:session_id)
+
+      sessions.each do |session|
+        panel "#{Session.find(session.first).title}" do
+          start_date = session.second.collect(&:start_date).min
+          end_date = session.second.collect(&:end_date).min
+          months = months_between(start_date, end_date)
+          table_for session.second do |t|
+            t.column(:course) { |enrollment| link_to(enrollment.course.name, admin_course_path(enrollment.course)) }
+            t.column(:join_date) { |enrollment| date_format(enrollment.start_date) }
+            months.each do |month|
+              t.column(date_format(month, true)) do |enrollment| 
+                payment = enrollment.payment(month)
+                payment.present? ? status_tag(payment.status_label, payment.status_tag) : '-'
+              end
+            end
+          end
+        end
+      end
+    end if student.courses.present?
 
     active_admin_comments
   end
