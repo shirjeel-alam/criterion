@@ -2,11 +2,7 @@ ActiveAdmin.register Enrollment do
   menu priority: 2, if: proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? }
   
   filter :id
-  #NOTE: MetaSearch issue
-  # filter :student_id, :as => :number
-  # filter :course
-  # filter :student
-
+  
   scope :all
   scope :not_started
   scope :in_progress

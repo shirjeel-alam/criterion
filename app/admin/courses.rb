@@ -3,8 +3,9 @@ ActiveAdmin.register Course do
 
   filter :id
   filter :name
-  # filter :status, :as => :select, :collection => lambda { Course.statuses }
-  # filter :level, :as => :select, :collection => lambda { Course.levels }
+  filter :status, :as => :select, :collection => Course.statuses
+  filter :level, :as => :select, :collection => Course.levels
+  filter :teacher_id, :as => :select, :collection => Teacher.get_all
   filter :monthly_fee
 
   scope :all, default: true do |courses|
@@ -55,10 +56,10 @@ ActiveAdmin.register Course do
     column :level, sortable: :level do |course|
       course.level_label
     end
-    column :session do |course|
+    column :session, sortable: :session_id do |course|
       course.session.label rescue nil
     end
-    column :teacher do |course|
+    column :teacher, sortable: :teacher_id do |course|
       course.teacher.present? ? course.teacher.name : 'N/A'
     end
     column :monthly_fee, sortable: :monthly_fee do |course|
