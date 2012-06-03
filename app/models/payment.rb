@@ -52,7 +52,7 @@ class Payment < ActiveRecord::Base
   scope :internal, where(payment_method: INTERNAL)
   scope :cash_or_cheque, where(payment_method: [CASH, CHEQUE])
 
-  scope :expenditure, where(payable_id: nil, payment_type: CREDIT)
+  scope :expenditure, where(payable_id: nil, payment_type: CREDIT, payment_method: [CASH, CHEQUE])
 
   scope :on, lambda { |date| where(payment_date: date) }
 
