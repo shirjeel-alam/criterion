@@ -35,7 +35,7 @@ gem 'hash_syntax'
 # gem 'capistrano'
 
 # For heroku db:push and db:pull
-# gem 'taps'
+gem 'taps'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -51,7 +51,7 @@ group :development, :test do
 end
 
 group :development do
-  gem 'mailcatcher'
+  # gem 'mailcatcher'
 end
 
 group :production do
