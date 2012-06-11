@@ -55,6 +55,6 @@ group :development do
 end
 
 group :production do
-  gem 'heroku', '2.25.0'
+  gem 'heroku'
   gem 'pg'
 end
