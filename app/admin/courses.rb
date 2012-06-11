@@ -3,9 +3,9 @@ ActiveAdmin.register Course do
 
   filter :id
   filter :name
-  filter :status, as: :select, collection: Course.statuses
-  filter :level, as: :select, collection: Course.levels
-  filter :teacher_id, as: :select, collection: Teacher.get_all
+  # filter :status, as: :select, collection: Course.statuses
+  # filter :level, as: :select, collection: Course.levels
+  # filter :teacher_id, as: :select, collection: Teacher.get_all
   filter :monthly_fee
 
   scope :all, default: true do |courses|
