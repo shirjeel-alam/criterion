@@ -24,8 +24,8 @@ Student.destroy_all
 ### Teacher Accounts ###
 Teacher.destroy_all
 
-[['Kamran Abdulsalam', 0.8], ['Adeel Iqbal', 0.8], ['Hussain Raza', 0.8], ['Munawar Mujahid', 0.7], ['Moinuddin Ali', 0.8]].each do |teacher|
-	Teacher.create!(name: teacher[0], share: teacher[1])
+[['Kamran Abdulsalam', 0.8, 'kam@szabist@yahoo.com'], ['Adeel Iqbal', 0.8, 'mmoinuddin_ali@yahoo.com'], ['Hussain Raza', 0.8], ['Munawar Mujahid', 0.7], ['Moinuddin Ali', 0.8]].each do |teacher|
+	Teacher.create!(name: teacher[0], share: teacher[1], email: teacher[2])
 end
 
 ### Staff Accounts ###
