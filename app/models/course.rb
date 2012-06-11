@@ -46,6 +46,7 @@ class Course < ActiveRecord::Base
   scope :in_progress, where(status: IN_PROGRESS)
   scope :completed, where(status: COMPLETED)
   scope :cancelled, where(status: CANCELLED)
+  scope :started_or_completed, where(status: [IN_PROGRESS, COMPLETED])
   
   def update_status
     if start_date.blank? || start_date > Date.today
@@ -104,6 +105,10 @@ class Course < ActiveRecord::Base
 
   def cancelled?
     status == CANCELLED
+  end
+
+  def started_or_completed?
+    started? || completed?
   end
 
   def start!

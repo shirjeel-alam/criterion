@@ -166,7 +166,7 @@ ActiveAdmin.register Student do
     end if student.enrollments.cancelled.present?
 
     panel 'Student Fees Table' do
-      sessions = student.enrollments.all.sort_by(&:session_id).group_by(&:session_id)
+      sessions = student.enrollments.started_or_completed.sort_by(&:session_id).group_by(&:session_id)
 
       sessions.each do |session|
         panel "#{Session.find(session.first).title}" do

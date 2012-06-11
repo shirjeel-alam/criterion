@@ -116,7 +116,7 @@ ActiveAdmin.register Course do
           end
         end
       end
-    end if course.enrollments.present?
+    end if course.enrollments.present? && course.started_or_completed?
 
     active_admin_comments
   end

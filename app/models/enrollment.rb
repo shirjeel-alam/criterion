@@ -39,6 +39,7 @@ class Enrollment < ActiveRecord::Base
   scope :in_progress, where(status: IN_PROGRESS)
   scope :completed, where(status: COMPLETED)
   scope :cancelled, where(status: CANCELLED)
+  scope :started_or_completed, where(status: [IN_PROGRESS, COMPLETED])
 
   delegate :end_date, to: :course
 
