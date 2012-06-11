@@ -1,5 +1,6 @@
 ActiveAdmin.register CriterionSms, as: 'Criterion SMS Sender' do
-	menu label: 'Send SMS', parent: 'Criterion', priority: 2, if: proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? || current_admin_user.teacher? }
+	# menu label: 'Send SMS', parent: 'Criterion', priority: 2, if: proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? || current_admin_user.teacher? }
+  menu false
 
 	actions :index
 
