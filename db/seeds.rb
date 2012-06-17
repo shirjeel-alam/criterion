@@ -24,20 +24,32 @@ Student.destroy_all
 ### Teacher Accounts ###
 Teacher.destroy_all
 
-[['Kamran Abdulsalam', 0.8, 'kam@szabist@yahoo.com'], ['Adeel Iqbal', 0.8, 'mmoinuddin_ali@yahoo.com'], ['Hussain Raza', 0.8], ['Munawar Mujahid', 0.7], ['Moinuddin Ali', 0.8]].each do |teacher|
-	Teacher.create!(name: teacher[0], share: teacher[1], email: teacher[2])
+teachers = []
+[['Kamran Abdulsalam', 0.8, 'kam@szabist@yahoo.com'], ['Adeel Iqbal', 0.8, 'kewldude_addie@hotmail.com'], ['Hussain Raza', 0.8], ['Munawar Mujahid', 0.7, 'ch_mistry@yahoo.com'], ['Moinuddin Ali', 0.8, 'mmoinuddin_ali@yahoo.com']].each do |teacher|
+	teachers << Teacher.create!(name: teacher[0], share: teacher[1], email: teacher[2])
 end
+
+teachers[0].phone_numbers.create!(number: '03212309345', category: PhoneNumber::MOBILE)
+teachers[1].phone_numbers.create!(number: '03222240295', category: PhoneNumber::MOBILE)
+teachers[2].phone_numbers.create!(number: '03139419417', category: PhoneNumber::MOBILE)
+teachers[3].phone_numbers.create!(number: '03332194885', category: PhoneNumber::MOBILE)
+teachers[3].phone_numbers.create!(number: '03152008802', category: PhoneNumber::MOBILE)
+teachers[4].phone_numbers.create!(number: '03002270760', category: PhoneNumber::MOBILE)
 
 ### Staff Accounts ###
 Staff.destroy_all
 
-Staff.create!(name: 'Salman Dewan', email: 'salman@criterion.edu', admin_user_confirmation: 'true')
+staff = Staff.create!(name: 'Salman Dewan', email: 'salman@criterion.edu', admin_user_confirmation: 'true')
+staff.phone_numbers.create!(number: '03132100200', category: PhoneNumber::MOBILE)
 
 ### Partner Accounts ###
 Partner.destroy_all
 
-Partner.create!(name: 'Umair Alam', email: 'umair.alam.m@gmail.com', share: 0.5)
-Partner.create!(name: 'Ali Rana', email: 'ali_ahmed101@hotmail.com', share: 0.5)
+partner = Partner.create!(name: 'Umair Alam', email: 'umair.alam.m@gmail.com', share: 0.5)
+partner.phone_numbers.create!(number: '03138238080', category: PhoneNumber::MOBILE)
+
+partner = Partner.create!(name: 'Ali Rana', email: 'ali_ahmed101@hotmail.com', share: 0.5)
+partner.phone_numbers.create!(number: '03132012001', category: PhoneNumber::MOBILE)
 
 ### Categories ###
 Category.destroy_all
