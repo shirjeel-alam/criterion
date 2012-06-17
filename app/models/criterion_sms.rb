@@ -15,7 +15,7 @@
 #
 
 class CriterionSms < ActiveRecord::Base
-	API_KEY = 'cc733a1ee374fa37453e'
+	API_KEY = '986b7c2f5950d5e6aa40'
 	DEFAULT_VALID_MOBILE_NUMBER = '03222463936'
 
 	belongs_to :sender, polymorphic: true
