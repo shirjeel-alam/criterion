@@ -1,0 +1,7 @@
+<%= semantic_form_for [:admin, current_admin_user], url: find_student_admin_students_path, method: :get do |f| %>
+  <%= f.input :id, label: 'Student ID', as: :select, collection: Student.get_all_with_id, input_html: { class: 'chosen-select' }, include_blank: true %>
+  
+  <%= f.buttons do %>
+    <%= f.commit_button 'Find Student' %>
+  <% end %>
+<% end %>

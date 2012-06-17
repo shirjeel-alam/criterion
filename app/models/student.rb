@@ -71,6 +71,10 @@ class Student < ActiveRecord::Base
     Student.all.collect { |student| [student.name, student.id] }
   end
 
+  def self.get_all_with_id
+    Student.all.collect { |student| ["#{student.name} - #{student.id}", student.id] }
+  end
+
   def self.emails
     Student.all.collect { |student| ["#{student.name} - #{student.email}", student.email] }
   end

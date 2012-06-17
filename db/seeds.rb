@@ -12,14 +12,17 @@ AdminUser.create!(email: 'admin@criterion.edu', password: 'password', password_c
 ### Students ###
 Student.destroy_all
 
-# student = Student.create!(name: 'Talib Dal', email: 'nuzaifdal@live.com', address: "Gulshan-e-Iqbal Block-#{rand(15)}")
-# student.phone_numbers.create!(number: '03218916438', category: PhoneNumber::MOBILE)
+student = Student.new(name: 'Talib Dal', email: 'nuzaifdal@live.com', address: "Gulshan-e-Iqbal Block-#{rand(15)}")
+student.phone_numbers.build(number: '03218916438', category: PhoneNumber::MOBILE)
+student.save!
 
-# student = Student.create!(name: 'Aziz Ahmed', email: 'azizahmed@hotmail.com', address: "Gulshan-e-Iqbal Block-#{rand(15)}")
-# student.phone_numbers.create!(number: '03132000090', category: PhoneNumber::MOBILE)
+student = Student.new(name: 'Aziz Ahmed', email: 'azizahmed@hotmail.com', address: "Gulshan-e-Iqbal Block-#{rand(15)}")
+student.phone_numbers.build(number: '03132000090', category: PhoneNumber::MOBILE)
+student.save!
 
-# student = Student.create!(name: 'Aisha Kudiya', email: 'aisha.kudiya@dibpak.com', address: "Gulshan-e-Iqbal Block-#{rand(15)}")
-# student.phone_numbers.create!(number: '03453174589', category: PhoneNumber::MOBILE)
+student = Student.new(name: 'Aisha Kudiya', email: 'aisha.kudiya@dibpak.com', address: "Gulshan-e-Iqbal Block-#{rand(15)}")
+student.phone_numbers.build(number: '03453174589', category: PhoneNumber::MOBILE)
+student.save!
 
 ### Teacher Accounts ###
 Teacher.destroy_all

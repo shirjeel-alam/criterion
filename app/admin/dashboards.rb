@@ -8,6 +8,35 @@ ActiveAdmin::Dashboards.build do
     controller.redirect_to admin_teacher_path(current_admin_user.user)
   end
 
+  section 'Quick Actions', if: proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? } do
+    div style: 'width:20%;display:inline-block' do
+      ul style: 'list-style:none' do
+        li class: 'dashboard_btn' do 
+          link_to 'Add A Student', new_admin_student_path, class: 'btn'
+        end
+        li class: 'dashboard_btn' do 
+          link_to 'Find A Student', '#find_student', class: 'btn fancybox'
+        end
+        li class: 'dashboard_btn' do 
+          link_to 'Create A Course', new_admin_course_path, class: 'btn'
+        end
+      end
+    end
+
+    div style: 'width:79%;display:inline-block' do
+      h2 'Fee Table Here'
+    end
+
+    div style: 'clear:both'
+
+    # Find A Student
+    div style: 'display:none' do
+      div id: 'find_student' do
+        render 'find_student'
+      end
+    end
+  end
+
   # Define your dashboard sections here. Each block will be
   # rendered on the dashboard in the context of the view. So just
   # return the content which you would like to display.

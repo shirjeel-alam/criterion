@@ -58,7 +58,7 @@ ActiveAdmin.register Payment do
     # default_actions
   end
 
-  form partial: 'form'
+  form partial: 'payment_form'
 
   show do
     panel 'Payment Details' do

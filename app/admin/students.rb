@@ -215,6 +215,17 @@ ActiveAdmin.register Student do
     span link_to('Add PhoneNumber', new_admin_phone_number_path(phone_number: { contactable_id: student.id, contactable_type: student.class.name }))
   end
 
+  collection_action :find_student, method: :get do
+    student = Student.find_by_id(params[:id])
+
+    if student.present?
+      redirect_to admin_student_path(student)
+    else
+      flash[:error] = 'Student Not Found'
+      redirect_to_back
+    end
+  end
+
   controller do
     before_filter :check_authorization
 
