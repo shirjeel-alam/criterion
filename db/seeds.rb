@@ -28,7 +28,7 @@ student.save!
 Teacher.destroy_all
 
 teachers = []
-[['Kamran Abdulsalam', 0.8, 'kam@szabist@yahoo.com'], ['Adeel Iqbal', 0.8, 'kewldude_addie@hotmail.com'], ['Hussain Raza', 0.8], ['Munawar Mujahid', 0.7, 'ch_mistry@yahoo.com'], ['Moinuddin Ali', 0.8, 'mmoinuddin_ali@yahoo.com']].each do |teacher|
+[['Kamran Abdulsalam', 0.8, 'kam_szabist@yahoo.com'], ['Adeel Iqbal', 0.8, 'kewldude_addie@hotmail.com'], ['Hussain Raza', 0.8], ['Munawar Mujahid', 0.7, 'ch_mistry@yahoo.com'], ['Moinuddin Ali', 0.8, 'mmoinuddin_ali@yahoo.com']].each do |teacher|
 	teachers << Teacher.create!(name: teacher[0], share: teacher[1], email: teacher[2])
 end
 
