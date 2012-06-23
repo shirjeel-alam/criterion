@@ -216,7 +216,7 @@ ActiveAdmin.register Student do
   end
 
   collection_action :find_student, method: :get do
-    student = Student.find_by_id(params[:id])
+    student = Student.find_by_id(params[:admin_user][:id])
 
     if student.present?
       redirect_to admin_student_path(student)

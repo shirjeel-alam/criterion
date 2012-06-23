@@ -1,0 +1,10 @@
+<%= semantic_form_for [:admin, current_admin_user], url: find_course_admin_courses_path, method: :get, html: { id: 'find_course_form' } do |f| %>
+  <%= f.label :id, 'Course:', style: 'font-weight:bold' %>
+  <div class="clear"></div>
+  <%= f.select :id, Course.get_active_with_id, { include_blank: true }, { id: 'course_id', class: 'chosen-select', style: 'width:400px' } %>
+  <%= f.buttons do %>
+    <%= f.commit_button 'Find Course' %>
+  <% end %>
+  <div style="height: 50px;"></div>
+  <div class="clear"></div>
+<% end %>

@@ -17,28 +17,10 @@ th.status {
 }
 
 .btn {
-  -moz-border-bottom-colors: none;
-  -moz-border-image: none;
-  -moz-border-left-colors: none;
-  -moz-border-right-colors: none;
-  -moz-border-top-colors: none;
-  background: -moz-linear-gradient(-90deg, #838A90, #414549) repeat scroll 0 0 transparent;
-  border-color: #616A71 #484E53 #363B3F;
-  border-radius: 200px 200px 200px 200px;
-  border-style: solid;
-  border-width: 1px;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-  color: #EFEFEF !important; 
+  @include dark-button;
   cursor: pointer;
-  display: inline-block;
-  font-family: Helvetica,Arial,sans-serif;
-  font-size: 1em;
-  font-weight: bold;
-  line-height: 12px;
-  margin-right: 3px;
-  padding: 7px 16px 6px;
   text-decoration: none !important;
-  text-shadow: 0 1px 0 black;
+  color: white !important;
 }
 
 .btn:hover {

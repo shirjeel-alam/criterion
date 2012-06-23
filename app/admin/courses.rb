@@ -165,6 +165,17 @@ ActiveAdmin.register Course do
     end
     redirect_to action: :show
   end
+
+  collection_action :find_course, method: :get do
+    course = Course.find_by_id(params[:admin_user][:id])
+
+    if course.present?
+      redirect_to admin_course_path(course)
+    else
+      flash[:error] = 'Course Not Found'
+      redirect_to_back
+    end
+  end
   
   action_item only: :show do
     span link_to('Add Enrollment', new_admin_enrollment_path(course_id: course)) unless (course.completed? || course.cancelled?)

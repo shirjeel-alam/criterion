@@ -8,23 +8,63 @@ ActiveAdmin::Dashboards.build do
     controller.redirect_to admin_teacher_path(current_admin_user.user)
   end
 
-  section 'Quick Actions', if: proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? } do
-    div style: 'width:20%;display:inline-block' do
+  section 'Criterion Dashboard', if: proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? } do
+    div style: 'float:left' do
       ul style: 'list-style:none' do
         li class: 'dashboard_btn' do 
-          link_to 'Add A Student', new_admin_student_path, class: 'btn'
+          link_to 'Add Student', new_admin_student_path, class: 'btn'
         end
         li class: 'dashboard_btn' do 
-          link_to 'Find A Student', '#find_student', class: 'btn fancybox'
+          link_to 'Find Student', '#find_student', class: 'btn fancybox'
         end
         li class: 'dashboard_btn' do 
-          link_to 'Create A Course', new_admin_course_path, class: 'btn'
+          link_to 'Add Course', new_admin_course_path, class: 'btn'
+        end
+        li class: 'dashboard_btn' do 
+          link_to 'Find Course', '#find_course', class: 'btn fancybox'
+        end
+        li class: 'dashboard_btn' do
+          link_to 'Add Teacher', new_admin_teacher_path, class: 'btn'
+        end if current_admin_user.super_admin_or_partner?
+        li class: 'dashboard_btn' do 
+          link_to 'Find Teacher', '#find_teacher', class: 'btn fancybox'
+        end
+        li class: 'dashboard_btn' do 
+          link_to 'Add Expenditure', new_admin_payment_path(payment: { status: Payment::PAID, payment_date: Date.today, payment_type: Payment::CREDIT }), class: 'btn'
         end
       end
     end
 
-    div style: 'width:79%;display:inline-block' do
-      h2 'Fee Table Here'
+    div style: 'display:inline-block;width:87%' do
+      due_payments = Payment.due_fees(Date.today)
+
+      table do
+        status_tag 'Due Payments', :red, style: 'font-size:2em;font-weight:bold;display:block;text-align:center;'
+        thead do
+          tr do
+            th 'ID'
+            th 'Period'
+            th 'Net Amount'
+            th 'Student'
+            th 'Course'
+          end
+        end
+
+        tbody do
+          due_payments.each do |payment|
+            tr do
+              td link_to(payment.id, admin_payment_path(payment))
+              td payment.period_label
+              td number_to_currency(payment.net_amount, unit: 'Rs. ', precision: 0)
+
+              if payment.payable.is_a?(Enrollment) || payment.payable.is_a?(SessionStudent)
+                td link_to(payment.payable.student.name, admin_student_path(payment.payable.student)) rescue nil
+                td link_to(payment.payable.course.name, admin_course_path(payment.payable.course)) rescue nil
+              end
+            end
+          end
+        end
+      end
     end
 
     div style: 'clear:both'
@@ -33,6 +73,20 @@ ActiveAdmin::Dashboards.build do
     div style: 'display:none' do
       div id: 'find_student' do
         render 'find_student'
+      end
+    end
+
+    # Find A Course
+    div style: 'display:none' do
+      div id: 'find_course' do
+        render 'find_course'
+      end
+    end
+
+    # Find A Teacher
+    div style: 'display:none' do
+      div id: 'find_teacher' do
+        render 'find_teacher'
       end
     end
   end

@@ -56,6 +56,10 @@ class Teacher < ActiveRecord::Base
     Teacher.all.collect { |teacher| [teacher.name, teacher.id] }
   end
 
+  def self.get_all_with_id
+    Teacher.all.collect { |teacher| ["#{teacher.name} - #{teacher.id}", teacher.id] }
+  end
+
   def self.emails
     Teacher.all.collect { |teacher| ["#{teacher.name} - #{teacher.email}", teacher.email] }
   end

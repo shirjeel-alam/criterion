@@ -144,6 +144,17 @@ ActiveAdmin.register Teacher do
     active_admin_comments
   end
 
+  collection_action :find_teacher, method: :get do
+    teacher = Teacher.find_by_id(params[:admin_user][:id])
+
+    if teacher.present?
+      redirect_to admin_teacher_path(teacher)
+    else
+      flash[:error] = 'Teacher Not Found'
+      redirect_to_back
+    end
+  end
+
   action_item only: :show do
     span link_to('Add PhoneNumber', new_admin_phone_number_path(phone_number: { contactable_id: teacher.id, contactable_type: teacher.class.name }))
     span link_to('Debit Account (Withdrawal)', new_admin_payment_path(teacher_id: teacher, payment_type: Payment::CREDIT))

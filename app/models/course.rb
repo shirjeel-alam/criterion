@@ -202,11 +202,15 @@ class Course < ActiveRecord::Base
   ### Class Methods ###
   
   def self.get_all
-    Course.all.collect { |c| [c.label, c.id] }
+    Course.all.collect { |course| [course.label, course.id] }
   end
 
   def self.get_active
-    Course.active.collect { |c| [c.label, c.id] }
+    Course.active.collect { |course| [course.label, course.id] }
+  end
+
+  def self.get_active_with_id
+    Course.active.collect { |course| ["#{course.label} - #{course.id}", course.id] }
   end
 
   def self.statuses
