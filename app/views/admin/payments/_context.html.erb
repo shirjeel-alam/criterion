@@ -1,1 +1,36 @@
-<h2>Hello</h2>
+<div class="panel">
+  <h3>Payment Details</h3>
+  <div class="panel_contents">
+    <div class="attributes_table">
+      <table cellspacing="0" cellpadding="0" border="0">
+        <tbody>
+          <tr>
+            <th>Action</th>
+            <% if @account_holder.present? %>
+              <% if @payment.credit? %>
+                <td>Debit Account (Withdrawal)</td>
+              <% elsif @payment.debit? %>
+                <td>Credit Account (Deposit)</td>
+              <% end %>
+            <% elsif @payment.appropriated? %>
+              <td>Appropriate To Partner(s)</td>
+            <% else %>
+              <td>Add Expenditure</td>
+            <% end %>
+          </tr>
+
+          <% if @account_holder.present? %>
+            <tr>
+              <th>Type</th>
+              <td><%= @account_holder.class.name %></td>
+            </tr>
+            <tr>
+              <th>Name</th>
+              <td><%= @account_holder.name %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
