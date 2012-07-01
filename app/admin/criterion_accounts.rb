@@ -49,7 +49,7 @@ ActiveAdmin.register CriterionAccount do
       			link_to(admin.email, admin_admin_user_path(admin))
       		end if admin.present?
 	      end
-        row(:initial_balance) { status_tag(number_to_currency(criterion_account.initial_balance, unit: 'Rs. ', precision: 0), criterion_account.initial_balance_tag) }
+        # row(:initial_balance) { status_tag(number_to_currency(criterion_account.initial_balance, unit: 'Rs. ', precision: 0), criterion_account.initial_balance_tag) }
         row(:current_balance) { status_tag(number_to_currency(criterion_account.balance, unit: 'Rs. ', precision: 0), criterion_account.balance_tag) }
       end
     end
