@@ -109,7 +109,7 @@ class Payment < ActiveRecord::Base
   end
 
   def appropriated?
-    category == Category.find_by_name('appropriated')
+    category == Category.appropriated
   end
 
   def +(payment)
@@ -200,6 +200,9 @@ class Payment < ActiveRecord::Base
       if credit?
         CriterionAccount.bank_account.account_entries.create!(payment_id: self.id, amount: net_amount, entry_type: AccountEntry::CREDIT)
         CriterionAccount.criterion_account.account_entries.create!(payment_id: self.id, amount: net_amount, entry_type: AccountEntry::DEBIT)
+      elsif debit?
+        CriterionAccount.bank_account.account_entries.create!(payment_id: self.id, amount: net_amount, entry_type: AccountEntry::DEBIT)
+        CriterionAccount.criterion_account.account_entries.create!(payment_id: self.id, amount: net_amount, entry_type: AccountEntry::CREDIT)
       end
     end
   end

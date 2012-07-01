@@ -33,6 +33,14 @@ class Category < ActiveRecord::Base
     Category.find_by_name('registration fee')
   end
 
+  def self.direct_deposit
+    Category.find_by_name('direct deposit')
+  end
+
+  def self.appropriated
+    Category.find_by_name('appropriated')
+  end
+  
 	### View Helpers ###
 
 	def name_label

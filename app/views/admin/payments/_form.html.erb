@@ -24,7 +24,11 @@
     else
       f.input :period, as: :datepicker, required:  true, hint: 'Only month and year are significant'
       f.input :amount, required: true, input_html: { maxlength: 10 }
-      f.input :category_id, as: :select, collection: Category.categories, required: true, include_blank: false, input_html: { class: 'chosen-select' }
+      if @payment.credit?
+        f.input :category_id, as: :select, collection: Category.categories, required: true, include_blank: false, input_html: { class: 'chosen-select' }
+      else
+        f.input :category_id, as: :hidden
+      end
       f.input :payment_method, as: :radio, collection: Payment.payment_methods(true), required: true
       f.input :additional_info
       f.input :status, as: :hidden

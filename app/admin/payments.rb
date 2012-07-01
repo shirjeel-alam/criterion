@@ -217,8 +217,13 @@ ActiveAdmin.register Payment do
           flash[:notice] = 'Amount successfully appropriated'
           redirect_to admin_criterion_account_path(CriterionAccount.criterion_account)
         else
-          flash[:notice] = 'Expenditure successfully created'
-          redirect_to admin_expenditures_path
+          if @payment.credit?
+            flash[:notice] = 'Expenditure successfully created'
+            redirect_to admin_expenditures_path
+          elsif @payment.debit?
+            flash[:notice] = 'Account successfully debited'
+            redirect_to admin_criterion_account_path(CriterionAccount.bank_account)
+          end
         end
       else
         if session[:holder_type] == 'Teacher'

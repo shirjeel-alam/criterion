@@ -57,7 +57,7 @@ partner.phone_numbers.create!(number: '03132012001', category: PhoneNumber::MOBI
 ### Categories ###
 Category.destroy_all
 
-['Monthly Fee', 'Registration Fee', 'Stationery', 'Gas Bill', 'Electricity Bill', 'Water Bill', 'Internet', 'Rent', 'Repairs & Maintenance', 'Office Boy', 'Capital Expenditure', 'Appropriated'].each do |category|
+['Monthly Fee', 'Registration Fee', 'Stationery', 'Gas Bill', 'Electricity Bill', 'Water Bill', 'Internet', 'Rent', 'Repairs & Maintenance', 'Office Boy', 'Capital Expenditure', 'Appropriated', 'Direct Deposit'].each do |category|
 	Category.create!(name: category)
 end
 

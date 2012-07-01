@@ -15,7 +15,11 @@
             <% elsif @payment.appropriated? %>
               <td>Appropriate To Partner(s)</td>
             <% else %>
-              <td>Add Expenditure</td>
+              <% if @payment.credit? %>
+                <td>Add Expenditure</td>
+              <% elsif @payment.debit? %>
+                <td>Direct Deposit</td>
+              <% end %>
             <% end %>
           </tr>
 
