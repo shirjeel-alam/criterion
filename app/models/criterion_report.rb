@@ -14,7 +14,7 @@
 #
 
 class CriterionReport < ActiveRecord::Base
-  # attr_accessor :report_date
+  attr_accessor :report_date
 
   has_many :criterion_report_dates, dependent: :destroy
 
