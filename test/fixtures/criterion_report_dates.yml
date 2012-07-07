@@ -1,0 +1,20 @@
+# == Schema Information
+#
+# Table name: criterion_report_dates
+#
+#  id                  :integer          not null, primary key
+#  report_date         :date
+#  criterion_report_id :integer
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  report_date: 2012-07-07
+  criterion_report_id: 1
+
+two:
+  report_date: 2012-07-07
+  criterion_report_id: 1

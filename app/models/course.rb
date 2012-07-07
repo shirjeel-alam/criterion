@@ -2,18 +2,18 @@
 #
 # Table name: courses
 #
-#  id          :integer(4)      not null, primary key
+#  id          :integer          not null, primary key
 #  name        :string(255)
-#  teacher_id  :integer(4)
-#  session_id  :integer(4)
-#  monthly_fee :integer(4)
-#  status      :integer(4)
+#  teacher_id  :integer
+#  session_id  :integer
+#  monthly_fee :integer
+#  status      :integer
 #  start_date  :date
 #  end_date    :date
-#  created_at  :datetime
-#  updated_at  :datetime
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
 #  course_date :date
-#  level       :integer(4)
+#  level       :integer
 #
 
 class Course < ActiveRecord::Base

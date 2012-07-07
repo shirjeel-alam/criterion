@@ -8,7 +8,13 @@ scheduler.every '50m' do
 end
 
 scheduler.every '4h' do
-	cr = CriterionReport.find_or_create_by_report_date(Date.today)
+  crd = CriterionReportDate.find_by_report_date(Date.today)
+  if crd.present?
+    cr = crd.criterion_report
+  else
+    cr = CriterionReport.open.first
+    cr.criterion_report_dates.create(report_date: Date.today)
+  end
 	cr.update_report_data
 
 	Course.all.map(&:update_course)

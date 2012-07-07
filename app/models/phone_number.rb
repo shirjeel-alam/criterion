@@ -2,13 +2,13 @@
 #
 # Table name: phone_numbers
 #
-#  id               :integer(4)      not null, primary key
+#  id               :integer          not null, primary key
 #  number           :string(255)
-#  category         :integer(4)
-#  contactable_id   :integer(4)
+#  category         :integer
+#  contactable_id   :integer
 #  contactable_type :string(255)
-#  created_at       :datetime
-#  updated_at       :datetime
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
 #
 
 class PhoneNumber < ActiveRecord::Base

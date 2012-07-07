@@ -2,16 +2,16 @@
 #
 # Table name: criterion_sms
 #
-#  id            :integer(4)      not null, primary key
+#  id            :integer          not null, primary key
 #  to            :string(255)
 #  message       :text
-#  sender_id     :integer(4)
+#  sender_id     :integer
 #  sender_type   :string(255)
-#  receiver_id   :integer(4)
+#  receiver_id   :integer
 #  receiver_type :string(255)
-#  status        :boolean(1)
-#  created_at    :datetime
-#  updated_at    :datetime
+#  status        :boolean
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
 #
 
 class CriterionSms < ActiveRecord::Base

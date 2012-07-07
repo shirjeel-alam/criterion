@@ -2,13 +2,13 @@
 #
 # Table name: account_entries
 #
-#  id                   :integer(4)      not null, primary key
-#  criterion_account_id :integer(4)
-#  payment_id           :integer(4)
-#  amount               :integer(4)
-#  entry_type           :boolean(1)
-#  created_at           :datetime
-#  updated_at           :datetime
+#  id                   :integer          not null, primary key
+#  criterion_account_id :integer
+#  payment_id           :integer
+#  amount               :integer
+#  entry_type           :boolean
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
 #
 
 class AccountEntry < ActiveRecord::Base

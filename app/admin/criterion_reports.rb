@@ -4,14 +4,19 @@ ActiveAdmin.register CriterionReport do
 	actions :index, :show
 
 	filter :id
-	filter :report_date
+
+  scope :all
+  scope :open
+  scope :closed
 	
 	index do
 		column 'ID', sortable: :id do |report|
 			link_to(report.id, admin_criterion_report_path(report))
 		end
-		column :report_date, sortable: :report_date do |report|
-			date_format(report.report_date)
+		column :report_dates do |report|
+      report.criterion_report_dates.order('report_date ASC').each do |crd|
+        div date_format(crd.report_date)
+      end
 		end
 		column :gross_revenue, sortable: :gross_revenue do |report|
 			number_to_currency(report.gross_revenue, unit: 'Rs. ', precision: 0)
@@ -31,9 +36,12 @@ ActiveAdmin.register CriterionReport do
 		column :last_updated do |report|
 			time_format(report.updated_at)
 		end
+    column :status, sortable: :closed do |report|
+      status_tag(report.status_label, report.status_tag)
+    end 
 		column nil do |report|
 			span link_to('View', admin_criterion_report_path(report), class: :member_link)
-			span link_to_unless(report.report_date.past?, 'Update', update_report_admin_criterion_report_path(report), method: :put, class: :member_link)
+			span link_to_unless(report.closed?, 'Update', update_report_admin_criterion_report_path(report), method: :put, class: :member_link)
 		end
 	end
 
@@ -41,12 +49,18 @@ ActiveAdmin.register CriterionReport do
 		panel 'Criterion Report Details' do
 			attributes_table_for criterion_report do
 				row(:id) { criterion_report.id }
-				row(:report_date) { date_format(criterion_report.report_date) }
+				row(:report_dates) do
+          criterion_report.criterion_report_dates.order('report_date ASC').each do |crd|
+            div date_format(crd.report_date)
+          end
+        end
 				row(:gross_revenue) { number_to_currency(criterion_report.gross_revenue, unit: 'Rs. ', precision: 0) }
 				row(:discounts) { number_to_currency(criterion_report.discounts, unit: 'Rs. ', precision: 0) }
 				row(:net_revenue) { number_to_currency(criterion_report.net_revenue, unit: 'Rs. ', precision: 0) }
 				row(:expenditure) { number_to_currency(criterion_report.expenditure, unit: 'Rs. ', precision: 0) }
 				row(:balance) { status_tag(number_to_currency(criterion_report.balance, unit: 'Rs. ', precision: 0), criterion_report.balance_tag) }
+        row(:last_updated) { time_format(criterion_report.updated_at) } 
+        row(:status) { status_tag(criterion_report.status_label, criterion_report.status_tag) }
 			end
 		end
 
@@ -104,7 +118,19 @@ ActiveAdmin.register CriterionReport do
     redirect_to_back
   end
 
+  member_action :close_report, method: :put do
+    criterion_report = CriterionReport.find(params[:id])
+    criterion_report.close!
+
+    CriterionReport.create(report_date: Date.tomorrow)
+
+    redirect_to_back
+  end
+
   action_item only: :show do
-    span link_to('Update', update_report_admin_criterion_report_path(criterion_report), method: :put)
+    unless criterion_report.closed?
+      span link_to 'Update', update_report_admin_criterion_report_path(criterion_report), method: :put
+      span link_to 'Close And Finalize', close_report_admin_criterion_report_path(criterion_report), method: :put, data: { confirm: 'Are you sure?' }
+    end
   end
 end

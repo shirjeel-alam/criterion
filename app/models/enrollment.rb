@@ -2,12 +2,12 @@
 #
 # Table name: enrollments
 #
-#  id              :integer(4)      not null, primary key
-#  student_id      :integer(4)
-#  course_id       :integer(4)
-#  created_at      :datetime
-#  updated_at      :datetime
-#  status          :integer(4)
+#  id              :integer          not null, primary key
+#  student_id      :integer
+#  course_id       :integer
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  status          :integer
 #  enrollment_date :date
 #  start_date      :date
 #

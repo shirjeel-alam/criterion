@@ -2,12 +2,12 @@
 #
 # Table name: session_students
 #
-#  id         :integer(4)      not null, primary key
-#  student_id :integer(4)
-#  session_id :integer(4)
-#  payment_id :integer(4)
-#  created_at :datetime
-#  updated_at :datetime
+#  id         :integer          not null, primary key
+#  student_id :integer
+#  session_id :integer
+#  payment_id :integer
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
 #
 
 require 'test_helper'

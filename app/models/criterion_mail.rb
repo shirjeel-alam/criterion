@@ -2,17 +2,17 @@
 #
 # Table name: criterion_mails
 #
-#  id            :integer(4)      not null, primary key
+#  id            :integer          not null, primary key
 #  from          :string(255)
 #  to            :string(255)
 #  cc            :string(255)
 #  bcc           :string(255)
 #  subject       :string(255)
 #  body          :text
-#  mailable_id   :integer(4)
+#  mailable_id   :integer
 #  mailable_type :string(255)
-#  created_at    :datetime
-#  updated_at    :datetime
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
 #
 
 class CriterionMail < ActiveRecord::Base

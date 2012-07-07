@@ -2,21 +2,26 @@
 #
 # Table name: criterion_reports
 #
-#  id            :integer(4)      not null, primary key
-#  report_date   :date
-#  gross_revenue :integer(4)
-#  discounts     :integer(4)
-#  net_revenue   :integer(4)
-#  expenditure   :integer(4)
-#  balance       :integer(4)
-#  created_at    :datetime
-#  updated_at    :datetime
+#  id            :integer          not null, primary key
+#  gross_revenue :integer
+#  discounts     :integer
+#  net_revenue   :integer
+#  expenditure   :integer
+#  balance       :integer
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  closed        :boolean
 #
 
 class CriterionReport < ActiveRecord::Base
-	validates :report_date, presence: true, uniqueness: true, timeliness: { type: :date, on_or_before: lambda { Date.today } }
+  attr_accessor :report_date
 
-	before_create :calc_report_data
+  has_many :criterion_report_dates
+
+	before_create :build_criterion_report_date, :calc_report_data
+
+  scope :open, where(closed: false)
+  scope :closed, where(closed: true)
 
 	def calc_report_data
     self.gross_revenue = calc_gross_revenue
@@ -52,17 +57,42 @@ class CriterionReport < ActiveRecord::Base
 		save
 	end
 
+  def close!
+    update_attribute(:closed, true)
+  end
+
+  def open!
+    update_attribute(:closed, false)
+  end
+
 	### View Helpers ###
 
   def balance_tag
     balance >= 0 ? :ok : :error
   end
 
+  def status_label
+    closed? ? 'Closed' : 'Open'
+  end
+
+  def status_tag
+    closed? ? :error : :ok
+  end
+
   def title
-  	"Criterion Report - #{report_date.strftime('%d %B, %Y')}"
+    report_dates = criterion_report_dates.collect(&:report_date).sort
+  	"Criterion Report: #{report_dates.first.strftime('%d %B, %Y')} - #{report_dates.last.strftime('%d %B, %Y')}"
   end
 
   def payments(entry_type, payment_method)
-    Payment.joins(:account_entries).where('account_entries.criterion_account_id = ? AND account_entries.entry_type = ? AND payments.payment_method IN (?) AND account_entries.created_at BETWEEN ? AND ?', CriterionAccount.bank_account.id, entry_type, payment_method, report_date.beginning_of_day, report_date.end_of_day)
+    report_dates = criterion_report_dates.collect(&:report_date).sort
+    Payment.joins(:account_entries).where('account_entries.criterion_account_id = ? AND account_entries.entry_type = ? AND payments.payment_method IN (?) AND account_entries.created_at BETWEEN ? AND ?', CriterionAccount.bank_account.id, entry_type, payment_method, report_dates.first.beginning_of_day, report_dates.last.end_of_day)
+  end
+
+  private
+
+  def build_criterion_report_date
+    crd = criterion_report_dates.build(report_date: report_date)
+    crd.valid?
   end
 end

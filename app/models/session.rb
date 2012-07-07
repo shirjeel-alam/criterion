@@ -2,13 +2,13 @@
 #
 # Table name: sessions
 #
-#  id               :integer(4)      not null, primary key
-#  period           :integer(4)
-#  year             :integer(4)
-#  registration_fee :integer(4)
-#  created_at       :datetime
-#  updated_at       :datetime
-#  status           :integer(4)
+#  id               :integer          not null, primary key
+#  period           :integer
+#  year             :integer
+#  registration_fee :integer
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  status           :integer
 #
 
 class Session < ActiveRecord::Base

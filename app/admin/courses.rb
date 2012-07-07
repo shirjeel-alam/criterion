@@ -74,6 +74,9 @@ ActiveAdmin.register Course do
     column :end_date, sortable: :end_date do |course|
       date_format(course.end_date)
     end
+    column :no_of_enrollments do |course|
+      course.enrollments.count
+    end
     
     default_actions
   end
