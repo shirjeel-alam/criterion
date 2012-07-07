@@ -204,4 +204,15 @@ ActiveAdmin.register Enrollment do
       span link_to('Cancel Enrollment', cancel_admin_enrollment_path(enrollment), method: :put, confirm: 'Are you sure?')
     end
   end
+
+  controller do
+    before_filter :check_authorization
+
+    def check_authorization
+      if current_admin_user.teacher?
+        flash[:error] = 'You are not authorized to perform this action'
+        redirect_to_back
+      end
+    end
+  end
 end

@@ -178,13 +178,15 @@ ActiveAdmin.register Course do
   end
   
   action_item only: :show do
-    span link_to('Add Enrollment', new_admin_enrollment_path(course_id: course)) unless (course.completed? || course.cancelled?)
-    span do
-      if course.not_started?
-        span link_to('Start Course', start_admin_course_path(course), method: :put, confirm: 'Are you sure?')
-      elsif course.started?
-        span link_to('Cancel Course', cancel_admin_course_path(course), method: :put, confirm: 'Are you sure?')
-        span link_to('Finish Course', finish_admin_course_path(course), method: :put, confirm: 'Are you sure?')  
+    if current_admin_user.super_admin_or_partner? || current_admin_user.admin?
+      span link_to('Add Enrollment', new_admin_enrollment_path(course_id: course)) unless (course.completed? || course.cancelled?)
+      span do
+        if course.not_started?
+          span link_to('Start Course', start_admin_course_path(course), method: :put, confirm: 'Are you sure?')
+        elsif course.started?
+          span link_to('Cancel Course', cancel_admin_course_path(course), method: :put, confirm: 'Are you sure?')
+          span link_to('Finish Course', finish_admin_course_path(course), method: :put, confirm: 'Are you sure?')  
+        end
       end
     end
   end
