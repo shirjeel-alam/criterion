@@ -3,10 +3,8 @@ ActiveAdmin.register Course do
 
   filter :id
   filter :name
-  # filter :status, as: :select, collection: Course.statuses
-  # filter :level, as: :select, collection: Course.levels
-  # filter :teacher_id, as: :select, collection: Teacher.get_all
-  filter :monthly_fee
+  filter :level, as: :select, collection: Course.levels
+  filter :teacher_name, as: :string
 
   scope :all, default: true do |courses|
     if current_admin_user.teacher?

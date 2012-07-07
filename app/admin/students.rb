@@ -4,6 +4,7 @@ ActiveAdmin.register Student do
   filter :id
   filter :name
   filter :email
+  filter :phone_numbers_number, as: :string, label: 'Phone Number'
   
   index do
     column 'ID', sortable: :id do |student|
