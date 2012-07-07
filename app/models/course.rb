@@ -138,7 +138,7 @@ class Course < ActiveRecord::Base
       months << ptr.beginning_of_month
       ptr = ptr >> 1
     end
-    months << end_date if start_date.beginning_of_month != end_date.beginning_of_month
+    months << end_date unless (start_date.beginning_of_month == end_date.beginning_of_month || months.last.beginning_of_month == end_date.beginning_of_month)
     months      
   end
   

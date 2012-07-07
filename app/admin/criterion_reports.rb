@@ -75,6 +75,8 @@ ActiveAdmin.register CriterionReport do
 						link_to(payment.payable.name, admin_teacher_path(payment.payable)) rescue nil
           elsif payment.payable.is_a?(Partner)
             link_to(payment.payable.name, admin_partner_path(payment.payable)) rescue nil
+          elsif payment.payable.is_a?(Staff)
+            link_to(payment.payable.name, admin_staff_path(payment.payable)) rescue nil
 					end
         end
         t.column(:category) { |payment| payment.category.name_label rescue nil }
@@ -96,6 +98,8 @@ ActiveAdmin.register CriterionReport do
 						link_to(payment.payable.name, admin_teacher_path(payment.payable)) rescue nil
           elsif payment.payable.is_a?(Partner)
             link_to(payment.payable.name, admin_partner_path(payment.payable)) rescue nil
+          elsif payment.payable.is_a?(Staff)
+            link_to(payment.payable.name, admin_staff_path(payment.payable)) rescue nil
 					end
         end
         t.column(:category) { |payment| payment.category.name_label rescue nil }

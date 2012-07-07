@@ -106,7 +106,7 @@ ActiveAdmin.register Course do
     end if course.enrollments.present?
 
     panel 'Course Fees Table' do
-      months = course.months_between(course.start_date, course.end_date)
+      months = months_between(course.start_date, course.end_date)
       table_for course.enrollments do |t|
         t.column(:student) { |enrollment| link_to(enrollment.student.name, admin_student_path(enrollment.student)) }
         t.column(:join_date) { |enrollment| date_format(enrollment.start_date) }
