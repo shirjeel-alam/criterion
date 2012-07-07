@@ -14,8 +14,11 @@ ActiveAdmin.register CriterionReport do
 			link_to(report.id, admin_criterion_report_path(report))
 		end
 		column :report_dates do |report|
-      report.criterion_report_dates.order('report_date ASC').each do |crd|
-        div date_format(crd.report_date)
+      report_dates = report.criterion_report_dates.order('report_date ASC').collect(&:report_date)
+      if report_dates.count == 1
+        date_format report_dates.first
+      else
+        "#{date_format(report_dates.first)} - #{date_format(report_dates.last)}"
       end
 		end
 		column :gross_revenue, sortable: :gross_revenue do |report|
@@ -51,8 +54,11 @@ ActiveAdmin.register CriterionReport do
 			attributes_table_for criterion_report do
 				row(:id) { criterion_report.id }
 				row(:report_dates) do
-          criterion_report.criterion_report_dates.order('report_date ASC').each do |crd|
-            div date_format(crd.report_date)
+          report_dates = criterion_report.criterion_report_dates.order('report_date ASC').collect(&:report_date)
+          if report_dates.count == 1
+            date_format report_dates.first
+          else
+            "#{date_format(report_dates.first)} - #{date_format(report_dates.last)}"
           end
         end
 				row(:gross_revenue) { number_to_currency(criterion_report.gross_revenue, unit: 'Rs. ', precision: 0) }
@@ -109,10 +115,10 @@ ActiveAdmin.register CriterionReport do
       end
 		end
 
-		panel 'Graphs' do
-			chart = Gchart.pie_3d(data: [criterion_report.net_revenue, criterion_report.expenditure], size: '600x200', labels: ['Revenue', 'Expenditure'])
-      image_tag(chart)
-    end
+		# panel 'Graphs' do
+		#	chart = Gchart.pie_3d(data: [criterion_report.net_revenue, criterion_report.expenditure], size: '600x200', labels: ['Revenue', 'Expenditure'])
+    #  image_tag(chart)
+    # end
 
 		active_admin_comments
 	end
