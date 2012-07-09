@@ -1,9 +1,5 @@
 ActiveAdmin::Dashboards.build do
 
-  # section :teacher do
-  #   controller.redirect_to(admin_teacher_path(current_admin_user.user))
-  # end
-
   section :disable_dasboard, if: proc { current_admin_user.teacher? } do
     controller.redirect_to admin_teacher_path(current_admin_user.user)
   end
@@ -36,30 +32,50 @@ ActiveAdmin::Dashboards.build do
     end
 
     div style: 'display:inline-block;width:87%' do
-      due_payments = Payment.due_fees(Date.today)
+      due_payments = Payment.due_fees(Date.today).collect do |payment|
+        payment.period = payment.period.beginning_of_month
+        payment
+      end
+      result = due_payments.sort_by(&:period).group_by { |payment| payment.payable.course }
+
+      # binding.pry
 
       table do
         status_tag 'Due Payments', :red, style: 'font-size:2em;font-weight:bold;display:block;text-align:center;'
         thead do
           tr do
             th 'ID'
+            th 'Course'
+            th 'Student'
             th 'Period'
             th 'Net Amount'
-            th 'Student'
-            th 'Course'
           end
         end
 
         tbody do
-          due_payments.each do |payment|
-            tr do
-              td link_to(payment.id, admin_payment_path(payment))
-              td payment.period_label
-              td number_to_currency(payment.net_amount, unit: 'Rs. ', precision: 0)
+          flip = true
+          result.each do |course_due_payments|
+            tr class: "#{flip ? 'odd' : 'even'} header" do
+              td image_tag('down_arrow.png')
+              td link_to(course_due_payments.first.name, admin_course_path(course_due_payments.first)) rescue td nil
+              td course_due_payments.second.count
+              td nil
+              td number_to_currency(course_due_payments.second.collect(&:net_amount).sum, unit: 'Rs. ', precision: 0)
+            end
 
-              if payment.payable.is_a?(Enrollment) || payment.payable.is_a?(SessionStudent)
-                td link_to(payment.payable.student.name, admin_student_path(payment.payable.student)) rescue nil
-                td link_to(payment.payable.course.name, admin_course_path(payment.payable.course)) rescue nil
+            flip = !flip
+            course_due_payments.second.each do |payment|
+              tr class: "#{flip ? 'odd' : 'even'} content" do
+                td link_to(payment.id, admin_payment_path(payment))
+                if payment.payable.is_a?(Enrollment) || payment.payable.is_a?(SessionStudent)
+                  td link_to(payment.payable.course.name, admin_course_path(payment.payable.course)) rescue td nil
+                  td link_to(payment.payable.student.name, admin_student_path(payment.payable.student)) rescue td nil
+                else
+                  td nil
+                  td nil
+                end
+                td payment.period_label
+                td number_to_currency(payment.net_amount, unit: 'Rs. ', precision: 0)
               end
             end
           end
