@@ -18,7 +18,7 @@
 
 class Course < ActiveRecord::Base
   NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED = 0, 1, 2, 3
-  O_LEVEL, AS_LEVEL, A2_LEVEL = 0, 1, 2
+  O_LEVEL, AS_LEVEL, A2_LEVEL, ACCA = 0, 1, 2, 4
   
   belongs_to :teacher
   belongs_to :session
@@ -39,7 +39,7 @@ class Course < ActiveRecord::Base
   validates :monthly_fee, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :start_date, timeliness: { type: :date, before: lambda { end_date }, allow_blank: true } 
   validates :end_date, timeliness: { type: :date, allow_blank: true }
-  validates :level, presence: true, inclusion: { in: [O_LEVEL, AS_LEVEL, A2_LEVEL] }
+  validates :level, presence: true, inclusion: { in: [O_LEVEL, AS_LEVEL, A2_LEVEL, ACCA] }
 
   scope :active, where(status: [NOT_STARTED, IN_PROGRESS])
   scope :not_started, where(status: NOT_STARTED)
@@ -218,7 +218,7 @@ class Course < ActiveRecord::Base
   end
 
   def self.levels
-    [['O-Level', O_LEVEL], ['AS-Level', AS_LEVEL], ['A2-Level', A2_LEVEL]]
+    [['O-Level', O_LEVEL], ['AS-Level', AS_LEVEL], ['A2-Level', A2_LEVEL], ['ACCA', ACCA]]
   end
 
   ### View Helpers ###
@@ -239,6 +239,8 @@ class Course < ActiveRecord::Base
         'AS-Level'
       when A2_LEVEL
         'A2-Level'
+      when ACCA
+        'ACCA'
     end
   end
 
