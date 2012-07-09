@@ -65,7 +65,7 @@ ActiveAdmin.register Student do
         payment.period = payment.period.beginning_of_month
         payment
       end
-      result = temp_payments.sort_by(&:period).group_by(&:period)
+      result = temp_payments.group_by(&:period).sort_by(&:first)
       
       table do
         thead do
@@ -100,7 +100,7 @@ ActiveAdmin.register Student do
             end
             
             flip = !flip
-            cumulative_payment.second.each do |payment|
+            cumulative_payment.second.sort_by(&:id).each do |payment|
               tr class: "#{flip ? 'odd' : 'even'} content" do
                 td link_to(payment.id, admin_payment_path(payment))
                 td payment.period_label

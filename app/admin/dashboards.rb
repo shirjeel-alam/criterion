@@ -36,9 +36,9 @@ ActiveAdmin::Dashboards.build do
         payment.period = payment.period.beginning_of_month
         payment
       end
-      result = due_payments.sort_by(&:period).group_by { |payment| payment.payable.course }
+      result = due_payments.group_by { |payment| payment.payable.course }.sort_by { |course_payments| course_payments.first.name }
 
-      # binding.pry
+      due_registration_fees = Payment.due_registration_fees
 
       table do
         status_tag 'Due Payments', :red, style: 'font-size:2em;font-weight:bold;display:block;text-align:center;'
@@ -54,6 +54,27 @@ ActiveAdmin::Dashboards.build do
 
         tbody do
           flip = true
+
+          tr class: 'even header' do
+            td image_tag('down_arrow.png')
+            td do
+              strong 'Registration Fee'
+            end
+            td due_registration_fees.count
+            td nil
+            td number_to_currency(due_registration_fees.collect(&:net_amount).sum, unit: 'Rs. ', precision: 0)
+          end
+
+          due_registration_fees.each do |payment|
+            tr class: 'odd content' do
+              td link_to(payment.id, admin_payment_path(payment))
+              td nil
+              td link_to(payment.payable.student.name, admin_student_path(payment.payable.student)) rescue td nil
+              td payment.payable.session.label
+              td number_to_currency(payment.net_amount, unit: 'Rs. ', precision: 0)
+            end
+          end
+
           result.each do |course_due_payments|
             tr class: "#{flip ? 'odd' : 'even'} header" do
               td image_tag('down_arrow.png')
@@ -64,7 +85,7 @@ ActiveAdmin::Dashboards.build do
             end
 
             flip = !flip
-            course_due_payments.second.each do |payment|
+            course_due_payments.second.sort_by(&:id).each do |payment|
               tr class: "#{flip ? 'odd' : 'even'} content" do
                 td link_to(payment.id, admin_payment_path(payment))
                 if payment.payable.is_a?(Enrollment) || payment.payable.is_a?(SessionStudent)

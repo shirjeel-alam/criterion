@@ -57,6 +57,7 @@ class Payment < ActiveRecord::Base
   scope :on, lambda { |date| where(payment_date: date) }
 
   scope :due_fees, lambda { |date| due.where('period <= ?', date) }
+  scope :due_registration_fees, lambda { due.where(period: nil) }
 
   attr_accessor :other_account
   

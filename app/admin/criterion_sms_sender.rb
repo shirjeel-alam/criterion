@@ -4,15 +4,15 @@ ActiveAdmin.register CriterionSms, as: 'Criterion SMS Sender' do
 	actions :index
 
 	scope :courses, default: true do |courses|
-		Course.active
+		Course.order('id desc')
 	end
 
 	scope :teachers do |teachers|
-		Teacher.select('*')
+		Teacher.order('id desc')
 	end
 
 	index do 
-		div render partial: 'criterion_sms_sender', locals: { courses: Course.active, teachers: Teacher.all, scope: params[:scope] }
+		div render partial: 'criterion_sms_sender', locals: { courses: Course.order('id desc'), teachers: Teacher.order('id desc'), scope: params[:scope] }
 	end
 
 	controller do

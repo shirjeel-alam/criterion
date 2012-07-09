@@ -4,15 +4,15 @@ ActiveAdmin.register CriterionMail, as: 'Criterion Mailer' do
 	actions :index
 
 	scope :courses, default: true do |courses|
-		Course.active
+		Course.order('id desc')
 	end
 
 	scope :teachers do |teachers|
-		Teacher.select('*')
+		Teacher.order('id desc')
 	end
 
 	index do
-		div render partial: 'criterion_mailer', locals: { courses: Course.active, teachers: Teacher.all }
+		div render partial: 'criterion_mailer', locals: { courses: Course.order('id desc'), teachers: Teacher.order('id desc') }
 	end
 
 	controller do
