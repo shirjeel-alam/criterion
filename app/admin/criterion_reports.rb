@@ -87,10 +87,7 @@ ActiveAdmin.register CriterionReport do
         end
         t.column(:category) { |payment| payment.category.name_label rescue nil }
         t.column(:payment_method) { |payment| status_tag(payment.payment_method_label, payment.payment_method_tag) }
-        # t.column(:gross_amount) { |payment| number_to_currency(payment.amount, unit: 'Rs. ', precision: 0) }
-        # t.column(:discount) { |payment| number_to_currency(payment.discount, unit: 'Rs. ', precision: 0) }
         t.column(:net_amount) { |payment| number_to_currency(payment.net_amount, unit: 'Rs. ', precision: 0) }
-        # t.column(:period) { |payment| payment.period_label}
       end
 		end
 
@@ -111,14 +108,8 @@ ActiveAdmin.register CriterionReport do
         t.column(:category) { |payment| payment.category.name_label rescue nil }
         t.column(:payment_method) { |payment| status_tag(payment.payment_method_label, payment.payment_method_tag) }
         t.column(:amount) { |payment| number_to_currency(payment.amount, unit: 'Rs. ', precision: 0) }
-        # t.column(:period) { |payment| payment.period_label}
       end
 		end
-
-		# panel 'Graphs' do
-		#	chart = Gchart.pie_3d(data: [criterion_report.net_revenue, criterion_report.expenditure], size: '600x200', labels: ['Revenue', 'Expenditure'])
-    #  image_tag(chart)
-    # end
 
 		active_admin_comments
 	end

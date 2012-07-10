@@ -17,6 +17,9 @@ scheduler.every '4h' do
   end
 	cr.update_report_data
 
+  cmr = CriterionMonthlyReport.find_or_initialize_by_report_month(Date.today.beginning_of_month)
+  cmr.save
+
 	Course.all.map(&:update_course)
 	Enrollment.all.map(&:update_enrollment)
 end
