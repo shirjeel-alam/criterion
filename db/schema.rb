@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120710013630) do
+ActiveRecord::Schema.define(:version => 20120710021002) do
 
   create_table "account_entries", :force => true do |t|
     t.integer  "criterion_account_id"
@@ -128,6 +128,7 @@ ActiveRecord::Schema.define(:version => 20120710013630) do
     t.boolean  "status"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+    t.text     "api_response"
   end
 
   create_table "enrollments", :force => true do |t|

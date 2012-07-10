@@ -4,6 +4,10 @@ ActiveAdmin.register CriterionSms do
 	filter :id
 	filter :to
 	filter :created_at, label: 'SMS SENT BETWEEN'
+
+  scope :all
+  scope :sent
+  scope :failed
 	
 	index do
 		column 'ID', sortable: :id do |sms|
@@ -19,10 +23,17 @@ ActiveAdmin.register CriterionSms do
 				link_to(receiver.name, admin_student_path(receiver))
 			elsif sms.receiver.is_a?(Teacher)
 				link_to(receiver.name, admin_teacher_path(receiver))
+      elsif sms.receiver.is_a?(Partner)
+        link_to(receiver.name, admin_partner_path(receiver))
+      elsif sms.receiver.is_a?(Staff)
+        link_to(receiver.name, admin_staff_path(receiver))
 			end rescue nil
 		end
     column :status, sortable: :status do |sms| 
       status_tag(sms.status_label, sms.status_tag)
+    end
+    column 'API Response', sortable: :api_response do |sms|
+      sms.api_response
     end
     
 		default_actions	
@@ -32,7 +43,7 @@ ActiveAdmin.register CriterionSms do
 		f.inputs do
 			f.input :to, as: :select, multiple: true, collection: PhoneNumber.all_mobile_numbers, required: true, input_html: { class: 'chosen-select', style: 'width:77.8%;' }
 			f.input :extra, as: :string, hint: 'Comma separated list of mobile numbers'
-			f.input :message, required: true, hint: '300 Characters Only'
+			f.input :message, required: true, hint: '262 Characters Only'
 		end
 
 		f.buttons

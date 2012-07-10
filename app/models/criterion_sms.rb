@@ -12,9 +12,12 @@
 #  status        :boolean
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
+#  api_response  :text
 #
 
 class CriterionSms < ActiveRecord::Base
+  attr_accessor :extra
+  
 	API_KEY = 'b84b75daddef4d7db570'
 	DEFAULT_VALID_MOBILE_NUMBER = '03132100200'
 
@@ -27,6 +30,9 @@ class CriterionSms < ActiveRecord::Base
 
 	validates :to, presence: true, numericality: true, length: { is: 11 }, format: { with: /^03\d{9}$/ }
 	validates :message, presence: true, length: { maximum: 262 }
+
+  scope :sent, where(status: true)
+  scope :failed, where(status: false)
 
 	def successful?
 		status
@@ -57,16 +63,16 @@ class CriterionSms < ActiveRecord::Base
 		request.set_form_data(phone: to, msg: message, type: 0)
 		response = http.request(request)
 
-		result = ActiveSupport::JSON.decode(response.body)['result']
+    decoded_response = ActiveSupport::JSON.decode(response.body)
+    result = decoded_response['result']
+    api_response = decoded_response['message']
+
 		if result == 'true'
-			update_attribute(:status, true)
+			update_attributes(status: true, api_response: api_response)
 		elsif result == 'false'
-			update_attribute(:status, false)
+			update_attributes(status: false, api_response: api_response)
 		else
 			raise 'Unknown Response SendSMS PK'
 		end
-	end
-
-	def extra
 	end
 end

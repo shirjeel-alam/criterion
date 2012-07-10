@@ -87,6 +87,28 @@ $(document).ready(function() {
 
   /*** END ***/
 
+  /*** Criterion SMS Sender ***/
+
+  $('#criterion_sms_message').on('keyup', function() {
+    var msg_length = $(this).val().length
+    var str = msg_length.toString();
+    str += ' / 262 characters';
+
+    var counter = $(this).siblings('p.inline-hints');
+    counter.text(str);
+
+    var form = $(this).closest('form');
+    if (msg_length > 262) {
+      counter.addClass('red');
+      form.find('input[type="submit"]').prop('disabled', true)
+    } else {
+      counter.removeClass('red');
+      form.find('input[type="submit"]').prop('disabled', false)
+    }
+  });
+  
+  /*** END ***/
+
   /*** Internal Payments ***/
 
   if(!$('#payment_payment_method_2').is(':checked')) {
