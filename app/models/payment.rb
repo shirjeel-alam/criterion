@@ -32,6 +32,7 @@ class Payment < ActiveRecord::Base
   before_validation :check_appropriated_amount, on: :create, if: 'appropriated?'
   after_create :create_account_entry
   before_save :set_category
+  after_save :set_period
 
   validates :amount, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :status, presence: true, inclusion: { in: [DUE, PAID, VOID, REFUNDED] }
@@ -334,6 +335,12 @@ class Payment < ActiveRecord::Base
       self.category = Category.monthly_fee
     elsif payable.is_a?(SessionStudent)
       self.category = Category.registration_fee
+    end
+  end
+
+  def set_period
+    if payment_date.present? && period.blank?
+      update_attribute(:period, payment_date)
     end
   end
 end
