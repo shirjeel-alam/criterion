@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120707071532) do
+ActiveRecord::Schema.define(:version => 20120710013630) do
 
   create_table "account_entries", :force => true do |t|
     t.integer  "criterion_account_id"
@@ -89,9 +89,9 @@ ActiveRecord::Schema.define(:version => 20120707071532) do
 
   create_table "criterion_mails", :force => true do |t|
     t.string   "from"
-    t.string   "to"
-    t.string   "cc"
-    t.string   "bcc"
+    t.text     "to"
+    t.text     "cc"
+    t.text     "bcc"
     t.string   "subject"
     t.text     "body"
     t.integer  "mailable_id"
@@ -113,9 +113,9 @@ ActiveRecord::Schema.define(:version => 20120707071532) do
     t.integer  "net_revenue"
     t.integer  "expenditure"
     t.integer  "balance"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
-    t.boolean  "closed"
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
+    t.boolean  "closed",        :default => false
   end
 
   create_table "criterion_sms", :force => true do |t|

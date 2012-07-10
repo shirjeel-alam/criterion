@@ -10,7 +10,7 @@
 #  balance       :integer
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
-#  closed        :boolean
+#  closed        :boolean          default(FALSE)
 #
 
 class CriterionReport < ActiveRecord::Base

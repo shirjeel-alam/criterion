@@ -4,9 +4,9 @@
 #
 #  id            :integer          not null, primary key
 #  from          :string(255)
-#  to            :string(255)
-#  cc            :string(255)
-#  bcc           :string(255)
+#  to            :text
+#  cc            :text
+#  bcc           :text
 #  subject       :string(255)
 #  body          :text
 #  mailable_id   :integer

@@ -15,7 +15,9 @@ ActiveAdmin.register CriterionMail do
       link_to(mail.id, admin_criterion_mail_path(mail))
     end
     column :from
-    column :to
+    column :to do |mail|
+      truncate(mail.to)
+    end
     column :subject
     column :sender, do |mail|
       if mail.mailable.is_a?(Teacher)
@@ -64,14 +66,14 @@ ActiveAdmin.register CriterionMail do
         @emails = (@teachers.collect(&:email) + @courses.collect { |course| course.emails.collect(&:second) }.flatten).flatten.uniq
         @criterion_mail = CriterionMail.new(from: current_admin_user.email, to: @emails)
       else
-        super
+        @criterion_mail = CriterionMail.new(from: current_admin_user.email)
       end
     end
 
     def create
-      params[:criterion_mail][:to] = params[:criterion_mail][:to].join(',') if params[:criterion_mail][:to].present?
-      params[:criterion_mail][:cc] = params[:criterion_mail][:cc].join(',') if params[:criterion_mail][:cc].present?
-      params[:criterion_mail][:bcc] = params[:criterion_mail][:bcc].join(',') if params[:criterion_mail][:bcc].present?
+      params[:criterion_mail][:to] = params[:criterion_mail][:to].reject(&:blank?).join(',') if params[:criterion_mail][:to].present?
+      params[:criterion_mail][:cc] = params[:criterion_mail][:cc].reject(&:blank?).join(',') if params[:criterion_mail][:cc].present?
+      params[:criterion_mail][:bcc] = params[:criterion_mail][:bcc].reject(&:blank?).join(',') if params[:criterion_mail][:bcc].present?
 
       if current_admin_user.user.present?
         @criterion_mail = current_admin_user.user.criterion_mails.build(params[:criterion_mail])
