@@ -92,13 +92,13 @@ $(document).ready(function() {
   $('#criterion_sms_message').on('keyup', function() {
     var msg_length = $(this).val().length
     var str = msg_length.toString();
-    str += ' / 262 characters';
+    str += ' / 240 characters';
 
     var counter = $(this).siblings('p.inline-hints');
     counter.text(str);
 
     var form = $(this).closest('form');
-    if (msg_length > 262) {
+    if (msg_length > 240) {
       counter.addClass('red');
       form.find('input[type="submit"]').prop('disabled', true)
     } else {

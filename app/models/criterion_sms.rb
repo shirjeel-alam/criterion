@@ -28,7 +28,7 @@ class CriterionSms < ActiveRecord::Base
 	before_create :associate_receiver
 	after_create :send_sms
 
-	validates :message, presence: true, length: { maximum: 262 }
+	validates :message, presence: true, length: { maximum: 240 }
 
   scope :sent, where(status: true)
   scope :failed, where(status: false)
