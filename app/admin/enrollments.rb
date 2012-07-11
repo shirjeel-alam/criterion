@@ -184,7 +184,7 @@ ActiveAdmin.register Enrollment do
     enrollment = Enrollment.find(params[:id])
     discount = params[:discount].to_i
     discount = nil if discount == 0
-    enrollment.apply_discount(discount)
+    enrollment.payments.due.update_all(discount: discount)
     flash[:notice] = 'Discount successfully set'
     redirect_to action: :show
   end

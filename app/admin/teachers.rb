@@ -74,7 +74,7 @@ ActiveAdmin.register Teacher do
         payment.period = payment.period.beginning_of_month
         payment
       end
-      result = temp_payments.group_by(&:period)
+      result = temp_payments.group_by(&:period).sort_by(&:first)
       
       table do
         thead do
