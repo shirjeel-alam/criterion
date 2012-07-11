@@ -14,7 +14,7 @@ class Student < ActiveRecord::Base
   has_many :enrollments, dependent: :destroy
   has_many :courses, through: :enrollments
   has_many :payments, through: :enrollments
-  has_many :session_students
+  has_many :session_students, dependent: :destroy
   has_many :sessions, through: :session_students
   has_many :registration_fees, through: :session_students
   has_many :phone_numbers, as: :contactable, dependent: :destroy
