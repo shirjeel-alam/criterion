@@ -11,13 +11,13 @@
 #
 
 class Teacher < ActiveRecord::Base
+  has_one :admin_user, as: :user, dependent: :destroy
   has_many :courses
   has_many :payments, through: :courses
   has_many :transactions, as: :payable, class_name: 'Payment', dependent: :destroy
   has_many :phone_numbers, as: :contactable, dependent: :destroy
   has_many :criterion_mails, as: :mailable
-  has_one :admin_user, as: :user, dependent: :destroy
-  has_many :received_messages, as: :receiver, class_name: 'CriterionSms'
+  has_many :received_messages, as: :receiver, class_name: 'CriterionSms', dependent: :destroy
   has_many :sent_messages, as: :sender, class_name: 'CriterionSms'
 
   accepts_nested_attributes_for :phone_numbers

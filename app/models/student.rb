@@ -11,6 +11,7 @@
 #
 
 class Student < ActiveRecord::Base
+  has_one :admin_user, as: :user, dependent: :destroy
   has_many :enrollments, dependent: :destroy
   has_many :courses, through: :enrollments
   has_many :payments, through: :enrollments
@@ -18,8 +19,7 @@ class Student < ActiveRecord::Base
   has_many :sessions, through: :session_students
   has_many :registration_fees, through: :session_students
   has_many :phone_numbers, as: :contactable, dependent: :destroy
-  has_one :admin_user, as: :user, dependent: :destroy
-  has_many :received_messages, as: :receiver, class_name: 'CriterionSms'
+  has_many :received_messages, as: :receiver, class_name: 'CriterionSms', dependent: :destroy
   
   accepts_nested_attributes_for :enrollments
   accepts_nested_attributes_for :phone_numbers
