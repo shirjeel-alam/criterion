@@ -32,7 +32,7 @@ class Payment < ActiveRecord::Base
   before_validation :check_appropriated_amount, on: :create, if: 'appropriated?'
   after_create :create_account_entry
   before_save :set_category
-  after_save :set_period
+  after_save :set_period, :update_monthly_report
 
   validates :amount, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :status, presence: true, inclusion: { in: [DUE, PAID, VOID, REFUNDED] }
@@ -342,5 +342,9 @@ class Payment < ActiveRecord::Base
     if payment_date.present? && period.blank?
       update_attribute(:period, payment_date)
     end
+  end
+
+  def update_monthly_report
+    CriterionMonthlyReport.find_or_initialize_by_report_month(period.beginning_of_month).save
   end
 end
