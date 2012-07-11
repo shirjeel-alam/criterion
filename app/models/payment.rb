@@ -345,6 +345,6 @@ class Payment < ActiveRecord::Base
   end
 
   def update_monthly_report
-    CriterionMonthlyReport.find_or_initialize_by_report_month(period.beginning_of_month).save
+    CriterionMonthlyReport.find_or_initialize_by_report_month(period.beginning_of_month).save if period.present?
   end
 end
