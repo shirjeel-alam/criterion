@@ -28,9 +28,7 @@ class CriterionSms < ActiveRecord::Base
 	before_create :associate_receiver
 	after_create :send_sms
 
-	validates :to, presence: true, numericality: true, length: { is: 11 }, format: { with: /^03\d{9}$/ }
 	validates :message, presence: true, length: { maximum: 262 }
-  validates_presence_of :receiver_id, :receiver_type
 
   scope :sent, where(status: true)
   scope :failed, where(status: false)
