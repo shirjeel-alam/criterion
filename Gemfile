@@ -8,6 +8,7 @@ gem 'airbrake'
 gem 'validates_timeliness'
 
 gem 'activeadmin'
+gem 'sass-rails'
 
 gem 'jquery-rails'
 gem 'best_in_place'
@@ -37,7 +38,6 @@ gem 'taps'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails'
   gem 'coffee-rails'
   gem 'uglifier'
 end
