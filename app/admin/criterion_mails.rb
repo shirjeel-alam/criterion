@@ -19,7 +19,7 @@ ActiveAdmin.register CriterionMail do
       truncate(mail.to)
     end
     column :subject
-    column :sender, do |mail|
+    column :sender do |mail|
       if mail.mailable.is_a?(Teacher)
         link_to(mail.mailable.name, admin_teacher_path(mail.mailable)) rescue nil
       else
