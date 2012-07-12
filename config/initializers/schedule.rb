@@ -20,3 +20,8 @@ scheduler.every '4h' do
 	Course.all.map(&:update_course)
 	Enrollment.all.map(&:update_enrollment)
 end
+
+scheduler.every '1w' do
+  CriterionSms.where('created_at < ?', Date.today.advance(weeks: -1).beginning_of_day).destroy_all
+  CriterionMail.where('created_at < ?', Date.today.advance(weeks: -1).beginning_of_day).destroy_all
+end
