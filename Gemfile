@@ -44,6 +44,7 @@ end
 
 group :development, :test do
   gem 'mysql2'
+  gem 'sqlite3'
   gem 'pry-rails'
   gem 'annotate', git: 'https://github.com/ctran/annotate_models.git'
 end

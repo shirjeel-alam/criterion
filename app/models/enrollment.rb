@@ -42,6 +42,7 @@ class Enrollment < ActiveRecord::Base
   scope :started_or_completed, where(status: [IN_PROGRESS, COMPLETED])
 
   delegate :end_date, to: :course
+  delegate :level, to: :course
 
   def set_status
     if course.not_started?

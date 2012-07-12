@@ -13,10 +13,10 @@ ActiveAdmin.register Enrollment do
     column 'ID', sortable: :id do |enrollment|
       link_to(enrollment.id, admin_enrollment_path(enrollment))
     end
-    column :student do |enrollment|
+    column :student, sortable: :student_id do |enrollment|
       enrollment.student.name rescue nil
     end
-    column :course do |enrollment|
+    column :course, sortable: :course_id do |enrollment|
       enrollment.course.name rescue nil
     end
     column :teacher do |enrollment|
