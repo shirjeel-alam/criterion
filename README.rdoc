@@ -1,0 +1,3 @@
+= Criterion Educational Institute Management System
+
+{<img src="https://codeclimate.com/badge.png" />}[https://codeclimate.com/github/shirjeel-alam/CriterionManagementSystem]
