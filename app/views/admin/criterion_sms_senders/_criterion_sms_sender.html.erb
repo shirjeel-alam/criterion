@@ -1,8 +1,8 @@
 <% scope ||= 'courses' %>
 
-<% if scope == 'courses' %>
-	<%= form_tag(new_admin_criterion_sm_path, :method => :get) do %>
-		<table border="0" cellspacing="0" cellpadding="0" class="index_table">
+<%= form_tag(new_admin_criterion_sm_path, :method => :get) do %>
+  <% if scope == 'courses' %>
+		<table class="index_table">
 			<thead>
 				<th><%= check_box_tag("mailer_all", 1, false) %></th>
 				<th>Course ID</th>
@@ -29,11 +29,8 @@
 				<% end %>
 			</tbody>
 		</table>
-		<%= submit_tag 'Send SMS' %>
-	<% end %>
-<% elsif scope == 'teachers' %>
-	<%= form_tag(new_admin_criterion_sm_path, :method => :get) do %>
-		<table border="0" cellspacing="0" cellpadding="0" class="index_table">
+  <% elsif scope == 'teachers' %>
+		<table class="index_table">
 			<thead>
 				<th><%= check_box_tag("mailer_all", 1, false) %></th>
 				<th>Teacher ID</th>
@@ -60,6 +57,32 @@
 				<% end %>
 			</tbody>
 		</table>
-		<%= submit_tag 'Send SMS' %>
-	<% end %>
-<% end %>	
+  <% elsif scope == 'due_payments' %>
+    <table class="index_table">
+      <thead>
+        <th><%= check_box_tag("mailer_all", 1, false) %></th>
+        <th>Payment ID</th>
+        <th>Course</th>
+        <th>Student</th>
+        <th>Period</th>
+        <th>Net Amount</th>
+      </thead>
+
+      <tbody>
+        <% flip = true %>
+        <% due_payments.order('amount desc').each_with_index do |payment, i| %>
+          <tr class="<%= flip ? 'odd' : 'even' %>">
+            <td><%= check_box_tag("payments[#{i}]", payment.id, false, :class => 'mailer') %></td>
+            <td><%= link_to(payment.id, admin_payment_path(payment)) %></td>
+            <td><%= link_to(payment.payable.course.name, admin_course_path(payment.payable.course)) rescue 'Registration Fee' %></td>
+            <td><%= link_to(payment.payable.student.name, admin_student_path(payment.payable.student)) %></td>
+            <td><%= payment.period_label %></td>
+            <td><%= number_to_currency(payment.net_amount, unit: 'Rs. ', precision: 0) %></td>
+          </tr>
+          <% flip = !flip %>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>	
+  <%= submit_tag 'Send SMS' %>
+<% end %>

@@ -72,7 +72,11 @@ ActiveAdmin.register CriterionSms do
         @teachers = Teacher.find(params[:teachers].collect(&:second))
         @courses = @teachers.collect(&:courses).flatten
         @numbers = (@teachers.collect { |teacher| teacher.phone_numbers.mobile.collect { |phone_number| phone_number.number } } + @courses.collect { |course| course.phone_numbers.collect(&:second) }).flatten
-        @criterion_sms = CriterionSms.new(to: @numbers )
+        @criterion_sms = CriterionSms.new(to: @numbers)
+      elsif params[:payments].present?
+        @payments = Payment.find(params[:payments].collect(&:second))
+        @numbers = @payments.collect { |payment| payment.payable.student.phone_numbers.mobile.collect(&:number) }.flatten
+        @criterion_sms = CriterionSms.new(to: @numbers)
       else
         @criterion_sms = current_admin_user.sent_messages.build
       end

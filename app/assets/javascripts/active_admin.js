@@ -58,7 +58,7 @@ $(document).ready(function() {
 
   /*** END ***/
 
-  /*** Criterion Mailer ***/
+  /*** Criterion Mailer && Criterion SMS Sender ***/
 
   $('#mailer_all').live('click', function() {
     if($(this).is(':checked')) {
@@ -87,7 +87,7 @@ $(document).ready(function() {
 
   /*** END ***/
 
-  /*** Criterion SMS Sender ***/
+  /*** Criterion SMS ***/
 
   $('#criterion_sms_message').on('keyup', function() {
     var msg_length = $(this).val().length
