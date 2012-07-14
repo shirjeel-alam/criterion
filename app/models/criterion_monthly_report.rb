@@ -24,7 +24,7 @@ class CriterionMonthlyReport < ActiveRecord::Base
   end
 
   def calc_revenue
-    payments(AccountEntry::CREDIT, [Payment::CASH, Payment::CHEQUE]).sum do |payment| 
+    payments(AccountEntry::CREDIT).sum do |payment| 
       if payment.payable.is_a?(Enrollment)
         (payment.net_amount * (1 - payment.payable.teacher.share)).round
       elsif payment.payable.is_a?(SessionStudent)
@@ -36,16 +36,16 @@ class CriterionMonthlyReport < ActiveRecord::Base
   end
 
   def calc_expenditure
-    payments(AccountEntry::DEBIT, [Payment::CASH, Payment::CHEQUE]).sum(:amount)
+    payments(AccountEntry::DEBIT).sum(:amount)
   end
 
   def calc_balance
     revenue - expenditure
   end
 
-  def payments(entry_type, payment_method)
+  def payments(entry_type)
     time_range = Range.new(report_month.beginning_of_month, report_month.end_of_month)
-    Payment.joins(:account_entries).where(period: time_range).where('account_entries.criterion_account_id = ? AND account_entries.entry_type = ? AND payments.payment_method IN (?)', CriterionAccount.criterion_account.id, entry_type, payment_method)
+    Payment.joins(:account_entries).where(period: time_range).where('account_entries.criterion_account_id = ? AND account_entries.entry_type = ?', CriterionAccount.criterion_account.id, entry_type)
   end
 
   ### View Helpers ###
