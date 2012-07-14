@@ -224,11 +224,11 @@ class Course < ActiveRecord::Base
   ### View Helpers ###
 
   def label 
-    "#{name} | #{teacher.name}"
+    "#{name} | #{session.label} | #{teacher.name}"
   end
 
   def title
-    "#{name} #{session.label rescue nil}"
+    "#{name} #{session.label}"
   end
 
   def level_label
