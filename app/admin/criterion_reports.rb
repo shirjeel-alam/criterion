@@ -72,8 +72,9 @@ ActiveAdmin.register CriterionReport do
 		end
 
 		panel 'Payments (Revenue)' do
-			table_for criterion_report.payments(AccountEntry::DEBIT, [Payment::CASH, Payment::CHEQUE]).order('payments.id') do |t|
+			table_for criterion_report.payments(AccountEntry::DEBIT, [Payment::CASH, Payment::CHEQUE]).order('payments.payment_date') do |t|
         t.column(:id) { |payment| link_to(payment.id, admin_payment_path(payment)) }
+        t.column(:date) { |payment| date_format(payment.payment_date) }
         t.column(:paid_by) do |payment|
         	if payment.payable.is_a?(Enrollment) || payment.payable.is_a?(SessionStudent)
 						link_to(payment.payable.student.name, admin_student_path(payment.payable.student)) rescue nil
@@ -92,8 +93,9 @@ ActiveAdmin.register CriterionReport do
 		end
 
 		panel 'Payments (Expenditure)' do
-			table_for criterion_report.payments(AccountEntry::CREDIT, [Payment::CASH]).order('payments.id') do |t|
+			table_for criterion_report.payments(AccountEntry::CREDIT, [Payment::CASH]).order('payments.payment_date') do |t|
         t.column(:id) { |payment| link_to(payment.id, admin_payment_path(payment)) }
+        t.column(:date) { |payment| date_format(payment.payment_date) }
         t.column(:paid_to) do |payment|
         	if payment.payable.is_a?(Enrollment) || payment.payable.is_a?(SessionStudent)
 						link_to(payment.payable.student.name, admin_student_path(payment.payable.student)) rescue nil
