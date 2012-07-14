@@ -18,7 +18,7 @@ ActiveAdmin.register Staff do
         'No Phone Numbers Present'
       end
     end
-    column 'Balance', sortable: :balance do |staff|
+    column 'Balance' do |staff|
       status_tag(number_to_currency(staff.balance, unit: 'Rs. ', precision: 0), staff.balance_tag) rescue nil
     end
 

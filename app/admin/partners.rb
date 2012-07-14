@@ -22,7 +22,7 @@ ActiveAdmin.register Partner do
         'No Phone Numbers Present'
       end
     end
-    column 'Balance', sortable: :balance do |partner|
+    column 'Balance' do |partner|
       status_tag(number_to_currency(partner.balance, unit: 'Rs. ', precision: 0), partner.balance_tag) rescue nil
     end
 

@@ -22,7 +22,7 @@ ActiveAdmin.register Teacher do
         'No Phone Numbers Present'
       end
     end
-    column 'Balance', sortable: :balance do |teacher|
+    column 'Balance' do |teacher|
       status_tag(number_to_currency(teacher.balance, unit: 'Rs. ', precision: 0), teacher.balance_tag) rescue nil
     end
 

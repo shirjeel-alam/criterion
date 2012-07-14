@@ -11,6 +11,7 @@
 
 class Staff < ActiveRecord::Base
   has_one :admin_user, as: :user, dependent: :destroy
+  has_one :criterion_account, through: :admin_user
 	has_many :transactions, as: :payable, class_name: 'Payment', dependent: :destroy
   has_many :phone_numbers, as: :contactable, dependent: :destroy
   has_many :criterion_mails, as: :mailable
@@ -29,9 +30,7 @@ class Staff < ActiveRecord::Base
 
   attr_accessor :admin_user_confirmation
 
-  def balance
-    criterion_account.balance
-  end
+  delegate :balance, to: :criterion_account
 
   def set_email
     self.email = "#{name.strip.gsub(' ', '.').downcase}@criterion.edu" unless email.present?
@@ -41,10 +40,6 @@ class Staff < ActiveRecord::Base
     admin_user_attributes = { email: email, password: AdminUser::DEFAULT_PASSWORD, role: AdminUser::ADMIN, user: self }
     admin_user_attributes.merge!(role: AdminUser::STAFF, status: AdminUser::DEACTIVE) if admin_user_confirmation == 'false'
     AdminUser.create!(admin_user_attributes) 
-  end
-
-  def criterion_account
-    admin_user.criterion_account
   end
 
   def update_admin_user_email
