@@ -138,7 +138,7 @@ $(document).ready(function() {
   /*** FancyBox ***/
 
   $('a.fancybox').fancybox({
-    'hideOnContentClick': false
+    'hideOnContentClick': false 
   });
 
   /*** END ***/

@@ -48,6 +48,16 @@ class CriterionMonthlyReport < ActiveRecord::Base
     Payment.joins(:account_entries).where(period: time_range).where('account_entries.criterion_account_id = ? AND account_entries.entry_type = ?', CriterionAccount.criterion_account.id, entry_type)
   end
 
+  ### Class Methods ###
+
+  def self.balance
+    CriterionMonthlyReport.sum(:balance)
+  end
+
+  def self.balance_tag
+    self.balance >= 0 ? :ok : :error
+  end
+
   ### View Helpers ###
 
   def balance_tag
