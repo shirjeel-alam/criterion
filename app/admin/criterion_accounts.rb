@@ -59,7 +59,7 @@ ActiveAdmin.register CriterionAccount do
       table_for criterion_account.account_entries do |t|
         t.column(:id) { |account_entry| link_to(account_entry.id, admin_account_entry_path(account_entry)) }
         t.column(:date) { |account_entry| date_format(account_entry.created_at) } 
-        t.column(:particular) { |account_entry| account_entry.payment.particular }
+        t.column(:particular) { |account_entry| criterion_account.criterion_account? ? account_entry.payment.particular_extended : account_entry.payment.particular }
         t.column(:payment) { |account_entry| link_to(account_entry.payment_id, admin_payment_path(account_entry.payment)) }
         t.column(:debit) { |account_entry| number_to_currency(account_entry.amount, unit: 'Rs. ', precision: 0) if account_entry.debit? }
         t.column(:credit) { |account_entry| number_to_currency(account_entry.amount, unit: 'Rs. ', precision: 0) if account_entry.credit? }

@@ -319,13 +319,33 @@ class Payment < ActiveRecord::Base
 
   def particular
     if payable.is_a?(Enrollment)
-      "#{payable.student.name} (#{payable.student.id})"
+      "#{payable.student.name}, #{payable.course.name}"
     elsif payable.is_a?(SessionStudent)
-      "#{payable.student.name} (#{payable.student.id}), Registration"
+      "#{payable.student.name}, Registration"
     elsif payable.is_a?(Teacher) || payable.is_a?(Staff) || payable.is_a?(Partner)
-      "#{payable.name} (#{payable.id})"
-    else # Must be an expenditure
-      category.try(:name_label)
+      if credit?
+        additional_info.present? ? additional_info : 'Widthdrawal'
+      else debit?
+        additional_info.present? ? additional_info : 'Deposit' 
+      end
+    else
+      "#{category.try(:name_label)}, #{period_label}"
+    end rescue nil
+  end
+
+  def particular_extended
+    if payable.is_a?(Enrollment)
+      "#{payable.student.name}, #{payable.course.name}"
+    elsif payable.is_a?(SessionStudent)
+      "#{payable.student.name}, Registration"
+    elsif payable.is_a?(Teacher) || payable.is_a?(Staff) || payable.is_a?(Partner)
+      if credit?
+        additional_info.present? ? "#{additional_info}, #{payable.name}" : 'Widthdrawal'
+      else debit?
+        additional_info.present? ? "#{additional_info}, #{payable.name}" : 'Deposit' 
+      end
+    else
+      "#{category.try(:name_label)}, #{period_label}"
     end rescue nil
   end
 
