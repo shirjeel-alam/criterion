@@ -74,7 +74,10 @@ ActiveAdmin.register CriterionSms do
         @numbers = (@teachers.collect { |teacher| teacher.phone_numbers.mobile.collect { |phone_number| phone_number.number } } + @courses.collect { |course| course.phone_numbers.collect(&:second) }).flatten
         @criterion_sms = CriterionSms.new(to: @numbers)
       elsif params[:payments].present?
-        @payments = Payment.find(params[:payments].collect(&:second))
+        @registration_fee = params[:payments].delete :registration_fee
+        @courses = params[:payments].collect { |payment| payment.second.to_i }
+        @payments = @registration_fee.present? ? Payment.all_due_fees(Date.today) : Payment.due_fees(Date.today)
+        @payments.reject! { |payment| payment unless @courses.include?((payment.payable.course_id rescue nil)) || payment.period.blank? }
         @numbers = @payments.collect { |payment| payment.payable.student.phone_numbers.mobile.collect(&:number) }.flatten
         @criterion_sms = CriterionSms.new(to: @numbers)
       else

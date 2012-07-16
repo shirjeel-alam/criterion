@@ -47,6 +47,8 @@ class Course < ActiveRecord::Base
   scope :completed, where(status: COMPLETED)
   scope :cancelled, where(status: CANCELLED)
   scope :started_or_completed, where(status: [IN_PROGRESS, COMPLETED])
+
+  scope :with_due_fees, lambda { |date| joins(:payments).where('payments.status = ? AND payments.period <= ?', Payment::DUE, date) }
   
   def update_status
     if start_date.blank? || start_date > Date.today

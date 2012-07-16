@@ -12,11 +12,11 @@ ActiveAdmin.register CriterionSms, as: 'Criterion SMS Sender' do
 	end
 
   scope :due_payments do |payments|
-    Payment.all_due_fees(Date.today)
+    Course.order('id desc').with_due_fees(Date.today).select('distinct(courses.id)')
   end
 
 	index do 
-		div render partial: 'criterion_sms_sender', locals: { courses: Course.order('id desc'), teachers: Teacher.order('id desc'), due_payments: Payment.all_due_fees(Date.today), scope: params[:scope] }
+		div render partial: 'criterion_sms_sender', locals: { courses: Course.order('id desc'), teachers: Teacher.order('id desc'), due_payment_courses: Course.order('id desc').with_due_fees(Date.today).uniq, scope: params[:scope] }
 	end
 
 	controller do
