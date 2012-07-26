@@ -6,6 +6,7 @@
 //= require tinymce-jquery
 //= require chosen-jquery
 //= require fancybox
+//= require moment
 
 $(document).ready(function() {
 
@@ -142,4 +143,20 @@ $(document).ready(function() {
   });
 
   /*** END ***/
+
+  /*** Current Date and Time ***/
+
+  setInterval(function() {
+    updateTime();  
+  }, 1000);
+
+  $('#titlebar_right').prepend("<h3></h3>");
+  updateTime();
+
+  /*** END ***/
 });
+
+function updateTime() {
+  var currentTime = moment().format('dddd, MMMM Do YYYY, h:mm:ss a');
+  $('#titlebar_right > h3').html(currentTime);
+}

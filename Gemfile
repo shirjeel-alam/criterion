@@ -15,6 +15,7 @@ gem 'best_in_place'
 gem 'tinymce-rails'
 gem 'chosen-rails'
 gem 'fancybox-rails'
+gem 'momentjs-rails'
 
 gem 'rufus-scheduler'
 gem 'googlecharts'
