@@ -154,9 +154,26 @@ $(document).ready(function() {
   updateTime();
 
   /*** END ***/
+
+  /*** Menu Ordering ***/
+
+  $('#criterion').swap($('#more_menus'));  
+  $('#account_actions').swap($('#criterion'));
+
+  /*** END ***/
 });
 
 function updateTime() {
   var currentTime = moment().format('dddd, MMMM Do YYYY, h:mm:ss a');
   $('#titlebar_right > h3').html(currentTime);
 }
+
+jQuery.fn.swap = function(b){
+  b = jQuery(b)[0];
+  var a = this[0];
+  var t = a.parentNode.insertBefore(document.createTextNode(''), a);
+  b.parentNode.insertBefore(a, b);
+  t.parentNode.insertBefore(b, t);
+  t.parentNode.removeChild(t);
+  return this;
+};

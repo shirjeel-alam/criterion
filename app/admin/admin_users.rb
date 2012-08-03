@@ -45,8 +45,23 @@ ActiveAdmin.register AdminUser do
     f.buttons
   end
 
+  member_action :change_password, method: :get do
+    @admin_user = AdminUser.find(params[:id])
+  end
+
+  member_action :update_password, method: :put do
+    @admin_user = AdminUser.find(params[:id])
+    if @admin_user.update_with_password(params[:admin_user])
+      flash[:notice] = 'Password changed successfully'
+      sign_in @admin_user, bypass: true
+      redirect_to admin_dashboard_path  
+    else
+      render :change_password
+    end
+  end
+
   controller do
-    before_filter :check_authorization
+    before_filter :check_authorization, except: [:change_password, :update_password]
 
     def check_authorization
       if current_admin_user.all_other?
