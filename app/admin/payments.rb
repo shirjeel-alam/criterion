@@ -3,10 +3,6 @@ ActiveAdmin.register Payment do
 
   filter :id
   filter :amount
-  # filter :status, :as => :select, :collection => lambda { Payment.statuses }
-  # filter :payment_type, :as => :select, :collection => lambda { Payment.payment_types }
-  # filter :payment_method, :as => :select, :collection => lambda { Payment.payment_methods }
-  # filter :category, :as => :select, :collection => lambda { Category.categories }
 
   scope :all
   scope :paid
@@ -54,8 +50,6 @@ ActiveAdmin.register Payment do
     column :category, sortable: :category_id do |payment|
       payment.category.name_label rescue nil
     end
-
-    # default_actions
   end
 
   form partial: 'payment_form'
@@ -169,7 +163,7 @@ ActiveAdmin.register Payment do
 
     def check_authorization
       if current_admin_user.admin?
-        if %w[index edit update destroy].include?(action_name)
+        if %w[index destroy].include?(action_name)
           flash[:error] = 'You are not authorized to perform this action'
           redirect_to_back
         end
