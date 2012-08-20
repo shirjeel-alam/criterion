@@ -73,7 +73,7 @@ ActiveAdmin.register Course do
       date_format(course.end_date)
     end
     column :no_of_enrollments do |course|
-      course.enrollments.count
+      course.enrollments.active.count
     end
     
     default_actions
@@ -88,7 +88,7 @@ ActiveAdmin.register Course do
         row(:teacher) { link_to(course.teacher.name, admin_teacher_path(course.teacher)) }
         row(:session) { link_to(course.session.label, admin_session_path(course.session)) rescue nil }
         row(:monthly_fee) { course.monthly_fee }
-        row(:no_of_enrollments) { course.enrollments.count }
+        row(:no_of_enrollments) { course.enrollments.active.count }
         row(:status) { status_tag(course.status_label, course.status_tag) }
         row(:start_date) { date_format(course.start_date) }
         row(:end_date) { date_format(course.end_date) }

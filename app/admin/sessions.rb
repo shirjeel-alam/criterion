@@ -51,7 +51,7 @@ ActiveAdmin.register Session do
         t.column(:id) { |course| link_to(course.id, admin_course_path(course)) }
         t.column(:name) { |course| link_to(course.name, admin_course_path(course)) }
         t.column(:teacher) { |course| link_to(course.teacher.name, admin_teacher_path(course.teacher)) }
-        t.column(:enrollments) { |course| course.enrollments.count.to_s }
+        t.column(:enrollments) { |course| course.enrollments.active.count }
       end
     end
 

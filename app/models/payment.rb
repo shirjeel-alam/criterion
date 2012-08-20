@@ -115,6 +115,10 @@ class Payment < ActiveRecord::Base
     category == Category.appropriated
   end
 
+  def expenditure?
+    payable_id.blank? && payment_type == CREDIT && payment_method.include?([CASH, CHEQUE])
+  end
+
   def +(payment)
     if payment.is_a?(Payment)
       Payment.new(amount: (self.amount.to_i + payment.amount.to_i), discount: (self.discount.to_i + payment.discount.to_i))
@@ -324,7 +328,7 @@ class Payment < ActiveRecord::Base
       "#{payable.student.name}, Registration"
     elsif payable.is_a?(Teacher) || payable.is_a?(Staff) || payable.is_a?(Partner)
       if credit?
-        additional_info.present? ? additional_info : 'Widthdrawal'
+        additional_info.present? ? additional_info : 'Withdrawal'
       else debit?
         additional_info.present? ? additional_info : 'Deposit' 
       end
@@ -340,7 +344,7 @@ class Payment < ActiveRecord::Base
       "#{payable.student.name}, Registration"
     elsif payable.is_a?(Teacher) || payable.is_a?(Staff) || payable.is_a?(Partner)
       if credit?
-        additional_info.present? ? "#{additional_info}, #{payable.name}" : 'Widthdrawal'
+        additional_info.present? ? "#{additional_info}, #{payable.name}" : 'Withdrawal'
       else debit?
         additional_info.present? ? "#{additional_info}, #{payable.name}" : 'Deposit' 
       end

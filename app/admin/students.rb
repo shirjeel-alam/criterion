@@ -27,7 +27,7 @@ ActiveAdmin.register Student do
       attributes_table_for student do
         row(:id) { student.id }
         row(:name) { student.name }
-        row(:email) { student.email }
+        row(:email) { best_in_place_if((current_admin_user.super_admin_or_partner? || current_admin_user.admin?), student, :email, type: :input, path: [:admin, student]) }
         row(:address) { student.address }
         row(:phone_numbers) do
           if student.phone_numbers.present? 
