@@ -109,7 +109,7 @@ ActiveAdmin.register Teacher do
               tr class: "#{flip ? 'odd' : 'even'} content" do
                 td link_to(payment.id, admin_payment_path(payment))
                 td payment.period_label
-                td link_to(payment.payable.student.name, admin_course_path(payment.payable.student))
+                td link_to(payment.payable.student.name, admin_student_path(payment.payable.student))
                 td link_to(payment.payable.course.name, admin_course_path(payment.payable.course))
                 td number_to_currency(payment.net_amount, unit: 'Rs. ', precision: 0)
                 td status_tag(payment.status_label, payment.status_tag)
