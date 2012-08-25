@@ -93,7 +93,7 @@ ActiveAdmin.register Teacher do
           flip = true
           result.each do |cumulative_payment|
             tr class: "#{flip ? 'odd' : 'even'} header" do
-              cumulative_amount = cumulative_payment.second.sum(&:net_amount)
+              cumulative_amount = cumulative_payment.second.sum { |p| p.due? ? p.net_amount : 0 }
 
               td image_tag('down_arrow.png')
               td cumulative_payment.first.strftime('%B %Y')
