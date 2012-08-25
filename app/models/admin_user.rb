@@ -19,6 +19,7 @@
 #  user_id                :integer
 #  user_type              :string(255)
 #  status                 :boolean          default(TRUE)
+#  signed_in              :boolean          default(FALSE)
 #
 
 class AdminUser < ActiveRecord::Base
@@ -40,6 +41,7 @@ class AdminUser < ActiveRecord::Base
   after_create :create_criterion_account
 
   scope :admin, where(role: [ADMIN, SUPER_ADMIN, PARTNER])
+  scope :signed_in, where(signed_in: true)
    
   def password_required?
     new_record? ? false : super
