@@ -116,7 +116,7 @@ class Payment < ActiveRecord::Base
   end
 
   def expenditure?
-    payable_id.blank? && payment_type == CREDIT && payment_method.include?([CASH, CHEQUE])
+    payable_id.blank? && payment_type == CREDIT && payment_method.include?([CASH, CHEQUE]) rescue false
   end
 
   def +(payment)
