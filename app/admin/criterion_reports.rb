@@ -109,7 +109,7 @@ ActiveAdmin.register CriterionReport do
         end
         t.column(:category) { |payment| payment.category.name_label rescue nil }
         t.column(:payment_method) { |payment| status_tag(payment.payment_method_label, payment.payment_method_tag) }
-        t.column(:amount) { |payment| number_to_currency(payment.amount, unit: 'Rs. ', precision: 0) }
+        t.column(:amount) { |payment| number_to_currency(payment.net_amount, unit: 'Rs. ', precision: 0) }
       end
 		end
 

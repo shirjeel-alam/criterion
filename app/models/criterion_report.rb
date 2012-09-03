@@ -44,7 +44,7 @@ class CriterionReport < ActiveRecord::Base
 	end
 
 	def calc_expenditure
-    payments(AccountEntry::CREDIT, [Payment::CASH]).sum(:amount)
+    payments(AccountEntry::CREDIT, [Payment::CASH]).collect(&:net_amount).sum
 	end
 
 	def calc_balance
