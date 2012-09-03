@@ -198,10 +198,14 @@ ActiveAdmin.register Enrollment do
     span link_to('Set Discount', '#set_discount', class: 'fancybox')
     span link_to('Refresh Enrollment', refresh_admin_enrollment_path(enrollment), method: :put)
 
+    if current_admin_user.super_admin_or_partner?
+      span link_to('Delete Enrollment', admin_enrollment_path(enrollment), method: :delete, data: { confirm: 'Are you sure?'})
+    end
+
     if enrollment.not_started?
-      span link_to('Start Enrollment', start_admin_enrollment_path(enrollment), method: :put, confirm: 'Are you sure?')
+      span link_to('Start Enrollment', start_admin_enrollment_path(enrollment), method: :put, data: { confirm: 'Are you sure?'})
     elsif enrollment.started?
-      span link_to('Cancel Enrollment', cancel_admin_enrollment_path(enrollment), method: :put, confirm: 'Are you sure?')
+      span link_to('Cancel Enrollment', cancel_admin_enrollment_path(enrollment), method: :put, data: { confirm: 'Are you sure?'})
     end
   end
 

@@ -11,9 +11,10 @@ ActiveAdmin.register Student do
       link_to(student.id, admin_student_path(student))
     end
     column :name
-    column :email
-    column 'Address', sortable: :address do |student|
-      student.address_label
+    column 'Active Enrollment(s)' do |student|
+      ul do
+        student.enrollments.active.each { |enrollment| li enrollment.course.title }
+      end if student.enrollments.active.present?
     end
     column 'Contact Number' do |student|
       student.phone_numbers.each { |number| div number.label } if student.phone_numbers.present?
@@ -172,7 +173,7 @@ ActiveAdmin.register Student do
       sessions.each do |session|
         panel "#{Session.find(session.first).title}" do
           start_date = session.second.collect(&:start_date).min
-          end_date = session.second.collect(&:end_date).min
+          end_date = session.second.collect(&:end_date).max
           months = months_between(start_date, end_date)
           table_for session.second do |t|
             t.column(:course) { |enrollment| link_to(enrollment.course.name, admin_course_path(enrollment.course)) }
