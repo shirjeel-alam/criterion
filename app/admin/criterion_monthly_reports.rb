@@ -54,11 +54,9 @@ ActiveAdmin.register CriterionMonthlyReport do
         end
         t.column(:category) { |payment| payment.category.name_label rescue nil }
         t.column(:payment_method) { |payment| status_tag(payment.payment_method_label, payment.payment_method_tag) }
-        t.column(:net_amount) do |payment|
+        t.column(:amount) do |payment|
           if payment.payable.is_a?(Enrollment)
             amount = (payment.net_amount * (1 - payment.payable.teacher.share)).round
-          elsif payment.payable.is_a?(SessionStudent)
-            amount = payment.net_amount
           else
             amount = payment.net_amount
           end
@@ -84,7 +82,14 @@ ActiveAdmin.register CriterionMonthlyReport do
         end
         t.column(:category) { |payment| payment.category.name_label rescue nil }
         t.column(:payment_method) { |payment| status_tag(payment.payment_method_label, payment.payment_method_tag) }
-        t.column(:amount) { |payment| number_to_currency(payment.amount, unit: 'Rs. ', precision: 0) }
+        t.column(:amount) do |payment|
+          if payment.payable.is_a?(Enrollment)
+            amount = (payment.net_amount * (1 - payment.payable.teacher.share)).round
+          else
+            amount = payment.net_amount
+          end
+          number_to_currency(amount, unit: 'Rs. ', precision: 0)
+        end
       end
     end
   end
