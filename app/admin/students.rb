@@ -106,8 +106,8 @@ ActiveAdmin.register Student do
                 td link_to(payment.id, admin_payment_path(payment))
                 td payment.period_label
                 td link_to(payment.payable.course.name, admin_course_path(payment.payable.course))
-                td number_to_currency(best_in_place_if((current_admin_user.super_admin_or_partner? || current_admin_user.admin?) && payment.due?, payment, :amount, type: :input, path: [:admin, payment]), unit: 'Rs. ', precision: 0)
-                td number_to_currency(best_in_place_if((current_admin_user.super_admin_or_partner? || current_admin_user.admin?) && payment.due?, payment, :discount, type: :input, path: [:admin, payment]), unit: 'Rs. ', precision: 0)
+                td number_to_currency(best_in_place_if(current_admin_user.super_admin_or_partner? || (current_admin_user.admin? && payment.due?) , payment, :amount, type: :input, path: [:admin, payment]), unit: 'Rs. ', precision: 0)
+                td number_to_currency(best_in_place_if(current_admin_user.super_admin_or_partner? || (current_admin_user.admin? && payment.due?) , payment, :discount, type: :input, path: [:admin, payment]), unit: 'Rs. ', precision: 0)
                 td number_to_currency(payment.net_amount, unit: 'Rs. ', precision: 0)
                 td status_tag(payment.status_label, payment.status_tag)
                 td do
@@ -117,6 +117,8 @@ ActiveAdmin.register Student do
                       li span link_to('Void Payment', void_admin_payment_path(payment), method: :put, confirm: 'Are you sure?')
                     elsif payment.paid?
                       li span link_to('Refund Payment', refund_admin_payment_path(payment), method: :put, confirm: 'Are you sure?')
+                    elsif payment.refunded?
+                      li span link_to('Make Payment', pay_admin_payment_path(payment))
                     end
                   end
                 end
