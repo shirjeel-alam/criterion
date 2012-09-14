@@ -91,32 +91,62 @@ ActiveAdmin.register Teacher do
         end
         
         tbody do
-          flip = true
+          flip = false
           result.each do |cumulative_payment|
-            tr class: "#{flip ? 'odd' : 'even'} header" do
-              cumulative_amount = cumulative_payment.second.sum { |p| p.due? ? p.net_amount : 0 }
+            flip = !flip
+            tr class: "#{flip ? 'odd' : 'even'} nested_header" do
+              session_cumulative_amount = cumulative_payment.second.sum { |p| p.due? ? p.net_amount : 0 }
 
               td image_tag('down_arrow.png')
               td cumulative_payment.first.strftime('%B %Y')
               td nil
               td nil
               td '-'
-              td status_tag(cumulative_amount > 0 ? 'Due' : 'Paid', cumulative_amount > 0 ? :error : :ok)
-              td status_tag(number_to_currency(cumulative_amount * teacher.share, unit: 'Rs. ', precision: 0), :warning)
+              td status_tag(session_cumulative_amount > 0 ? 'Due' : 'Paid', session_cumulative_amount > 0 ? :error : :ok)
+              td status_tag(number_to_currency(session_cumulative_amount * teacher.share, unit: 'Rs. ', precision: 0), :warning)
             end
-            
-            flip = !flip
-            cumulative_payment.second.each do |payment|
-              tr class: "#{flip ? 'odd' : 'even'} content" do
-                td link_to(payment.id, admin_payment_path(payment))
+
+            cumulative_payment.second.group_by { |p| p.payable.course.name }.sort_by(&:first).each do |course_payment|
+              flip = !flip
+              tr class: "#{flip ? 'odd' : 'even'} header" do
+                course_cumulative_amount = course_payment.second.sum { |p| p.due? ? p.net_amount : 0 }
+                payment = course_payment.second.first
+
+                td image_tag('down_arrow.png')
                 td payment.period_label
-                td link_to(payment.payable.student.name, admin_student_path(payment.payable.student))
+                td nil
                 td link_to(payment.payable.course.name, admin_course_path(payment.payable.course))
-                td number_to_currency(payment.net_amount, unit: 'Rs. ', precision: 0)
-                td status_tag(payment.status_label, payment.status_tag)
-                td number_to_currency(payment.net_amount * teacher.share, unit: 'Rs. ', precision: 0)
+                td '-'
+                td status_tag(course_cumulative_amount > 0 ? 'Due' : 'Paid', course_cumulative_amount > 0 ? :error : :ok)
+                td status_tag(number_to_currency(course_cumulative_amount * teacher.share, unit: 'Rs. ', precision: 0), :warning)
+              end
+
+              flip = !flip
+              course_payment.second.each do |payment|
+                tr class: "#{flip ? 'odd' : 'even'} content" do
+                  td link_to(payment.id, admin_payment_path(payment))
+                  td payment.period_label
+                  td link_to(payment.payable.student.name, admin_student_path(payment.payable.student))
+                  td link_to(payment.payable.course.name, admin_course_path(payment.payable.course))
+                  td number_to_currency(payment.net_amount, unit: 'Rs. ', precision: 0)
+                  td status_tag(payment.status_label, payment.status_tag)
+                  td number_to_currency(payment.net_amount * teacher.share, unit: 'Rs. ', precision: 0)
+                end
               end
             end
+            
+            # flip = !flip
+            # cumulative_payment.second.each do |payment|
+            #   tr class: "#{flip ? 'odd' : 'even'} content" do
+            #     td link_to(payment.id, admin_payment_path(payment))
+            #     td payment.period_label
+            #     td link_to(payment.payable.student.name, admin_student_path(payment.payable.student))
+            #     td link_to(payment.payable.course.name, admin_course_path(payment.payable.course))
+            #     td number_to_currency(payment.net_amount, unit: 'Rs. ', precision: 0)
+            #     td status_tag(payment.status_label, payment.status_tag)
+            #     td number_to_currency(payment.net_amount * teacher.share, unit: 'Rs. ', precision: 0)
+            #   end
+            # end
           end
         end
       end
