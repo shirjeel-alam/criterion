@@ -66,6 +66,7 @@ ActiveAdmin.register Teacher do
           end
         end
         row(:balance) { status_tag(number_to_currency(teacher.balance, unit: 'Rs. ', precision: 0), teacher.balance_tag) rescue nil }
+        row(:active_enrollments) { teacher.enrollments.active.count }
       end
     end
 

@@ -14,6 +14,7 @@ class Teacher < ActiveRecord::Base
   has_one :admin_user, as: :user, dependent: :destroy
   has_one :criterion_account, through: :admin_user
   has_many :courses
+  has_many :enrollments, through: :courses
   has_many :payments, through: :courses
   has_many :transactions, as: :payable, class_name: 'Payment', dependent: :destroy
   has_many :phone_numbers, as: :contactable, dependent: :destroy
