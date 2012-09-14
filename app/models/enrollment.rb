@@ -72,6 +72,7 @@ class Enrollment < ActiveRecord::Base
 
   def update_discount_applied
     self.discount_applied = payments.where('discount IS NOT NULL').present?
+    true
   end
   
   def first_month_payment
