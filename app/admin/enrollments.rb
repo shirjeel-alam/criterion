@@ -8,6 +8,8 @@ ActiveAdmin.register Enrollment do
   scope :in_progress
   scope :completed
   scope :cancelled
+  scope :discount_given
+  scope :no_discount
   
   index do
     column 'ID', sortable: :id do |enrollment|

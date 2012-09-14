@@ -2,14 +2,15 @@
 #
 # Table name: enrollments
 #
-#  id              :integer          not null, primary key
-#  student_id      :integer
-#  course_id       :integer
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  status          :integer
-#  enrollment_date :date
-#  start_date      :date
+#  id               :integer          not null, primary key
+#  student_id       :integer
+#  course_id        :integer
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  status           :integer
+#  enrollment_date  :date
+#  start_date       :date
+#  discount_applied :boolean          default(TRUE)
 #
 
 class Enrollment < ActiveRecord::Base  
@@ -32,7 +33,7 @@ class Enrollment < ActiveRecord::Base
   
   after_create :associate_session
 
-  before_save :update_status
+  before_save :update_status, :update_discount_applied
   after_save :create_payments, :evaluate_discount
   
   scope :not_started, where(status: NOT_STARTED)
@@ -42,6 +43,8 @@ class Enrollment < ActiveRecord::Base
   scope :started_or_completed, where(status: [IN_PROGRESS, COMPLETED])
 
   scope :active, where(status: [NOT_STARTED, IN_PROGRESS])
+  scope :discount_given, where(discount_applied: true)
+  scope :no_discount, where(discount_applied: false)
 
   delegate :end_date, to: :course
   delegate :level, to: :course
@@ -65,6 +68,10 @@ class Enrollment < ActiveRecord::Base
       self.start_date = start_date < course.start_date ? course.start_date : start_date
       self.status = start_date > Date.today ? NOT_STARTED : IN_PROGRESS unless completed? || cancelled?
     end
+  end
+
+  def update_discount_applied
+    self.discount_applied = payments.where('discount IS NOT NULL').present?
   end
   
   def first_month_payment
@@ -118,6 +125,7 @@ class Enrollment < ActiveRecord::Base
     discountable_payments.each do |payment|
       payment.update_attribute(:discount, discount)
     end
+    self.save
   end
   
   def associate_session

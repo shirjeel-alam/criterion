@@ -45,18 +45,13 @@ class Student < ActiveRecord::Base
     
     same_level_enrollments = session_enrollments.group_by(&:level)
     same_level_enrollments.each do |same_level_enrollment|
-      discount = case same_level_enrollment.second.count
-      when 0, 1
-        nil
-      when 2
-        250
-      else
-        500
-      end
+      give_discount = same_level_enrollment.second.count > 1
 
-      same_level_enrollment.second.each do |enrollment|
-        enrollment.apply_discount(discount)
-        session_enrollments - [enrollment]
+      if give_discount
+        same_level_enrollment.second.each do |enrollment|
+          enrollment.apply_discount(250) unless enrollment.discount_applied
+          session_enrollments - [enrollment]
+        end
       end
     end
 
@@ -64,8 +59,8 @@ class Student < ActiveRecord::Base
     same_teacher_enrollments.each do |same_teacher_enrollment|
       levels = same_teacher_enrollment.second.collect(&:level)
       if levels.count > 1 && levels.include?(Course::AS_LEVEL) && levels.include?(Course::A2_LEVEL)
-        same_teacher_enrollment.second.detect { |enrollment| enrollment.course.level == Course::AS_LEVEL }.apply_discount(250)
-        same_teacher_enrollment.second.detect { |enrollment| enrollment.course.level == Course::A2_LEVEL }.apply_discount(250)
+        same_teacher_enrollment.second.detect { |enrollment| enrollment.course.level == Course::AS_LEVEL && !enrollment.discount_applied }.apply_discount(250) rescue nil
+        same_teacher_enrollment.second.detect { |enrollment| enrollment.course.level == Course::A2_LEVEL && !enrollment.discount_applied }.apply_discount(250) rescue nil
       end
     end
   end
