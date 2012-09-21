@@ -122,7 +122,8 @@ module ActiveAdmin
               script :src => javascript_path(path), :type => "text/javascript"
             end
             text_node csrf_meta_tag
-            text_node '<script type="text/javascript">var envoSn=86562;var envProtoType = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cscript src=\'" + envProtoType + "d.envolve.com/env.nocache.js\' type=\'text/javascript\'%3E%3C/script%3E"));</script>'.html_safe
+            text_node(envolve_chat(current_admin_user.try(:user)).html_safe)
+            # text_node '<script type="text/javascript">var envoSn=86562;var envProtoType = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cscript src=\'" + envProtoType + "d.envolve.com/env.nocache.js\' type=\'text/javascript\'%3E%3C/script%3E"));</script>'.html_safe
           end
         end
 

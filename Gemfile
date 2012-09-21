@@ -1,13 +1,12 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.2.7'
-gem 'therubyracer'
+gem 'rails', '3.2.8'
 
 gem 'faker'
 gem 'airbrake'
 gem 'validates_timeliness'
 
-gem 'activeadmin'
+gem 'activeadmin', '0.4.4'
 gem 'sass-rails'
 
 gem 'jquery-rails'
@@ -19,6 +18,7 @@ gem 'momentjs-rails'
 
 gem 'rufus-scheduler'
 gem 'googlecharts'
+gem 'ruby-hmac'
 
 gem 'thin'
 

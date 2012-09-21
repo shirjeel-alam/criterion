@@ -1,3 +1,5 @@
+require 'envolve_chat'
+
 module ApplicationHelper
   def date_format(date, month_and_year_only = false)
     if month_and_year_only
@@ -21,5 +23,20 @@ module ApplicationHelper
     end
     months << end_date unless (start_date.beginning_of_month == end_date.beginning_of_month || months.last.beginning_of_month == end_date.beginning_of_month)
     months      
+  end
+
+  def separate_name(user)
+    name_separated = user.name.split(' ')
+    last_name = name_separated.pop
+    [name_separated.join(' '), last_name]
+  end
+
+  def envolve_chat(user)
+    if user.present?
+      first_name, last_name = separate_name(user)
+      EnvolveChat::ChatRenderer.get_html('86562-N4k0vDzds4NR1wGKq8G0eY20gfPDO9DD', first_name: first_name, last_name: last_name, is_admin: user.admin_user.super_admin_or_partner?, groups: [{id: 'criterion', name: 'Criterion'}])
+    else
+      EnvolveChat::ChatRenderer.get_html('86562-N4k0vDzds4NR1wGKq8G0eY20gfPDO9DD', first_name: 'Shirjeel', last_name: 'Alam', is_admin: true, groups: [{id: 'criterion', name: 'Criterion'}])
+    end
   end
 end
