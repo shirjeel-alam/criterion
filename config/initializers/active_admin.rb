@@ -103,3 +103,30 @@ ActiveAdmin.setup do |config|
   #   config.register_javascript 'my_javascript.js'
   #   config.register_javascript 'application.js'
 end
+
+module ActiveAdmin
+  module Views
+    module Pages
+      class Base < Arbre::HTML::Document
+
+        alias_method :original_build_active_admin_head, :build_active_admin_head unless method_defined?(:original_build_active_admin_head)
+
+        def build_active_admin_head
+          within @head do
+            insert_tag Arbre::HTML::Title, [title, render_or_call_method_or_proc_on(self, active_admin_application.site_title)].join(" | ")
+            active_admin_application.stylesheets.each do |style|
+              text_node(stylesheet_link_tag(style.path, style.options.dup).html_safe)
+            end
+
+            active_admin_application.javascripts.each do |path|
+              script :src => javascript_path(path), :type => "text/javascript"
+            end
+            text_node csrf_meta_tag
+            text_node '<script type="text/javascript">var envoSn=86562;var envProtoType = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cscript src=\'" + envProtoType + "d.envolve.com/env.nocache.js\' type=\'text/javascript\'%3E%3C/script%3E"));</script>'.html_safe
+          end
+        end
+
+      end
+    end
+  end
+end
