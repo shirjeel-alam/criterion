@@ -1,7 +1,7 @@
 ActiveAdmin.register CriterionAccount do
   menu parent: 'Criterion', priority: 2, if: proc { current_admin_user.super_admin_or_partner? }
 
-  actions :index, :show
+  actions :index, :show, :edit, :update
 
   index do
   	column 'ID', sortable: :id do |account|
@@ -84,6 +84,14 @@ ActiveAdmin.register CriterionAccount do
     end if criterion_account.account_entries.present?
 
     active_admin_comments
+  end
+
+  form do |f|
+    f.inputs do
+      f.input :initial_balance
+    end
+
+    f.buttons
   end
 
   action_item only: :show do
