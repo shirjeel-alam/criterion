@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120914050225) do
+ActiveRecord::Schema.define(:version => 20121009124222) do
 
   create_table "account_entries", :force => true do |t|
     t.integer  "criterion_account_id"
@@ -183,6 +183,16 @@ ActiveRecord::Schema.define(:version => 20120914050225) do
     t.string   "contactable_type"
     t.datetime "created_at",       :null => false
     t.datetime "updated_at",       :null => false
+  end
+
+  create_table "schedules", :force => true do |t|
+    t.time     "start"
+    t.time     "end"
+    t.string   "day"
+    t.integer  "room"
+    t.integer  "course_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "session_students", :force => true do |t|

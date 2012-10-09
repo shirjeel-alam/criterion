@@ -1,0 +1,27 @@
+# == Schema Information
+#
+# Table name: schedules
+#
+#  id         :integer          not null, primary key
+#  start      :time
+#  end        :time
+#  day        :string(255)
+#  room       :integer
+#  course_id  :integer
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  start: 2012-10-09 17:42:22
+  end: 2012-10-09 17:42:22
+  day: MyString
+  room: 1
+
+two:
+  start: 2012-10-09 17:42:22
+  end: 2012-10-09 17:42:22
+  day: MyString
+  room: 1

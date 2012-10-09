@@ -26,6 +26,7 @@ class Course < ActiveRecord::Base
   has_many :enrollments, dependent: :destroy
   has_many :payments, through: :enrollments
   has_many :students, through: :enrollments
+  has_many :schedules
   
   before_validation :set_end_date
 
@@ -49,6 +50,7 @@ class Course < ActiveRecord::Base
   scope :started_or_completed, where(status: [IN_PROGRESS, COMPLETED])
 
   scope :with_due_fees, lambda { |date| joins(:payments).where('payments.status = ? AND payments.period <= ?', Payment::DUE, date) }
+  scope :with_schedule, joins(:schedules)
   
   def update_status
     if start_date.blank? || start_date > Date.today

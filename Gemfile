@@ -15,6 +15,7 @@ gem 'tinymce-rails'
 gem 'chosen-rails'
 gem 'fancybox-rails'
 gem 'momentjs-rails'
+gem 'haml-rails'
 
 gem 'rufus-scheduler'
 gem 'googlecharts'
@@ -47,10 +48,6 @@ group :development, :test do
   gem 'mysql2'
   gem 'pry-rails'
   gem 'annotate'
-end
-
-group :development do
-  # gem 'mailcatcher'
 end
 
 group :production do

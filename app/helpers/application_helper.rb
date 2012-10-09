@@ -10,7 +10,7 @@ module ApplicationHelper
   end
 
   def time_format(time)
-    time.present? ? time.strftime('%l:%M %P') : 'N/A'
+    time.present? ? time.strftime('%l:%M %p') : 'N/A'
   end
 
   def months_between(start_date, end_date)
@@ -38,5 +38,25 @@ module ApplicationHelper
     else
       EnvolveChat::ChatRenderer.get_html('86562-N4k0vDzds4NR1wGKq8G0eY20gfPDO9DD', first_name: 'Shirjeel', last_name: 'Alam', is_admin: true, groups: [{id: 'criterion', name: 'Criterion'}])
     end
+  end
+
+  def days
+    _days = []
+
+    %w(Monday Tuesday Wednesday Thursday Friday Saturday Sunday).each do |wday|
+      _days << [wday, wday]
+    end
+
+    _days
+  end
+
+  def rooms
+    _rooms = []
+
+    1.upto(4) do |room_no|
+      _rooms << ["Room #{room_no}", room_no]
+    end
+
+    _rooms    
   end
 end

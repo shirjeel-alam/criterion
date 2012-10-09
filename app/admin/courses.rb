@@ -93,6 +93,19 @@ ActiveAdmin.register Course do
         row(:start_date) { date_format(course.start_date) }
         row(:end_date) { date_format(course.end_date) }
         row(:status_date) { date_format(course.course_date) }
+        row(:time_table) do
+          if course.schedules.present?
+            course.schedules.order('id').each do |schedule|
+              div do
+                span schedule.label
+                span link_to('Edit', edit_admin_schedule_path(schedule))
+                span link_to('Delete', admin_schedule_path(schedule), method: :delete, data: { confirm: 'Are you sure?' })
+              end
+            end
+          else
+            'No Time Table Present'
+          end
+        end 
       end
     end
     
@@ -181,6 +194,7 @@ ActiveAdmin.register Course do
   action_item only: :show do
     if current_admin_user.super_admin_or_partner? || current_admin_user.admin?
       span link_to('Add Enrollment', new_admin_enrollment_path(course_id: course)) unless (course.completed? || course.cancelled?)
+      span link_to('Add Class Schedule', new_admin_schedule_path(schedule: { course_id: course }))
       span do
         if course.not_started?
           span link_to('Start Course', start_admin_course_path(course), method: :put, confirm: 'Are you sure?')
