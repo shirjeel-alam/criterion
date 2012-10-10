@@ -20,8 +20,8 @@ ActiveAdmin.register Schedule do
   form do |f|
     f.inputs do
       f.input :course_id, as: :select, required: true, collection: Course.active, input_html: { class: 'chosen-select', style: 'width:77.8%;' }
-      f.input :start, as: :time, ampm: true, input_html: { class: 'chosen-select', style: 'width:110%;' }
-      f.input :end, as: :time, ampm: true, input_html: { class: 'chosen-select', style: 'width:110%;' }
+      f.input :start, as: :time, ampm: true, input_html: { class: 'chosen-select', style: 'width:300px;' }
+      f.input :end, as: :time, ampm: true, input_html: { class: 'chosen-select', style: 'width:300px;' }
       f.input :day, as: :select, collection: days, required: true, input_html: { class: 'chosen-select' }
       f.input :room, as: :select, collection: rooms, required: true, input_html: { class: 'chosen-select' }
     end
