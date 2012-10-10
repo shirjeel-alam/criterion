@@ -122,7 +122,7 @@ module ActiveAdmin
               script :src => javascript_path(path), :type => "text/javascript"
             end
             text_node csrf_meta_tag
-            # text_node(envolve_chat(current_admin_user.try(:user)).html_safe)
+            text_node(envolve_chat(current_admin_user.try(:user)).html_safe)
           end
         end
 
