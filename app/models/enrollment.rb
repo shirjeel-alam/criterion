@@ -86,7 +86,7 @@ class Enrollment < ActiveRecord::Base
       fmp = ((user_date.end_of_month - user_date).to_f / (user_date.end_of_month - user_date.beginning_of_month).to_f * course.monthly_fee).to_i
       diff = fmp % 100
       if diff >= 50
-        fmp += (fmp - diff)
+        fmp += (100 - diff)
       else
         fmp -= diff
       end
