@@ -120,7 +120,7 @@ ActiveAdmin.register Course do
 
     panel 'Course Fees Table' do
       months = months_between(course.start_date, course.end_date)
-      table_for course.enrollments do |t|
+      table_for course.enrollments.order('start_date') do |t|
         t.column(:student) { |enrollment| link_to(enrollment.student.name, admin_student_path(enrollment.student)) }
         t.column(:join_date) { |enrollment| date_format(enrollment.start_date) }
         months.each do |month|
