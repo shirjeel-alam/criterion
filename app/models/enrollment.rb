@@ -34,7 +34,7 @@ class Enrollment < ActiveRecord::Base
   after_create :associate_session
 
   before_save :update_status, :update_discount_applied
-  after_save :create_payments, :evaluate_discount
+  after_save :create_payments #, :evaluate_discount
   
   scope :not_started, where(status: NOT_STARTED)
   scope :in_progress, where(status: IN_PROGRESS)
