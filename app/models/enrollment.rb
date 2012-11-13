@@ -195,6 +195,10 @@ class Enrollment < ActiveRecord::Base
     payments.where(period: month.beginning_of_month..month.end_of_month).first
   end
 
+  def session_id
+    session.id
+  end
+
   def registration_fee
     SessionStudent.find_by_student_id_and_session_id(student_id, session.id).registration_fee
   end
