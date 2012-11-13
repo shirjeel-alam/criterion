@@ -3,7 +3,7 @@ ActiveAdmin.register Course do
 
   filter :id
   filter :name
-  filter :level, as: :select, collection: Course.levels
+  filter :level, as: :select, collection: proc { Course.levels }, input_html: { class: 'chosen-select' }
   filter :teacher_name, as: :string
 
   scope :all, default: true do |courses|

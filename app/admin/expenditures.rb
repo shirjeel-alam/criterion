@@ -6,11 +6,8 @@ ActiveAdmin.register Payment, as: 'Expenditure' do
 	filter :id
 	filter :amount
 	filter :period
-	filter :category
-	filter :payment_method
-	# Check these
-	# filter :category, :as => :select, :collection => lambda { Category.categories }
-	# filter :payment_method, :as => :select, :collection => lambda { Payment.payment_methods }
+	filter :category, as: :select, collection: proc { Category.categories }, input_html: { class: 'chosen-select' }
+	filter :payment_method, as: :select, collection: proc { Payment.payment_methods }, input_html: { class: 'chosen-select' }
 
 	scope :all, default: true do |payments|
 		Payment.expenditure
