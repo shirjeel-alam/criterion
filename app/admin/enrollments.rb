@@ -64,9 +64,9 @@ ActiveAdmin.register Enrollment do
           ul do
             if payment.due?
               li span link_to('Make Payment', pay_admin_payment_path(payment))
-              li span link_to('Void Payment', void_admin_payment_path(payment), method: :put, confirm: 'Are you sure?')
+              li span link_to('Void Payment', void_admin_payment_path(payment), method: :put, data: { confirm: 'Are you sure?' })
             elsif payment.paid?
-              li span link_to('Refund Payment', refund_admin_payment_path(payment), method: :put, confirm: 'Are you sure?')
+              li span link_to('Refund Payment', refund_admin_payment_path(payment), method: :put, data: { confirm: 'Are you sure?' })
             elsif payment.refunded?
               li span link_to('Make Payment', pay_admin_payment_path(payment))
             end
@@ -203,13 +203,13 @@ ActiveAdmin.register Enrollment do
     span link_to('Refresh Enrollment', refresh_admin_enrollment_path(enrollment), method: :put)
 
     if current_admin_user.super_admin_or_partner?
-      span link_to('Delete Enrollment', admin_enrollment_path(enrollment), method: :delete, data: { confirm: 'Are you sure?'})
+      span link_to('Delete Enrollment', admin_enrollment_path(enrollment), method: :delete, data: { data: { confirm: 'Are you sure?' }})
     end
 
     if enrollment.not_started?
-      span link_to('Start Enrollment', start_admin_enrollment_path(enrollment), method: :put, data: { confirm: 'Are you sure?'})
+      span link_to('Start Enrollment', start_admin_enrollment_path(enrollment), method: :put, data: { data: { confirm: 'Are you sure?' }})
     elsif enrollment.started?
-      span link_to('Cancel Enrollment', cancel_admin_enrollment_path(enrollment), method: :put, data: { confirm: 'Are you sure?'})
+      span link_to('Cancel Enrollment', cancel_admin_enrollment_path(enrollment), method: :put, data: { data: { confirm: 'Are you sure?' }})
     end
   end
 

@@ -36,7 +36,7 @@ ActiveAdmin.register Student do
               div do
                 span number.label
                 span link_to('Edit', edit_admin_phone_number_path(number))
-                span link_to('Delete', admin_phone_number_path(number), method: :delete, confirm: 'Are you sure?')
+                span link_to('Delete', admin_phone_number_path(number), method: :delete, data: { confirm: 'Are you sure?' })
               end
             end
           else
@@ -55,7 +55,7 @@ ActiveAdmin.register Student do
         t.column do |session_student|
           if session_student.registration_fee.due?
             li link_to('Make Payment', pay_admin_payment_path(session_student.registration_fee), method: :get)
-            li link_to('Void Payment', void_admin_payment_path(session_student.registration_fee), method: :put, confirm: 'Are you sure?')
+            li link_to('Void Payment', void_admin_payment_path(session_student.registration_fee), method: :put, data: { confirm: 'Are you sure?' })
           end
         end
       end
@@ -114,9 +114,9 @@ ActiveAdmin.register Student do
                   ul do
                     if payment.due?
                       li span link_to('Make Payment', pay_admin_payment_path(payment))
-                      li span link_to('Void Payment', void_admin_payment_path(payment), method: :put, confirm: 'Are you sure?')
+                      li span link_to('Void Payment', void_admin_payment_path(payment), method: :put, data: { confirm: 'Are you sure?' })
                     elsif payment.paid?
-                      li span link_to('Refund Payment', refund_admin_payment_path(payment), method: :put, confirm: 'Are you sure?')
+                      li span link_to('Refund Payment', refund_admin_payment_path(payment), method: :put, data: { confirm: 'Are you sure?' })
                     elsif payment.refunded?
                       li span link_to('Make Payment', pay_admin_payment_path(payment))
                     end

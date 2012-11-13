@@ -18,7 +18,6 @@ gem 'momentjs-rails'
 gem 'haml-rails'
 
 gem 'rufus-scheduler'
-gem 'googlecharts'
 gem 'ruby-hmac'
 
 gem 'thin'

@@ -83,7 +83,6 @@ GEM
       actionpack (~> 3.0)
     girl_friday (0.10.0)
       connection_pool (~> 0.9.0)
-    googlecharts (1.6.8)
     haml (3.1.7)
     haml-rails (0.3.5)
       actionpack (>= 3.1, < 4.1)
@@ -218,7 +217,6 @@ DEPENDENCIES
   coffee-rails
   faker
   fancybox-rails
-  googlecharts
   haml-rails
   hash_syntax
   jquery-rails

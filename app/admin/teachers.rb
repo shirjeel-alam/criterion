@@ -58,7 +58,7 @@ ActiveAdmin.register Teacher do
                 span number.label
                 # span link_to('View', admin_phone_number_path(number))
                 span link_to('Edit', edit_admin_phone_number_path(number))
-                span link_to('Delete', admin_phone_number_path(number), method: :delete, confirm: 'Are you sure?')
+                span link_to('Delete', admin_phone_number_path(number), method: :delete, data: { confirm: 'Are you sure?' })
               end
             end
           else
