@@ -7,10 +7,19 @@ ActiveAdmin.setup do |config|
   #
   config.site_title = "Criterion"
 
+
   # Set the link url for the title. For example, to take 
   # users to your main site. Defaults to no link.
   #
-  # config.site_title_link = "/"
+  config.site_title_link = "/admin"
+
+  
+  # Set an optional image to be displayed for the header
+  # instead of a string (overrides :site_title)
+  #
+  # Note: Recommended image height is 21px to properly fit in the header
+  #
+  config.site_title_image = "criterion_logo_small.jpg"
 
   # == Default Namespace
   #
