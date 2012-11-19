@@ -1,6 +1,5 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
-  rescue_from Timeout::Error, with: :redirect_to_back
 
   def set_timezone
     Time.zone = 'Karachi'

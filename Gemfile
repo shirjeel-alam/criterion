@@ -24,8 +24,6 @@ gem 'thin'
 
 gem 'hash_syntax'
 
-gem 'rack-timeout'
-
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
