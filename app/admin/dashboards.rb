@@ -137,14 +137,6 @@ ActiveAdmin::Dashboards.build do
     end
   end
 
-  section 'Signed In Users', priority: 4 do
-    ul do
-      AdminUser.signed_in.each do |admin|
-        li admin.user.try(:name) || admin.email 
-      end
-    end
-  end
-
   # Define your dashboard sections here. Each block will be
   # rendered on the dashboard in the context of the view. So just
   # return the content which you would like to display.
