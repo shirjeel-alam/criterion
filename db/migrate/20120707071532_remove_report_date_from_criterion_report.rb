@@ -6,7 +6,7 @@ class RemoveReportDateFromCriterionReport < ActiveRecord::Migration
     end
 
     CriterionReport.all.map(&:close!)
-    CriterionReport.last.open!
+    CriterionReport.last.open! rescue nil
 
     remove_column :criterion_reports, :report_date
   end
