@@ -47,4 +47,10 @@ namespace :criterion do
       Category.find_or_create_by_name(category)
     end
   end
+
+  desc "Clear SMS and Emails"
+  task clear_sms_and_email: :environment do
+    CriterionSms.destroy_all
+    CriterionMail.destroy_all
+  end
 end
