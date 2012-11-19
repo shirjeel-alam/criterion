@@ -142,6 +142,7 @@ GEM
       rack
     rack-test (0.6.2)
       rack (>= 1.0)
+    rack-timeout (0.0.3)
     rails (3.2.9)
       actionmailer (= 3.2.9)
       actionpack (= 3.2.9)
@@ -230,6 +231,7 @@ DEPENDENCIES
   mysql2
   pg
   pry-rails
+  rack-timeout
   rails (= 3.2.9)
   ruby-hmac
   rufus-scheduler
