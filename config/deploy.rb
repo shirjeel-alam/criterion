@@ -36,7 +36,7 @@ set :use_sudo, false
 set :scm, :git
 
 # Set the repository we're going to pull from.
-set :repository,  'git@github.com:shirjeel-alam/CriterionManagementSystem.git'
+set :repository,  'git@bitbucket.org:shirjeelalam/criterion.git'
 
 # Setup the way you want the deploy to be done.
 # I sincerely suggest using :remote_cache.
