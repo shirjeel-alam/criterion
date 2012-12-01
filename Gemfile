@@ -22,6 +22,9 @@ gem 'ruby-hmac'
 
 gem 'thin'
 
+gem 'capistrano'
+gem 'rvm-capistrano'
+
 gem 'hash_syntax'
 
 # To use ActiveModel has_secure_password
@@ -51,5 +54,5 @@ end
 
 group :production do
   gem 'mysql2'
-  gem 'pg'
+  # gem 'pg'
 end
