@@ -19,7 +19,7 @@ set :deploy_to, "/home/#{user}/rails_apps/#{application}"
 set :branch, 'master'
 
 # Database Settings.
-set :database_adapter,  'mysql'
+set :database_adapter,  'mysql2'
 set :database_password, 'aXe@r4zeR'
 set :database_username, user
 
@@ -84,17 +84,18 @@ namespace :deploy do
   # Passenger tasks
   task :start do ; end
   task :stop do ; end
+
+  desc "Restart Application"
   task :restart, :roles => :app, :except => { :no_release => true } do
     run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
   end
-
 end
 
-namespace :deploy do
-  task :start do ; end
-  task :stop do ; end
-  task :restart, :roles => :app, :except => { :no_release => true } do
-    run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
+desc "tail log files"
+task :tail, :roles => :app do
+  run "tail -f #{shared_path}/log/#{rails_env}.log" do |channel, stream, data|
+    puts "#{channel[:host]}: #{data}"
+    break if stream == :err
   end
 end
 
@@ -102,3 +103,5 @@ end
 before "deploy",            "deploy:db_symlink"
 before "deploy:migrations", "deploy:db_symlink"
 before "deploy:db_setup",   "deploy:db_symlink"
+
+after "deploy", "deploy:cleanup"
