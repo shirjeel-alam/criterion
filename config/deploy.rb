@@ -99,9 +99,17 @@ task :tail, :roles => :app do
   end
 end
 
+namespace :rvm do
+  desc 'Trust rvmrc file'
+  task :trust_rvmrc do
+    run "rvm rvmrc trust #{current_release}"
+  end
+end
+
 # Before hooks. You can define your own too!
 before "deploy",            "deploy:db_symlink"
 before "deploy:migrations", "deploy:db_symlink"
 before "deploy:db_setup",   "deploy:db_symlink"
 
 after "deploy", "deploy:cleanup"
+after "deploy:update_code", "rvm:trust_rvmrc"
