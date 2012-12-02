@@ -7,7 +7,7 @@ set :application, 'criterion'
 set :rails_env, 'production'
 
 # Server Settings. The port is optional, default to 22.
-server '50.116.38.202', :web, :app, :db, primary: true
+server 'li73-19.members.linode.com', :web, :app, :db, primary: true
 
 # User in the remote server. This is the user who's going to be used to deploy, and must have proper permissions.
 set :user, 'deploy'
@@ -43,7 +43,7 @@ set :repository,  'git@bitbucket.org:shirjeelalam/criterion.git'
 set :deploy_via, :remote_cache
 
 # RVM Gemset
-set :rvm_ruby_string, 'ruby-1.9.3-p194@criterion'
+set :rvm_ruby_string, 'ruby-1.9.3-p327@criterion'
 
 # Pseudo Terminals.
 # If you want Capistrano client password prompt to work this must be true.
