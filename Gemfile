@@ -20,12 +20,10 @@ gem 'haml-rails'
 
 gem 'rufus-scheduler'
 gem 'ruby-hmac'
-
-gem 'thin'
+gem 'hash_syntax'
 
 gem 'capistrano'
-
-gem 'hash_syntax'
+gem 'turbo-sprockets-rails3'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
@@ -37,7 +35,7 @@ gem 'hash_syntax'
 # gem 'capistrano'
 
 # For heroku db:push and db:pull
-gem 'taps'
+# gem 'taps'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -47,6 +45,7 @@ group :assets do
 end
 
 group :development, :test do
+  gem 'thin'
   gem 'pry-rails'
   gem 'annotate'
 end

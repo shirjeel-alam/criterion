@@ -81,9 +81,11 @@ task :tail, :roles => :app do
   end
 end
 
-# Before hooks. You can define your own too!
+# Hooks
 before "deploy",            "deploy:db_symlink"
 before "deploy:migrations", "deploy:db_symlink"
 before "deploy:db_setup",   "deploy:db_symlink"
+
+after "deploy:finalize_update", "deploy:db_symlink"
 
 after "deploy", "deploy:cleanup"
