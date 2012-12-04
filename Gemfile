@@ -1,6 +1,7 @@
 source 'http://rubygems.org'
 
 gem 'rails', '3.2.9'
+gem 'mysql2'
 
 gem 'faker'
 gem 'airbrake'
@@ -46,12 +47,6 @@ group :assets do
 end
 
 group :development, :test do
-  gem 'mysql2'
   gem 'pry-rails'
   gem 'annotate'
-end
-
-group :production do
-  gem 'mysql2'
-  gem 'pg'
 end
