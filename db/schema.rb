@@ -144,12 +144,12 @@ ActiveRecord::Schema.define(:version => 20121009124222) do
   create_table "enrollments", :force => true do |t|
     t.integer  "student_id"
     t.integer  "course_id"
-    t.datetime "created_at",                         :null => false
-    t.datetime "updated_at",                         :null => false
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
     t.integer  "status"
     t.date     "enrollment_date"
     t.date     "start_date"
-    t.boolean  "discount_applied", :default => true
+    t.boolean  "discount_applied", :default => false
   end
 
   create_table "partners", :force => true do |t|

@@ -10,7 +10,7 @@
 #  status           :integer
 #  enrollment_date  :date
 #  start_date       :date
-#  discount_applied :boolean          default(TRUE)
+#  discount_applied :boolean          default(FALSE)
 #
 
 class Enrollment < ActiveRecord::Base  
