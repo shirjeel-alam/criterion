@@ -88,4 +88,5 @@ before "deploy:db_setup",   "deploy:db_symlink"
 
 after "deploy:finalize_update", "deploy:db_symlink"
 
+after "deploy", "deploy:restart"
 after "deploy", "deploy:cleanup"
