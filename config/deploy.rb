@@ -53,21 +53,6 @@ default_run_options[:pty] = true
 ssh_options[:forward_agent] = true
 
 namespace :deploy do
-  desc "Create database yaml in shared path."
-  task :db_configure do
-    db_config = <<-EOF
-      #{rails_env}:
-        adapter:  #{database_adapter}
-        database: #{application}_#{rails_env}
-        pool: 25
-        username: #{database_username}
-        password: #{database_password}
-    EOF
-
-    run "mkdir -p #{shared_path}/config"
-    put db_config, "#{shared_path}/config/database.yml"
-  end
-
   desc "Make symlink for database yaml."
   task :db_symlink do
     run "ln -snf #{shared_path}/config/database.yml #{latest_release}/config/database.yml"
@@ -99,17 +84,9 @@ task :tail, :roles => :app do
   end
 end
 
-namespace :rvm do
-  desc 'Trust rvmrc file'
-  task :trust_rvmrc do
-    run "rvm rvmrc trust #{current_release}"
-  end
-end
-
 # Before hooks. You can define your own too!
 before "deploy",            "deploy:db_symlink"
 before "deploy:migrations", "deploy:db_symlink"
 before "deploy:db_setup",   "deploy:db_symlink"
 
 after "deploy", "deploy:cleanup"
-after "deploy:update_code", "rvm:trust_rvmrc"
