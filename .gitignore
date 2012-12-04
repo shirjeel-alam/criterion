@@ -15,3 +15,4 @@ config/*.yml
 rerun.txt
 pickle-email-*.html
 .redcar/*
+.rvmrc

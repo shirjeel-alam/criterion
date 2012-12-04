@@ -23,7 +23,6 @@ gem 'ruby-hmac'
 gem 'thin'
 
 gem 'capistrano'
-gem 'rvm-capistrano'
 
 gem 'hash_syntax'
 
@@ -54,5 +53,5 @@ end
 
 group :production do
   gem 'mysql2'
-  # gem 'pg'
+  gem 'pg'
 end

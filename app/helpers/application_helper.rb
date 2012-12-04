@@ -32,11 +32,14 @@ module ApplicationHelper
   end
 
   def envolve_chat(user)
+    # envolve_api_key = '96262-Jc6dKIRNQxGv7RMGYtzEXuYGycSZy98E' # li69-232.members.linode.com
+    envolve_api_key = '86562-N4k0vDzds4NR1wGKq8G0eY20gfPDO9DD' # criterion-institute.herokuapp.com
+
     if user.present?
       first_name, last_name = separate_name(user)
-      EnvolveChat::ChatRenderer.get_html('86562-N4k0vDzds4NR1wGKq8G0eY20gfPDO9DD', first_name: first_name, last_name: last_name, is_admin: user.admin_user.super_admin_or_partner?, groups: [{id: 'criterion', name: 'Criterion'}])
+      EnvolveChat::ChatRenderer.get_html(envolve_api_key, first_name: first_name, last_name: last_name, is_admin: user.admin_user.super_admin_or_partner?, groups: [{id: 'criterion', name: 'Criterion'}])
     else
-      EnvolveChat::ChatRenderer.get_html('86562-N4k0vDzds4NR1wGKq8G0eY20gfPDO9DD', first_name: 'Shirjeel', last_name: 'Alam', is_admin: true, groups: [{id: 'criterion', name: 'Criterion'}])
+      EnvolveChat::ChatRenderer.get_html(envolve_api_key, first_name: 'Shirjeel', last_name: 'Alam', is_admin: true, groups: [{id: 'criterion', name: 'Criterion'}])
     end
   end
 

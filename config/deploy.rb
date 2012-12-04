@@ -7,10 +7,10 @@ set :application, 'criterion'
 set :rails_env, 'production'
 
 # Server Settings. The port is optional, default to 22.
-server 'li73-19.members.linode.com', :web, :app, :db, primary: true
+server 'li69-232.members.linode.com', :web, :app, :db, primary: true
 
 # User in the remote server. This is the user who's going to be used to deploy, and must have proper permissions.
-set :user, 'deploy'
+set :user, 'root'
 
 # Folder in the remote server where the revisions are going to be deployed.
 set :deploy_to, "/home/#{user}/rails_apps/#{application}"
@@ -41,9 +41,6 @@ set :repository,  'git@bitbucket.org:shirjeelalam/criterion.git'
 # Setup the way you want the deploy to be done.
 # I sincerely suggest using :remote_cache.
 set :deploy_via, :remote_cache
-
-# RVM Gemset
-set :rvm_ruby_string, 'ruby-1.9.3-p327@criterion'
 
 # Pseudo Terminals.
 # If you want Capistrano client password prompt to work this must be true.
