@@ -1,5 +1,5 @@
 ActiveAdmin.register_page 'Time Table' do
-  menu priority: 2
+  menu false # , priority: 2
 
   content do
     table class: 'index_table' do
