@@ -113,28 +113,38 @@ ActiveAdmin.setup do |config|
   #   config.register_javascript 'application.js'
 end
 
-module ActiveAdmin
-  module Views
-    module Pages
-      class Base < Arbre::HTML::Document
+module ActiveAdmin::Views::Pages
+  class Base < Arbre::HTML::Document
 
-        alias_method :original_build_active_admin_head, :build_active_admin_head unless method_defined?(:original_build_active_admin_head)
+    alias_method :original_build_active_admin_head, :build_active_admin_head unless method_defined?(:original_build_active_admin_head)
 
-        def build_active_admin_head
-          within @head do
-            insert_tag Arbre::HTML::Title, [title, render_or_call_method_or_proc_on(self, active_admin_application.site_title)].join(" | ")
-            active_admin_application.stylesheets.each do |style|
-              text_node(stylesheet_link_tag(style.path, style.options.dup).html_safe)
-            end
-
-            active_admin_application.javascripts.each do |path|
-              script :src => javascript_path(path), :type => "text/javascript"
-            end
-            text_node csrf_meta_tag
-            text_node(envolve_chat(current_admin_user.try(:user)).html_safe)
-          end
+    def build_active_admin_head
+      within @head do
+        insert_tag Arbre::HTML::Title, [title, render_or_call_method_or_proc_on(self, active_admin_application.site_title)].join(" | ")
+        active_admin_application.stylesheets.each do |style|
+          text_node(stylesheet_link_tag(style.path, style.options.dup).html_safe)
         end
 
+        active_admin_application.javascripts.each do |path|
+          script :src => javascript_path(path), :type => "text/javascript"
+        end
+        text_node csrf_meta_tag
+        # text_node(envolve_chat(current_admin_user.try(:user)).html_safe)
+      end
+    end
+
+  end
+end
+
+module ActiveAdmin::Devise::Controller
+  def root_path
+    if Rails.env.development?
+      super
+    else
+      if ActiveAdmin.application.default_namespace.present?
+        "/criterion/#{ActiveAdmin.application.default_namespace}"
+      else
+        "/criterion"
       end
     end
   end
