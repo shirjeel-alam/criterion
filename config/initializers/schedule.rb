@@ -3,10 +3,6 @@ require 'rufus/scheduler'
 
 scheduler = Rufus::Scheduler.start_new
 
-scheduler.every '50m' do
-	Net::HTTP.get_response(URI.parse('http://criterion-institute.herokuapp.com/admin/login'))
-end
-
 scheduler.every '4h' do
   crd = CriterionReportDate.find_by_report_date(Date.today)
   if crd.present?
