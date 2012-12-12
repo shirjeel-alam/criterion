@@ -126,7 +126,7 @@ ActiveAdmin.register CriterionReport do
     criterion_report = CriterionReport.find(params[:id])
     criterion_report.close!
 
-    CriterionReport.create(report_date: Date.tomorrow)
+    CriterionReport.next_report
 
     redirect_to_back
   end

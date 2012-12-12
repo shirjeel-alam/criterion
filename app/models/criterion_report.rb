@@ -58,11 +58,16 @@ class CriterionReport < ActiveRecord::Base
 	end
 
   def close!
+    update_report_data
     update_attribute(:closed, true)
   end
 
   def open!
     update_attribute(:closed, false)
+  end
+
+  def self.next_report
+    CriterionReport.create(report_date: (CriterionReportDate.order('report_date desc').first.report_date + 1.day))
   end
 
 	### View Helpers ###
