@@ -3,6 +3,10 @@ require 'rufus/scheduler'
 
 scheduler = Rufus::Scheduler.start_new
 
+scheduler.every '5s' do
+  Rails.logger.info '*** RUFUS SCHEDULER ***'
+end
+
 scheduler.every '4h' do
   crd = CriterionReportDate.find_by_report_date(Date.today)
   if crd.present?
