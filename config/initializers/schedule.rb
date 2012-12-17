@@ -6,10 +6,6 @@ def execute_scheduler
   scheduler = Rufus::Scheduler.start_new  
   logger = Logger.new(Rails.root.to_s + '/log/scheduler.log')
 
-  scheduler.every '1s' do  
-    logger.info 'Log'
-  end
-
   scheduler.every '4h' do
     crd = CriterionReportDate.find_by_report_date(Date.today)
     if crd.present?
@@ -40,7 +36,7 @@ if defined?(PhusionPassenger) then
   PhusionPassenger.on_event(:starting_worker_process) do |forked| 
     # If we are forked and there's no pid file (that is no lock)
     if forked && !FileTest.exists?(pid_file) then
-      main_logger.debug 'SCHEDULER START ON PROCESS #{$$}'
+      main_logger.debug "SCHEDULER START ON PROCESS #{$$}"
       # Write the current PID on the file
       File.open(pid_file, 'w') {
         |f| f.write($$)
@@ -58,7 +54,7 @@ if defined?(PhusionPassenger) then
     # we remove the lock.
     if FileTest.exists?(pid_file) then
       if File.open(pid_file, 'r') {|f| pid = f.read.to_i} == $$ then 
-        main_logger.debug 'SCHEDULER STOP ON PROCESS #{$$}'
+        main_logger.debug "SCHEDULER STOP ON PROCESS #{$$}"
         File.delete(pid_file)
       end
     end
