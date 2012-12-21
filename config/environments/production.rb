@@ -70,4 +70,6 @@ Criterion::Application.configure do
     :authentication       => 'plain',
     :enable_starttls_auto => true  
   }
+
+  config.time_zone = 'Karachi'
 end

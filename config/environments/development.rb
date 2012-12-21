@@ -51,4 +51,6 @@ Criterion::Application.configure do
     rescue LoadError
     end
   end
+
+  config.time_zone = 'Karachi'
 end
