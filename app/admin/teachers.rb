@@ -1,5 +1,5 @@
 ActiveAdmin.register Teacher do
-  menu priority: 2, if: proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? }
+  menu priority: 2, if: proc { current_admin_user.super_admin_or_partner? }
   
   filter :id
   filter :name
@@ -197,7 +197,7 @@ ActiveAdmin.register Teacher do
     
     def check_authorization
       if current_admin_user.admin?
-        if %w[edit destroy].include?(action_name)
+        if %w[index edit destroy].include?(action_name)
           flash[:error] = 'You are not authorized to perform this action'
           redirect_to_back
         end

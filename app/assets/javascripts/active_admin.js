@@ -156,7 +156,13 @@ $(document).ready(function() {
   /*** FancyBox ***/
 
   $('a.fancybox').fancybox({
-    'hideOnContentClick': false 
+    'hideOnContentClick': false,
+    'scrolling' : 'no',
+    'autoScale' : false,
+    'autoDimensions' : false,
+    onComplete       : function() {
+      $('.chosen-select-modal').chosen();
+    }
   });
 
   /*** END ***/
