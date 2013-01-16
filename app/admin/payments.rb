@@ -198,8 +198,11 @@ ActiveAdmin.register Payment do
 
     def create
       @payment = Payment.new(params[:payment])
+
+      amount_exceeded = false
+      amount_exceeded = (@payment.amount > @payment.payable.balance rescue false) if current_admin_user.admin?
       
-      if @payment.save
+      if !amount_exceeded && @payment.save
         session.delete :holder_id
         session.delete :holder_type
         session.delete :limited
@@ -220,6 +223,8 @@ ActiveAdmin.register Payment do
           end
         end
       else
+        flash[:error] = 'Amount entered exceeds account holder balance' if amount_exceeded
+
         if session[:holder_type] == 'Teacher'
           @account_holder = Teacher.find(session[:holder_id])
         elsif session[:holder_type] == 'Staff'
@@ -227,6 +232,7 @@ ActiveAdmin.register Payment do
         elsif session[:holder_type] == 'Partner'
           @account_holder = Partner.find(session[:holder_id])
         end
+        
         render :new
       end
     end

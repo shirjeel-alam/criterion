@@ -65,7 +65,10 @@ ActiveAdmin.register Teacher do
             'No Phone Numbers Present'
           end
         end
-        row(:balance) { status_tag(number_to_currency(teacher.balance, unit: 'Rs. ', precision: 0), teacher.balance_tag) rescue nil }
+
+        if current_admin_user.super_admin_or_partner?
+          row(:balance) { status_tag(number_to_currency(teacher.balance, unit: 'Rs. ', precision: 0), teacher.balance_tag) rescue nil }
+        end
         row(:active_enrollments) { teacher.enrollments.active.count }
       end
     end
