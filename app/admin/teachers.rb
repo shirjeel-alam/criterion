@@ -66,7 +66,7 @@ ActiveAdmin.register Teacher do
           end
         end
 
-        if current_admin_user.super_admin_or_partner?
+        if current_admin_user.super_admin_or_partner? || current_admin_user.teacher?
           row(:balance) { status_tag(number_to_currency(teacher.balance, unit: 'Rs. ', precision: 0), teacher.balance_tag) rescue nil }
         end
         row(:active_enrollments) { teacher.enrollments.active.count }
