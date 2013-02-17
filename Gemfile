@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.2.11'
+gem 'rails', '3.2.12'
 gem 'mysql2'
 
 gem 'faker'
@@ -10,7 +10,7 @@ gem 'validates_timeliness'
 gem 'activeadmin', '0.4.4'
 gem 'sass-rails'
 
-gem 'jquery-rails'
+gem 'jquery-rails', '2.1.4'
 gem 'best_in_place'
 gem 'tinymce-rails'
 gem 'chosen-rails'
