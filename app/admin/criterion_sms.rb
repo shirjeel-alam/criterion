@@ -111,7 +111,7 @@ ActiveAdmin.register CriterionSms do
         end
 
         flash[:notice] = "SMS sent to #{successful_count} of #{total_count} receipients"
-        redirect_to admin_criterion_sms_senders_path
+        redirect_to admin_criterion_sms_sender_path
       else
         @criterion_sms.to = params[:criterion_sms][:to]
         render :new

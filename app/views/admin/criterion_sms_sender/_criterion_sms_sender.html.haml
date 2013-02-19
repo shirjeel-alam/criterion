@@ -1,0 +1,23 @@
+= form_tag new_admin_criterion_sm_path, method: :get do
+  %table.index_table
+    %thead
+      %th= check_box_tag("mailer_all", 1, false)
+      %th Course
+      %th Level
+      %th Session
+      %th Teacher
+      %th Status
+
+    %tbody
+      - flip = true
+      - @courses.each_with_index do |course, i|
+        %tr{:class => flip ? 'odd' : 'even'}
+          %td= check_box_tag("courses[#{i}]", course.id, false, :class => 'mailer')
+          %td= link_to course.name, admin_course_path(course)
+          %td= course.level_label
+          %td= course.session.label rescue nil
+          %td= course.teacher.present? ? course.teacher.name : 'N/A'
+          %td= content_tag(:span, course.status_label, :class => "status #{course.status_tag}")
+        - flip = !flip
+
+  = submit_tag 'Send SMS'

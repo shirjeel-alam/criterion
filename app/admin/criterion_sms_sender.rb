@@ -1,26 +1,22 @@
-ActiveAdmin.register CriterionSms, as: 'Criterion SMS Sender' do
-	menu label: 'Send SMS', parent: 'Criterion', priority: 2, if: proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? || current_admin_user.teacher? }
+ActiveAdmin.register_page "Criterion SMS Sender" do
+  menu label: 'Send SMS', parent: 'Criterion', priority: 2, if: proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? || current_admin_user.teacher? }
 
-	actions :index
-
-	scope :courses, default: true do |courses|
-		Course.order('id desc')
-	end
-
-	scope :teachers do |teachers|
-		Teacher.order('id desc')
-	end
-
-  scope :due_payments do |payments|
-    Course.order('id desc').with_due_fees(Date.today).select('distinct(courses.id)')
+  sidebar :filter do
+    render 'filter'
   end
 
-	index do 
-		div render partial: 'criterion_sms_sender', locals: { courses: Course.order('id desc'), teachers: Teacher.order('id desc'), due_payment_courses: Course.order('id desc').with_due_fees(Date.today).uniq, scope: params[:scope] }
-	end
+  content do
+    render 'criterion_sms_sender'
+  end
 
-	controller do
-		active_admin_config.clear_sidebar_sections!
-		active_admin_config.clear_action_items!
-	end
+  controller do
+    def index
+      params[:search].each do |filter_attrib|
+        params[:search].delete(filter_attrib.first) if filter_attrib.last.reject(&:blank?).blank?
+      end if params[:search].present?
+
+      @search = Course.search(params[:search])
+      @courses = @search.relation
+    end
+  end
 end

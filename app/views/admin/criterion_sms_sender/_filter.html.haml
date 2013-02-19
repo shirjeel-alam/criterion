@@ -1,0 +1,10 @@
+= form_for @search, url: admin_criterion_sms_sender_path, html: { method: :get } do |f|
+  = f.label :course
+  = f.select :id_in, Course.get_all, {}, { multiple: true, class: 'chosen-select' }
+  = f.label :level
+  = f.select :level_in, Course.levels, {}, { multiple: true, class: 'chosen-select' }
+  = f.label :session
+  = f.select :session_id_in, Session.get_all, {}, { multiple: true, class: 'chosen-select' }
+  = f.label :teacher
+  = f.select :teacher_id_in, Teacher.get_all, {}, { multiple: true, class: 'chosen-select' }
+  = submit_tag 'Filter'
