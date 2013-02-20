@@ -34,7 +34,7 @@ class AdminUser < ActiveRecord::Base
   belongs_to :user, polymorphic: :true
   has_many :criterion_mails, as: :mailable
   has_many :sent_messages, as: :sender, class_name: 'CriterionSms'
-  has_one :criterion_account
+  has_one :criterion_account, dependent: :destroy
 
   validates :role, presence: true, inclusion: { in: [SUPER_ADMIN, ADMIN, TEACHER, STUDENT, STAFF, PARTNER] }
 
