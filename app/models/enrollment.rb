@@ -58,7 +58,7 @@ class Enrollment < ActiveRecord::Base
   end
 
   def set_start_date
-    self.start_date = Date.today unless start_date.present? 
+    self.start_date = Time.current.to_date unless start_date.present? 
   end
   
   def update_status
@@ -66,7 +66,7 @@ class Enrollment < ActiveRecord::Base
       self.status = course.status
     else
       self.start_date = start_date < course.start_date ? course.start_date : start_date
-      self.status = start_date > Date.today ? NOT_STARTED : IN_PROGRESS unless completed? || cancelled?
+      self.status = start_date > Time.current.to_date ? NOT_STARTED : IN_PROGRESS unless completed? || cancelled?
     end
   end
 
@@ -108,7 +108,7 @@ class Enrollment < ActiveRecord::Base
 
   def void_payments
     payments_to_be_void = payments.due.collect { |payment| payment if payment.period.future? && payment.due? }.compact
-    payments_to_be_void << payments.due.detect { |payment| payment if payment.period.beginning_of_month == Date.today.beginning_of_month && (Date.today - Date.today.beginning_of_month).to_i < 8 }
+    payments_to_be_void << payments.due.detect { |payment| payment if payment.period.beginning_of_month == Time.current.to_date.beginning_of_month && (Time.current.to_date - Time.current.to_date.beginning_of_month).to_i < 8 }
     payments_to_be_void = payments_to_be_void.compact
     payments_to_be_void.each do |payment|
       payment.void!
@@ -121,7 +121,7 @@ class Enrollment < ActiveRecord::Base
 
   def apply_discount(discount)
     discountable_payments = payments.collect { |payment| payment if payment.period.future? && payment.due? }.compact
-    discountable_payments << payments.due.detect { |payment| payment if payment.period.beginning_of_month == Date.today.beginning_of_month && (Date.today - Date.today.beginning_of_month).to_i < 8 }
+    discountable_payments << payments.due.detect { |payment| payment if payment.period.beginning_of_month == Time.current.to_date.beginning_of_month && (Time.current.to_date - Time.current.to_date.beginning_of_month).to_i < 8 }
     discountable_payments = discountable_payments.compact
     discountable_payments.each do |payment|
       payment.update_attribute(:discount, discount)
@@ -162,15 +162,15 @@ class Enrollment < ActiveRecord::Base
   end
 
   def start!
-    self.update_attributes(status: IN_PROGRESS, enrollment_date: Date.today, start_date: Date.today)
+    self.update_attributes(status: IN_PROGRESS, enrollment_date: Time.current.to_date, start_date: Time.current.to_date)
   end
 
   def complete!
-    self.update_attributes(status: COMPLETED, enrollment_date: Date.today)
+    self.update_attributes(status: COMPLETED, enrollment_date: Time.current.to_date)
   end
 
   def cancel!
-    self.update_attributes(status: CANCELLED, enrollment_date: Date.today)
+    self.update_attributes(status: CANCELLED, enrollment_date: Time.current.to_date)
     void_payments
   end
 

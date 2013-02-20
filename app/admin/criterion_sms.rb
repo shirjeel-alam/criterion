@@ -76,7 +76,7 @@ ActiveAdmin.register CriterionSms do
       elsif params[:payments].present?
         @registration_fee = params[:payments].delete :registration_fee
         @courses = params[:payments].collect { |payment| payment.second.to_i }
-        @payments = @registration_fee.present? ? Payment.all_due_fees(Date.today) : Payment.due_fees(Date.today)
+        @payments = @registration_fee.present? ? Payment.all_due_fees(Time.current.to_date) : Payment.due_fees(Time.current.to_date)
         @payments.reject! { |payment| payment unless @courses.include?((payment.payable.course_id rescue nil)) || payment.period.blank? }
         @numbers = @payments.collect { |payment| payment.payable.student.phone_numbers.mobile.collect(&:number) }.flatten
         @criterion_sms = CriterionSms.new(to: @numbers)

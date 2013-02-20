@@ -95,8 +95,8 @@ ActiveAdmin.register CriterionAccount do
   end
 
   action_item only: :show do
-    span link_to('Debit Account (Deposit)', new_admin_payment_path(payment: { status: Payment::PAID, payment_date: Date.today, payment_type: Payment::DEBIT, category_id: Category.direct_deposit.id })) if criterion_account.bank_account? 
-    span link_to('Appropriate To Partner(s)', new_admin_payment_path(payment: { payment_type: Payment::CREDIT, category_id: Category.appropriated.id, status: Payment::PAID, payment_date: Date.today, payment_method: Payment::INTERNAL })) if criterion_account.criterion_account?
+    span link_to('Debit Account (Deposit)', new_admin_payment_path(payment: { status: Payment::PAID, payment_date: Time.current.to_date, payment_type: Payment::DEBIT, category_id: Category.direct_deposit.id })) if criterion_account.bank_account? 
+    span link_to('Appropriate To Partner(s)', new_admin_payment_path(payment: { payment_type: Payment::CREDIT, category_id: Category.appropriated.id, status: Payment::PAID, payment_date: Time.current.to_date, payment_method: Payment::INTERNAL })) if criterion_account.criterion_account?
   end
 
   controller do

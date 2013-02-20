@@ -38,7 +38,7 @@ class Session < ActiveRecord::Base
   scope :cancelled, where(status: CANCELLED)
   
   def active?
-    year >= Date.today.year
+    year >= Time.current.to_date.year
   end
 
   def set_status
@@ -80,7 +80,7 @@ class Session < ActiveRecord::Base
   end
   
   def self.years
-    (Date.today.year..(Date.today + 5.years).year).to_a
+    (Time.current.to_date.year..(Time.current.to_date + 5.years).year).to_a
   end
   
   def self.get_all

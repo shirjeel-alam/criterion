@@ -25,13 +25,13 @@ ActiveAdmin::Dashboards.build do
         link_to 'Find Teacher', '#find_teacher', class: 'btn fancybox'
       end
       li class: 'dashboard_btn' do 
-        link_to 'Add Expenditure', new_admin_payment_path(payment: { status: Payment::PAID, payment_date: Date.today, payment_type: Payment::CREDIT }), class: 'btn'
+        link_to 'Add Expenditure', new_admin_payment_path(payment: { status: Payment::PAID, payment_date: Time.current.to_date, payment_type: Payment::CREDIT }), class: 'btn'
       end
     end
   end
 
   section 'Payments', priority: 2, if: proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? } do
-    due_payments = Payment.due_fees(Date.today).collect do |payment|
+    due_payments = Payment.due_fees(Time.current.to_date).collect do |payment|
       payment.period = payment.period.beginning_of_month
       payment
     end

@@ -134,16 +134,16 @@ class Payment < ActiveRecord::Base
   end
 
   def pay!
-    self.update_attributes(status: PAID, payment_date: Date.today)
+    self.update_attributes(status: PAID, payment_date: Time.current.to_date)
     create_account_entry
   end
 
   def void!
-    self.update_attributes(status: VOID, payment_date: Date.today)
+    self.update_attributes(status: VOID, payment_date: Time.current.to_date)
   end
 
   def refund!
-    self.update_attributes(status: REFUNDED, payment_date: Date.today)
+    self.update_attributes(status: REFUNDED, payment_date: Time.current.to_date)
     create_account_entry
   end
 

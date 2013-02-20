@@ -53,11 +53,11 @@ class Course < ActiveRecord::Base
   scope :with_schedule, joins(:schedules)
   
   def update_status
-    if start_date.blank? || start_date > Date.today
+    if start_date.blank? || start_date > Time.current.to_date
       self.status = NOT_STARTED
-    elsif start_date <= Date.today || end_date > Date.today
+    elsif start_date <= Time.current.to_date || end_date > Time.current.to_date
       self.status = IN_PROGRESS
-    elsif end_date >= Date.today
+    elsif end_date >= Time.current.to_date
       self.status = COMPLETED
     else
       self.status = CANCELLED
@@ -116,17 +116,17 @@ class Course < ActiveRecord::Base
   end
 
   def start!
-    self.update_attributes(status: IN_PROGRESS, course_date: Date.today, start_date: Date.today)
+    self.update_attributes(status: IN_PROGRESS, course_date: Time.current.to_date, start_date: Time.current.to_date)
     start_enrollments
   end
 
   def complete!
-    self.update_attributes(status: COMPLETED, course_date: Date.today, end_date: Date.today)
+    self.update_attributes(status: COMPLETED, course_date: Time.current.to_date, end_date: Time.current.to_date)
     complete_enrollments
   end
 
   def cancel!
-    self.update_attributes(status: CANCELLED, course_date: Date.today)
+    self.update_attributes(status: CANCELLED, course_date: Time.current.to_date)
     cancel_enrollments
   end
   

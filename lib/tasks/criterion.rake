@@ -10,7 +10,7 @@ namespace :criterion do
     args.with_defaults(period: 50)
     
     args[:period].to_i.times do |i|
-      curr_year = (Date.today + (i + 1).years).year
+      curr_year = (Time.current.to_date + (i + 1).years).year
       Session.create(period: MAY_JUNE, year: curr_year, registration_fee: REGISTRATION_FEE[rand(REGISTRATION_FEE.length)])
       Session.create(period: OCT_NOV, year: curr_year, registration_fee: REGISTRATION_FEE[rand(REGISTRATION_FEE.length)])
     end

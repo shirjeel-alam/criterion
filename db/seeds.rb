@@ -64,7 +64,7 @@ end
 ### Sessions ###
 Session.destroy_all
 
-curr_year = Date.today.year
+curr_year = Time.current.to_date.year
 5.times do
 	[Session::MAY_JUNE, Session::OCT_NOV].each do |period|
 		Session.create!(period: period, year: curr_year, registration_fee: 500)

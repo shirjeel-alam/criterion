@@ -13,22 +13,22 @@ ActiveAdmin.register Payment, as: 'Expenditure' do
 		Payment.expenditure
 	end
 	scope :this_month do |payments|
-		Payment.expenditure.on(Payment.month(Date.today))
+		Payment.expenditure.on(Payment.month(Time.current.to_date))
 	end
 	scope :last_month do |payments|
-		Payment.expenditure.on(Payment.month(Date.today << 1))
+		Payment.expenditure.on(Payment.month(Time.current.to_date << 1))
 	end
 	scope :first_quarter do |payments|
-		Payment.expenditure.on(Payment.quarter(Date.today.year, 1))
+		Payment.expenditure.on(Payment.quarter(Time.current.to_date.year, 1))
 	end
 	scope :second_quarter do |payments|
-		Payment.expenditure.on(Payment.quarter(Date.today.year, 2))
+		Payment.expenditure.on(Payment.quarter(Time.current.to_date.year, 2))
 	end
 	scope :third_quarter do |payments|
-		Payment.expenditure.on(Payment.quarter(Date.today.year, 3))
+		Payment.expenditure.on(Payment.quarter(Time.current.to_date.year, 3))
 	end
 	scope :fourth_quarter do |payments|
-		Payment.expenditure.on(Payment.quarter(Date.today.year, 4))
+		Payment.expenditure.on(Payment.quarter(Time.current.to_date.year, 4))
 	end
 
 	index do
@@ -53,6 +53,6 @@ ActiveAdmin.register Payment, as: 'Expenditure' do
 	end
 
 	action_item only: :index do
-		span link_to('New Expenditure', new_admin_payment_path(payment: { status: Payment::PAID, payment_date: Date.today, payment_type: Payment::CREDIT }))
+		span link_to('New Expenditure', new_admin_payment_path(payment: { status: Payment::PAID, payment_date: Time.current.to_date, payment_type: Payment::CREDIT }))
 	end
 end

@@ -95,7 +95,7 @@ ActiveAdmin.register Payment do
   
   member_action :pay, method: :get do
     @payment = Payment.find(params[:id])
-    @payment.attributes = { status: Payment::PAID, payment_date: Date.today }
+    @payment.attributes = { status: Payment::PAID, payment_date: Time.current.to_date }
   end
 
   member_action :paid, method: :put do
@@ -176,18 +176,18 @@ ActiveAdmin.register Payment do
     def new
       if params[:teacher_id]
         @account_holder = Teacher.find(params[:teacher_id])
-        @payment = @account_holder.transactions.build(payment_type: params[:payment_type], status: Payment::PAID, payment_date: Date.today)
+        @payment = @account_holder.transactions.build(payment_type: params[:payment_type], status: Payment::PAID, payment_date: Time.current.to_date)
         session[:holder_type] = 'Teacher'
       elsif params[:staff_id]
         @account_holder = Staff.find(params[:staff_id])
-        @payment = @account_holder.transactions.build(payment_type: params[:payment_type], status: Payment::PAID, payment_date: Date.today)
+        @payment = @account_holder.transactions.build(payment_type: params[:payment_type], status: Payment::PAID, payment_date: Time.current.to_date)
         session[:holder_type] = 'Staff'
       elsif params[:partner_id]
         @account_holder = Partner.find(params[:partner_id])
-        @payment = @account_holder.transactions.build(payment_type: params[:payment_type], status: Payment::PAID, payment_date: Date.today)
+        @payment = @account_holder.transactions.build(payment_type: params[:payment_type], status: Payment::PAID, payment_date: Time.current.to_date)
         session[:holder_type] = 'Partner'
       elsif params[:category_id]
-        @payment = Payment.new(payment_type: params[:payment_type],  category_id: params[:category_id], status: Payment::PAID, payment_date: Date.today)
+        @payment = Payment.new(payment_type: params[:payment_type],  category_id: params[:category_id], status: Payment::PAID, payment_date: Time.current.to_date)
       else
         @payment = Payment.new(params[:payment])
       end
