@@ -1,0 +1,16 @@
+= form_for @search, url: admin_criterion_mailer_path, html: { method: :get } do |f|
+  / = f.label :course
+  / = f.select :id_in, Course.get_all, {}, { multiple: true, class: 'chosen-select' }
+  = f.label :level
+  = f.select :level_in, Course.levels, {}, { multiple: true, class: 'chosen-select' }
+  = f.label :session
+  = f.select :session_id_in, Session.get_all, {}, { multiple: true, class: 'chosen-select' }
+  = f.label :teacher
+  = f.select :teacher_id_in, Teacher.get_all, {}, { multiple: true, class: 'chosen-select' }
+  = f.label :status
+  = f.select :status_in, Course.statuses, {}, { multiple: true, class: 'chosen-select' }
+  %div{ style: 'padding-top:10px;padding-bottom:25px' }
+    = check_box_tag :due_fees, true, @due_fees, style: 'float:left'
+    = label_tag :due_fees, 'DUE FEES', style: 'float:left;padding-left:5px'
+  .clear
+  = submit_tag 'Filter'

@@ -1,22 +1,23 @@
-ActiveAdmin.register CriterionMail, as: 'Criterion Mailer' do
-	menu label: 'Send E-Mail', parent: 'Criterion', priority: 2, if: proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? || current_admin_user.teacher? }
+ActiveAdmin.register_page "Criterion Mailer" do
+  menu label: 'Send E-Mail', parent: 'Criterion', priority: 2, if: proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? || current_admin_user.teacher? }
 
-	actions :index
+  sidebar :filter do
+    render 'filter'
+  end
 
-	scope :courses, default: true do |courses|
-		Course.order('id desc')
-	end
+  content do
+    render 'criterion_mailer'
+  end
 
-	scope :teachers do |teachers|
-		Teacher.order('id desc')
-	end
+  controller do
+    def index
+      params[:search].each do |filter_attrib|
+        params[:search].delete(filter_attrib.first) if filter_attrib.last.reject(&:blank?).blank?
+      end if params[:search].present?
 
-	index do
-		div render partial: 'criterion_mailer', locals: { courses: Course.order('id desc'), teachers: Teacher.order('id desc') }
-	end
-
-	controller do
-		active_admin_config.clear_sidebar_sections!
-		active_admin_config.clear_action_items!
-	end
+      @due_fees = params[:due_fees].present?
+      @search = Course.search(params[:search])
+      @courses = @due_fees ? @search.relation.with_due_fees(Time.current.to_date).uniq : @search.relation
+    end
+  end
 end
