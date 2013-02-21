@@ -23,7 +23,6 @@ gem 'ruby-hmac'
 gem 'hash_syntax'
 
 gem 'capistrano'
-gem 'turbo-sprockets-rails3'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
