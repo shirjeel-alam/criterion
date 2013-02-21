@@ -62,24 +62,19 @@ ActiveAdmin.register CriterionSms do
     end
 
     def new
-    	if params[:course].present?
-        @course = Course.find(params[:course])
-        @criterion_sms = CriterionSms.new(to: @course.phone_numbers.collect(&:second))
-      elsif params[:courses].present?
-        @courses = Course.find(params[:courses].collect(&:second))
-        @criterion_sms = CriterionSms.new(to: @courses.collect { |course| course.phone_numbers.collect(&:second) }.flatten)
-      elsif params[:teachers].present?
-        @teachers = Teacher.find(params[:teachers].collect(&:second))
-        @courses = @teachers.collect(&:courses).flatten
-        @numbers = (@teachers.collect { |teacher| teacher.phone_numbers.mobile.collect { |phone_number| phone_number.number } } + @courses.collect { |course| course.phone_numbers.collect(&:second) }).flatten
-        @criterion_sms = CriterionSms.new(to: @numbers)
-      elsif params[:payments].present?
-        @registration_fee = params[:payments].delete :registration_fee
-        @courses = params[:payments].collect { |payment| payment.second.to_i }
-        @payments = @registration_fee.present? ? Payment.all_due_fees(Time.current.to_date) : Payment.due_fees(Time.current.to_date)
-        @payments.reject! { |payment| payment unless @courses.include?((payment.payable.course_id rescue nil)) || payment.period.blank? }
-        @numbers = @payments.collect { |payment| payment.payable.student.phone_numbers.mobile.collect(&:number) }.flatten
-        @criterion_sms = CriterionSms.new(to: @numbers)
+      @due_fees = (params[:due_fees] == 'true')
+      @courses = Course.find(params[:courses].collect(&:second))
+
+      if params[:courses].present?
+        if @due_fees
+          @courses = @courses.collect(&:id)
+          @payments = Payment.due_fees(Time.current.to_date)
+          @payments.reject! { |payment| payment unless @courses.include?((payment.payable.course_id rescue nil)) || payment.period.blank? }
+          @numbers = @payments.collect { |payment| payment.payable.student.phone_numbers.mobile.collect(&:number) }.flatten
+          @criterion_sms = CriterionSms.new(to: @numbers)
+        else
+          @criterion_sms = CriterionSms.new(to: @courses.collect { |course| course.phone_numbers.collect(&:second) }.flatten)
+        end
       else
         @criterion_sms = current_admin_user.sent_messages.build
       end

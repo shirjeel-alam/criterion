@@ -20,4 +20,6 @@
           %td= content_tag(:span, course.status_label, :class => "status #{course.status_tag}")
         - flip = !flip
 
+    = hidden_field_tag :due_fees, @due_fees
+
   = submit_tag 'Send SMS'
