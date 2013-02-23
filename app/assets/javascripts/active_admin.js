@@ -17,26 +17,26 @@ $(document).ready(function() {
 
   $(".header").on('click', function()
   {
-    image = $(this).children('td:first').children('img')
-    if ($(image).attr('alt') == 'Down_arrow') {
-      $(image).attr('alt', 'Up_arrow');
-      $(image).attr('src', '/assets/up_arrow.png');
+    arrow_wrapper = $(this).children('td:first')
+    if ($(arrow_wrapper).hasClass('down')) {
+      $(arrow_wrapper).removeClass('down');
+      $(arrow_wrapper).addClass('up');
     } else {
-      $(image).attr('alt', 'Down_arrow');
-      $(image).attr('src', '/assets/down_arrow.png');
+      $(arrow_wrapper).removeClass('up');
+      $(arrow_wrapper).addClass('down');
     }
     $(this).nextUntil(".header").toggle();
   });
 
   $(".nested_header").on('click', function()
   {
-    image = $(this).children('td:first').children('img')
-    if ($(image).attr('alt') == 'Down_arrow') {
-      $(image).attr('alt', 'Up_arrow');
-      $(image).attr('src', '/assets/up_arrow.png');
+    arrow_wrapper = $(this).children('td:first')
+    if ($(arrow_wrapper).hasClass('down')) {
+      $(arrow_wrapper).removeClass('down');
+      $(arrow_wrapper).addClass('up');
     } else {
-      $(image).attr('alt', 'Down_arrow');
-      $(image).attr('src', '/assets/down_arrow.png');
+      $(arrow_wrapper).removeClass('up');
+      $(arrow_wrapper).addClass('down');
     }
     $(this).nextUntil(".nested_header").toggle();
     $(".content").hide();

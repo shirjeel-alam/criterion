@@ -100,7 +100,9 @@ ActiveAdmin.register Teacher do
             tr class: "#{flip ? 'odd' : 'even'} nested_header" do
               session_cumulative_amount = cumulative_payment.second.sum { |p| p.due? ? p.net_amount : 0 }
 
-              td image_tag('down_arrow.png')
+              td class: 'arrow down' do
+                '&nbsp;'.html_safe
+              end
               td cumulative_payment.first.strftime('%B %Y')
               td nil
               td nil
@@ -115,8 +117,10 @@ ActiveAdmin.register Teacher do
                 course_cumulative_amount = course_payment.second.sum { |p| p.due? ? p.net_amount : 0 }
                 payment = course_payment.second.first
 
-                td image_tag('down_arrow.png')
-                td payment.period_label
+                td class: 'arrow down nested' do
+                  '&nbsp;'.html_safe
+                end
+                td nil # payment.period_label
                 td nil
                 td link_to(payment.payable.course.name, admin_course_path(payment.payable.course))
                 td '-'
@@ -128,9 +132,9 @@ ActiveAdmin.register Teacher do
               course_payment.second.each do |payment|
                 tr class: "#{flip ? 'odd' : 'even'} content" do
                   td link_to(payment.id, admin_payment_path(payment))
-                  td payment.period_label
+                  td nil # payment.period_label
                   td link_to(payment.payable.student.name, admin_student_path(payment.payable.student))
-                  td link_to(payment.payable.course.name, admin_course_path(payment.payable.course))
+                  td nil # link_to(payment.payable.course.name, admin_course_path(payment.payable.course))
                   td number_to_currency(payment.net_amount, unit: 'Rs. ', precision: 0)
                   td status_tag(payment.status_label, payment.status_tag)
                   td number_to_currency(payment.net_amount * teacher.share, unit: 'Rs. ', precision: 0)

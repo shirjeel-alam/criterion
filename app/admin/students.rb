@@ -90,7 +90,9 @@ ActiveAdmin.register Student do
               cumulative_discount = cumulative_payment.second.sum { |p| p.due? ? (p.discount.present? ? p.discount : 0) : 0 }
               cumulative_net_amount = cumulative_gross_amount - cumulative_discount
 
-              td image_tag('down_arrow.png')
+              td class: 'arrow down' do
+                '&nbsp;'.html_safe
+              end
               td cumulative_payment.first.strftime('%B %Y')
               td nil
               td number_to_currency(cumulative_gross_amount, unit: 'Rs. ', precision: 0)
@@ -104,7 +106,7 @@ ActiveAdmin.register Student do
             cumulative_payment.second.sort_by(&:id).each do |payment|
               tr class: "#{flip ? 'odd' : 'even'} content" do
                 td link_to(payment.id, admin_payment_path(payment))
-                td payment.period_label
+                td nil # payment.period_label
                 td link_to(payment.payable.course.name, admin_course_path(payment.payable.course))
                 td number_to_currency(best_in_place_if(current_admin_user.super_admin_or_partner? || (current_admin_user.admin? && payment.due?) , payment, :amount, type: :input, path: [:admin, payment]), unit: 'Rs. ', precision: 0)
                 td number_to_currency(best_in_place_if(current_admin_user.super_admin_or_partner? || (current_admin_user.admin? && payment.due?) , payment, :discount, type: :input, path: [:admin, payment]), unit: 'Rs. ', precision: 0)
@@ -129,46 +131,16 @@ ActiveAdmin.register Student do
       end
     end
     
-    panel 'Student Enrollments (In Progress)' do
-      table_for student.enrollments.in_progress do |t|
+    panel 'Student Enrollments' do
+      table_for student.enrollments do |t|
         t.column(:id) { |enrollment| link_to(enrollment.id, admin_enrollment_path(enrollment)) }
         t.column(:course) { |enrollment| link_to(enrollment.course.name, admin_course_path(enrollment.course)) }
         t.column(:session) { |enrollment| link_to(enrollment.course.session.label, admin_session_path(enrollment.course.session)) rescue nil }
         t.column(:teacher) { |enrollment| link_to(enrollment.course.teacher.name, admin_teacher_path(enrollment.course.teacher)) }
         t.column(:status) { |enrollment| status_tag(enrollment.status_label, enrollment.status_tag) }
       end 
-    end if student.enrollments.in_progress.present?
+    end if student.enrollments.present?
     
-    panel 'Student Enrollments (Not Started)' do
-      table_for student.enrollments.not_started do |t|
-        t.column(:id) { |enrollment| link_to(enrollment.id, admin_enrollment_path(enrollment)) }
-        t.column(:course) { |enrollment| link_to(enrollment.course.name, admin_course_path(enrollment.course)) }
-        t.column(:session) { |enrollment| link_to(enrollment.course.session.label, admin_session_path(enrollment.course.session)) rescue nil }
-        t.column(:teacher) { |enrollment| link_to(enrollment.course.teacher.name, admin_teacher_path(enrollment.course.teacher)) }
-        t.column(:status) { |enrollment| status_tag(enrollment.status_label, enrollment.status_tag) }
-      end 
-    end if student.enrollments.not_started.present?
-    
-    panel 'Student Enrollments (Completed)' do
-      table_for student.enrollments.completed do |t|
-        t.column(:id) { |enrollment| link_to(enrollment.id, admin_enrollment_path(enrollment)) }
-        t.column(:course) { |enrollment| link_to(enrollment.course.name, admin_course_path(enrollment.course)) }
-        t.column(:session) { |enrollment| link_to(enrollment.course.session.label, admin_session_path(enrollment.course.session)) rescue nil }
-        t.column(:teacher) { |enrollment| link_to(enrollment.course.teacher.name, admin_teacher_path(enrollment.course.teacher)) }
-        t.column(:status) { |enrollment| status_tag(enrollment.status_label, enrollment.status_tag) }
-      end      
-    end if student.enrollments.completed.present?
-    
-    panel 'Student Enrollments (Cancelled)' do
-      table_for student.enrollments.cancelled do |t|
-        t.column(:id) { |enrollment| link_to(enrollment.id, admin_enrollment_path(enrollment)) }
-        t.column(:course) { |enrollment| link_to(enrollment.course.name, admin_course_path(enrollment.course)) }
-        t.column(:session) { |enrollment| link_to(enrollment.course.session.label, admin_session_path(enrollment.course.session)) rescue nil }
-        t.column(:teacher) { |enrollment| link_to(enrollment.course.teacher.name, admin_teacher_path(enrollment.course.teacher)) }
-        t.column(:status) { |enrollment| status_tag(enrollment.status_label, enrollment.status_tag) }
-      end 
-    end if student.enrollments.cancelled.present?
-
     panel 'Student Fees Table' do
       sessions = student.enrollments.started_or_completed.sort_by(&:session_id).group_by(&:session_id)
 

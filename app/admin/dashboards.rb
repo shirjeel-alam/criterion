@@ -55,7 +55,9 @@ ActiveAdmin::Dashboards.build do
         flip = true
 
         tr class: 'even header' do
-          td image_tag('down_arrow.png')
+          td class: 'arrow down' do
+            '&nbsp;'.html_safe
+          end
           td do
             strong 'Registration Fee'
           end
@@ -76,7 +78,9 @@ ActiveAdmin::Dashboards.build do
 
         result.each do |course_due_payments|
           tr class: "#{flip ? 'odd' : 'even'} header" do
-            td image_tag('down_arrow.png')
+            td class: 'arrow down' do
+              '&nbsp;'.html_safe
+            end
             td link_to(course_due_payments.first.name, admin_course_path(course_due_payments.first)) rescue td nil
             td course_due_payments.second.count
             td nil
@@ -88,7 +92,7 @@ ActiveAdmin::Dashboards.build do
             tr class: "#{flip ? 'odd' : 'even'} content" do
               td link_to(payment.id, admin_payment_path(payment))
               if payment.payable.is_a?(Enrollment) || payment.payable.is_a?(SessionStudent)
-                td link_to(payment.payable.course.name, admin_course_path(payment.payable.course)) rescue td nil
+                td nil # link_to(payment.payable.course.name, admin_course_path(payment.payable.course)) rescue td nil
                 td link_to(payment.payable.student.name, admin_student_path(payment.payable.student)) rescue td nil
               else
                 td nil

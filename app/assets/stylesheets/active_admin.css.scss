@@ -47,3 +47,19 @@ p.red {
 #header h1 img {
   top: -12px;
 }
+
+.nested_header, .header {
+  .arrow.down {
+    background: url(image_path('down_arrow.png')) no-repeat 19% 50% transparent !important;
+  }
+  .arrow.up {
+    background: url(image_path('up_arrow.png')) no-repeat 19% 50% transparent !important;
+  }
+
+  .arrow.down.nested {
+    background: url(image_path('down_arrow.png')) no-repeat 38% 50% transparent !important;
+  } 
+  .arrow.up.nested {
+    background: url(image_path('up_arrow.png')) no-repeat 38% 50% transparent !important; 
+  } 
+}
