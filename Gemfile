@@ -34,7 +34,7 @@ gem 'capistrano'
 # gem 'capistrano'
 
 # For heroku db:push and db:pull
-# gem 'taps'
+gem 'taps'
 
 # Gems used only for assets and not required
 # in production environments by default.
