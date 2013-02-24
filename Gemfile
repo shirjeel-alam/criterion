@@ -48,3 +48,7 @@ group :development, :test do
   gem 'pry-rails'
   gem 'annotate'
 end
+
+group :production do
+  gem 'pg'
+end
