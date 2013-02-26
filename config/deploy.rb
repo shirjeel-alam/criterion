@@ -7,7 +7,8 @@ set :application, 'criterion'
 set :rails_env, 'production'
 
 # Server Settings. The port is optional, default to 22.
-server 'li69-232.members.linode.com', :web, :app, :db, primary: true
+# server 'li69-232.members.linode.com', :web, :app, :db, primary: true
+server '198.211.100.110', :web, :app, :db, primary: true
 
 # User in the remote server. This is the user who's going to be used to deploy, and must have proper permissions.
 set :user, 'root'
