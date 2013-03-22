@@ -58,8 +58,9 @@ class CriterionReport < ActiveRecord::Base
 	end
 
   def close!
-    update_report_data
-    update_attribute(:closed, true)
+    calc_report_data
+    self.attributes = { updated_at: Time.now, closed: true }
+    save!
   end
 
   def open!

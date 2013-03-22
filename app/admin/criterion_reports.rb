@@ -44,7 +44,7 @@ ActiveAdmin.register CriterionReport do
     end 
 		column nil do |report|
 			span link_to('View', admin_criterion_report_path(report), class: :member_link)
-			span link_to_unless(report.closed?, 'Update', update_report_admin_criterion_report_path(report), method: :put, class: :member_link)
+			span link_to('Update', update_report_admin_criterion_report_path(report), method: :put, class: :member_link)
       span link_to_unless(report.closed?, 'Close', close_report_admin_criterion_report_path(report), method: :put, data: { confirm: 'Are you sure?' })
 		end
 	end
@@ -132,8 +132,8 @@ ActiveAdmin.register CriterionReport do
   end
 
   action_item only: :show do
+    span link_to 'Update', update_report_admin_criterion_report_path(criterion_report), method: :put
     unless criterion_report.closed?
-      span link_to 'Update', update_report_admin_criterion_report_path(criterion_report), method: :put
       span link_to 'Close And Finalize', close_report_admin_criterion_report_path(criterion_report), method: :put, data: { confirm: 'Are you sure?' }
     end
   end
