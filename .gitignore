@@ -15,4 +15,5 @@ config/*.yml
 rerun.txt
 pickle-email-*.html
 .redcar/*
-.rvmrc
+.ruby-version
+.ruby-gemset
