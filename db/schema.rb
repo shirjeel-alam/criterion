@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121222160218) do
+ActiveRecord::Schema.define(:version => 20130416114623) do
 
   create_table "account_entries", :force => true do |t|
     t.integer  "criterion_account_id"
@@ -21,6 +21,20 @@ ActiveRecord::Schema.define(:version => 20121222160218) do
     t.datetime "created_at",           :null => false
     t.datetime "updated_at",           :null => false
   end
+
+  create_table "action_requests", :force => true do |t|
+    t.string   "action"
+    t.integer  "requested_by_id"
+    t.integer  "facilitated_by_id"
+    t.integer  "action_item_id"
+    t.string   "action_item_type"
+    t.string   "state"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+  end
+
+  add_index "action_requests", ["facilitated_by_id"], :name => "index_action_requests_on_facilitated_by_id"
+  add_index "action_requests", ["requested_by_id"], :name => "index_action_requests_on_requested_by_id"
 
   create_table "active_admin_comments", :force => true do |t|
     t.integer  "resource_id",   :null => false

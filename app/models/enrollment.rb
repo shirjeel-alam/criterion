@@ -21,8 +21,9 @@ class Enrollment < ActiveRecord::Base
 
   has_one :teacher, through: :course
   has_one :session, through: :course
-  
+
   has_many :payments, as: :payable, dependent: :destroy
+  has_many :action_requests, as: :action_item
   
   validates :course_id, uniqueness: { scope: :student_id }
   validates :status, presence: true, inclusion: { in: [NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED] }

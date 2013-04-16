@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  action: MyString
+  requested_by: 
+  facilitated_by: 
+  action_item_id: 1
+  action_item_type: 
+
+two:
+  action: MyString
+  requested_by: 
+  facilitated_by: 
+  action_item_id: 1
+  action_item_type: 

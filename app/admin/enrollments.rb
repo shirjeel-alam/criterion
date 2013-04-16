@@ -175,13 +175,23 @@ ActiveAdmin.register Enrollment do
   end
 
   member_action :cancel, method: :put do
-    enrollment = Enrollment.find(params[:id])
-    if enrollment.cancel!
-      flash[:error] = 'Enrollment Cancelled'
+    if current_admin_user.super_admin_or_partner?
+      enrollment = Enrollment.find(params[:id])
+      if enrollment.cancel!
+        flash[:error] = 'Enrollment Cancelled'
+      else
+        flash[:error] = 'Error Cancelling Enrollment'
+      end
+      redirect_to action: :show
     else
-      flash[:error] = 'Error Cancelling Enrollment'
+      enrollment = Enrollment.find(params[:id])
+      action_request = ActionRequest.where(action: 'cancel', action_item_id: enrollment.id, action_item_type: enrollment.class.name).first_or_initialize
+      action_request.requested_by = current_admin_user
+      action_request.save
+
+      flash[:warning] = 'Request has been sent for approval'
+      redirect_to action: :show
     end
-    redirect_to action: :show
   end
 
   member_action :set_discount, method: :put do
@@ -203,13 +213,13 @@ ActiveAdmin.register Enrollment do
     span link_to('Refresh Enrollment', refresh_admin_enrollment_path(enrollment), method: :put)
 
     if current_admin_user.super_admin_or_partner?
-      span link_to('Delete Enrollment', admin_enrollment_path(enrollment), method: :delete, data: { data: { confirm: 'Are you sure?' }})
+      span link_to('Delete Enrollment', admin_enrollment_path(enrollment), method: :delete, data: { confirm: 'Are you sure?' })
     end
 
     if enrollment.not_started?
-      span link_to('Start Enrollment', start_admin_enrollment_path(enrollment), method: :put, data: { data: { confirm: 'Are you sure?' }})
-    elsif enrollment.started?
-      span link_to('Cancel Enrollment', cancel_admin_enrollment_path(enrollment), method: :put, data: { data: { confirm: 'Are you sure?' }})
+      span link_to('Start Enrollment', start_admin_enrollment_path(enrollment), method: :put, data: { confirm: 'Are you sure?' })
+    elsif enrollment.started? && enrollment.action_requests.cancel.blank? 
+      span link_to('Cancel Enrollment', cancel_admin_enrollment_path(enrollment), method: :put, data: { confirm: 'Are you sure?' })
     end
   end
 

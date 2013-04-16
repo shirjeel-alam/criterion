@@ -17,6 +17,7 @@ gem 'chosen-rails'
 gem 'fancybox-rails'
 gem 'momentjs-rails'
 gem 'haml-rails'
+gem 'aasm'
 
 gem 'rufus-scheduler'
 gem 'ruby-hmac'
@@ -46,6 +47,7 @@ end
 group :development, :test do
   gem 'pry-rails'
   gem 'annotate'
+  gem 'puma'
 end
 
 group :development do

@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    aasm (3.0.16)
     actionmailer (3.2.13)
       actionpack (= 3.2.13)
       mail (~> 2.5.3)
@@ -151,6 +152,8 @@ GEM
       slop (~> 3.4)
     pry-rails (0.2.2)
       pry (>= 0.9.10)
+    puma (1.6.3)
+      rack (~> 1.2)
     quiet_assets (1.0.2)
       railties (>= 3.1, < 5.0)
     rack (1.4.5)
@@ -226,6 +229,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  aasm
   activeadmin (= 0.4.4)
   airbrake
   annotate
@@ -243,6 +247,7 @@ DEPENDENCIES
   momentjs-rails
   mysql2
   pry-rails
+  puma
   quiet_assets
   rails (= 3.2.13)
   ruby-hmac

@@ -104,6 +104,11 @@ ActiveAdmin::Dashboards.build do
           end
         end
       end
+
+      if current_admin_user.super_admin_or_partner? && ActionRequest.pending.exists?
+        action_request_url = link_to(ActionRequest.pending.count, admin_action_requests_path)
+        flash[:warning] = "There #{ActionRequest.pending.count > 1 ? 'are' : 'is'} #{action_request_url} pending #{ActionRequest.pending.count > 1 ? 'requests' : 'request'}".html_safe
+      end
     end
 
     div style: 'clear:both'
@@ -137,6 +142,9 @@ ActiveAdmin::Dashboards.build do
       li do
         span "Accumulated Profit/Loss: "
         span status_tag(number_to_currency(CriterionMonthlyReport.balance.to_s, unit: 'Rs. ', precision: 0), CriterionMonthlyReport.balance_tag)
+      end
+      if current_admin_user.super_admin_or_partner?
+        li "Pending Requests: #{ActionRequest.pending.count} #{link_to('(Show)', admin_action_requests_path)}".html_safe
       end
     end
   end

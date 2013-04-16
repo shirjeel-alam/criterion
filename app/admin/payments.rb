@@ -122,9 +122,19 @@ ActiveAdmin.register Payment do
   end
 
   member_action :void, method: :put do
-    payment = Payment.find(params[:id])
-    payment.void! ? flash[:notice] = 'Payment successfully voided.' : flash[:notice] = 'Error in processing payment.'
-    redirect_to_back
+    if current_admin_user.super_admin_or_partner?
+      payment = Payment.find(params[:id])
+      payment.void! ? flash[:notice] = 'Payment successfully voided.' : flash[:notice] = 'Error in processing payment.'
+      redirect_to_back
+    else
+      payment = Payment.find(params[:id])
+      action_request = ActionRequest.where(action: 'void', action_item_id: payment.id, action_item_type: payment.class.name).first_or_initialize
+      action_request.requested_by = current_admin_user
+      action_request.save
+
+      flash[:warning] = 'Request has been sent for approval'
+      redirect_to_back
+    end
   end
   
   member_action :refund, method: :put do
