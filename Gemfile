@@ -1,4 +1,4 @@
-source 'http://rubygems.org'
+source 'https://rubygems.org'
 
 gem 'rails', '3.2.13'
 gem 'mysql2'
@@ -46,4 +46,10 @@ end
 group :development, :test do
   gem 'pry-rails'
   gem 'annotate'
+end
+
+group :development do
+  gem 'better_errors'
+  gem 'binding_of_caller'
+  gem 'quiet_assets'
 end
