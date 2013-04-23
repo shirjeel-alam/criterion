@@ -10,7 +10,7 @@ ActiveAdmin.register ActionRequest do
 
   index do
     column 'ID', sortable: :id do |action_request|
-      link_to(action_request.id, admin_action_requests_path(action_request))
+      link_to(action_request.id, admin_action_request_path(action_request))
     end
     column :action_item, sortable: :action_item_id do |action_request|
       action_item = action_request.action_item
