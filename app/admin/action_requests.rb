@@ -17,7 +17,11 @@ ActiveAdmin.register ActionRequest do
       if action_item.is_a?(Enrollment)
         link_to(action_item.title, admin_enrollment_path(action_item))
       elsif action_item.is_a?(Payment)
-        link_to("#{action_item.payable.title} (Payment)", admin_payment_path(action_item))
+        if action_item.payable.is_a?(Enrollment)
+          link_to("#{action_item.payable.title} (Payment)", admin_payment_path(action_item))
+        elsif action_item.payable.is_a?(SessionStudent)
+          link_to("#{action_item.payable.session.title} (Registration Payment)", admin_payment_path(action_item))
+        end
       end 
     end
     column :action
