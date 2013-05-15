@@ -47,7 +47,6 @@ end
 group :development, :test do
   gem 'pry-rails'
   gem 'annotate'
-  gem 'puma'
 end
 
 group :development do
