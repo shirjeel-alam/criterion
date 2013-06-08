@@ -53,4 +53,11 @@ namespace :criterion do
     CriterionSms.destroy_all
     CriterionMail.destroy_all
   end
+
+  desc "Copy current balance to initial balance"
+  task copy_balances: :environment do
+    CriterionAccount.all.each do |criterion_account|
+      criterion_account.update_attribute(:initial_balance, criterion_account.balance)
+    end
+  end
 end

@@ -21,6 +21,10 @@ class SessionStudent < ActiveRecord::Base
 
   after_create :create_registration_fee
 
+  def registration_fee?
+    registration_fee.present?
+  end
+
   def create_registration_fee
   	payment = Payment.create(amount: session.registration_fee, status: Payment::DUE, payment_type: Payment::DEBIT, payable: self)
   	self.update_attribute(:payment_id, payment.id)

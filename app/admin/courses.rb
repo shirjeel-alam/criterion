@@ -115,10 +115,10 @@ ActiveAdmin.register Course do
         t.column(:student) { |enrollment| link_to(enrollment.student.name, admin_student_path(enrollment.student)) }
         t.column(:phone_number) { |enrollment| enrollment.student.phone_numbers.first.number rescue nil }
         t.column(:status) { |enrollment| status_tag(enrollment.status_label, enrollment.status_tag) }
-        t.column(:registration_fee) { |enrollment| status_tag(enrollment.registration_fee.status_label, enrollment.registration_fee.status_tag) }
+        t.column(:registration_fee) { |enrollment| status_tag(enrollment.registration_fee.status_label, enrollment.registration_fee.status_tag) rescue nil }
         t.column do |enrollment|
           registration_fee = enrollment.registration_fee
-          if registration_fee.due?
+          if registration_fee.present? && registration_fee.due?
             li link_to('Make Payment', pay_admin_payment_path(registration_fee), method: :get)
             li link_to('Void Payment', void_admin_payment_path(registration_fee), method: :put, data: { confirm: 'Are you sure?' })
           end
