@@ -18,7 +18,7 @@
 class CriterionSms < ActiveRecord::Base
   attr_accessor :extra
   
-	API_KEY = 'b84b75daddef4d7db570'
+	API_KEY = '0eda5d8d442df99f3608'
 	DEFAULT_VALID_MOBILE_NUMBER = '03132100200'
 
 	belongs_to :sender, polymorphic: true
@@ -57,7 +57,7 @@ class CriterionSms < ActiveRecord::Base
 	end
 
 	def send_sms
-		http = Net::HTTP.new('api.sendsms.pk')
+		http = Net::HTTP.new('api.FreeSMSBag.com')
 		request = Net::HTTP::Post.new("/sendsms/#{API_KEY}.json")
 		request.set_form_data(phone: to, msg: message, type: 0)
 		response = http.request(request)
