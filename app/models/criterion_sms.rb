@@ -57,11 +57,11 @@ class CriterionSms < ActiveRecord::Base
 	end
 
 	def send_sms
-		http = Net::HTTP.new('api.FreeSMSBag.com')
+    http = Net::HTTP.new('api.sendsms.pk')
 		request = Net::HTTP::Post.new("/sendsms/#{API_KEY}.json")
 		request.set_form_data(phone: to, msg: message, type: 0)
 		response = http.request(request)
-
+    
     decoded_response = ActiveSupport::JSON.decode(response.body)
     result = decoded_response['result']
     api_response = decoded_response['message']
