@@ -82,28 +82,50 @@ task :tail, :roles => :app do
   end
 end
 
-namespace :deploy do
-  namespace :assets do
-    task :precompile, :roles => :web do
-      from = source.next_revision(current_revision)
-      # if capture("cd #{latest_release} && #{source.local.log(from)} vendor/assets/ lib/assets/ app/assets/ | wc -l").to_i > 0
-        run_locally("rake assets:clean && rake assets:precompile")
-        run_locally "cd public && tar -jcf assets.tar.bz2 assets"
-        top.upload "public/assets.tar.bz2", "#{shared_path}", :via => :scp
-        run "cd #{shared_path} && tar -jxf assets.tar.bz2 && rm assets.tar.bz2"
-        run_locally "rm public/assets.tar.bz2"
-        run_locally("rake assets:clean")
-      # else
-        # logger.info "Skipping asset precompilation because there were no asset changes"
-      # end
-    end
+# namespace :deploy do
+#   namespace :assets do
+#     task :precompile, :roles => :web do
+#       from = source.next_revision(current_revision)
+#       # if capture("cd #{latest_release} && #{source.local.log(from)} vendor/assets/ lib/assets/ app/assets/ | wc -l").to_i > 0
+#         run_locally("rake assets:clean && rake assets:precompile")
+#         run_locally "cd public && tar -jcf assets.tar.bz2 assets"
+#         top.upload "public/assets.tar.bz2", "#{shared_path}", :via => :scp
+#         run "cd #{shared_path} && tar -jxf assets.tar.bz2 && rm assets.tar.bz2"
+#         run_locally "rm public/assets.tar.bz2"
+#         run_locally("rake assets:clean")
+#       # else
+#         # logger.info "Skipping asset precompilation because there were no asset changes"
+#       # end
+#     end
 
-    task :symlink, roles: :web do
-      run ("rm -rf #{latest_release}/public/assets &&
-            mkdir -p #{latest_release}/public &&
-            mkdir -p #{shared_path}/assets &&
-            ln -s #{shared_path}/assets #{latest_release}/public/assets")
+#     task :symlink, roles: :web do
+#       run ("rm -rf #{latest_release}/public/assets &&
+#             mkdir -p #{latest_release}/public &&
+#             mkdir -p #{shared_path}/assets &&
+#             ln -s #{shared_path}/assets #{latest_release}/public/assets")
+#     end
+#   end
+# end
+
+namespace :deploy do
+  task :default do
+    update
+    assets.precompile
+    restart
+    cleanup
+    # etc
+  end
+end
+ 
+namespace :assets do
+  desc "Precompile assets locally and then rsync to app servers"
+  task :precompile, :only => { :primary => true } do
+    run_locally "bundle exec rake assets:precompile;"
+    servers = find_servers :roles => [:app], :except => { :no_release => true }
+    servers.each do |server|
+      run_locally "rsync -av ./public/assets/ #{user}@#{server}:#{current_path}/public/assets/;"
     end
+    run_locally "rm -rf public/assets"
   end
 end
 
@@ -113,8 +135,8 @@ before "deploy",            "deploy:db_symlink"
 before "deploy:migrations", "deploy:db_symlink"
 before "deploy:db_setup",   "deploy:db_symlink"
 
-after "deploy:update_code", "deploy:assets:precompile"
-after "deploy:finalize_update", "deploy:assets:symlink"
+# after "deploy:update_code", "deploy:assets:precompile"
+# after "deploy:finalize_update", "deploy:assets:symlink"
 
 after "deploy:finalize_update", "deploy:db_symlink"
 
