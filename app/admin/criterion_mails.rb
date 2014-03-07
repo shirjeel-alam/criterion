@@ -84,7 +84,7 @@ ActiveAdmin.register CriterionMail do
       if @criterion_mail.save
         CriterionMailer.course_mail(@criterion_mail).deliver
         flash[:notice] = 'Mail sent successfully'
-        redirect_to admin_criterion_mailers_path
+        redirect_to admin_criterion_mailer_path
       else
         @criterion_mail.to = @criterion_mail.to.split(',') unless @criterion_mail.to.blank?
         @criterion_mail.cc = @criterion_mail.cc.split(',') unless @criterion_mail.cc.blank?
