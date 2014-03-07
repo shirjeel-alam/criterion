@@ -117,5 +117,6 @@ end
 
 
 set :keep_releases, 5
+before "deploy", "deploy:setup"
 after "deploy:restart", "deploy:cleanup" 
 after "deploy:update_code", "deploy:migrate"
