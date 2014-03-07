@@ -48,6 +48,7 @@ group :development, :test do
   gem 'pry-rails'
   gem 'annotate'
   gem 'puma'
+  gem 'mailcatcher'
 end
 
 group :development do
