@@ -22,6 +22,8 @@ Criterion::Application.configure do
 
   config.assets.debug = true
 
+  config.assets.prefix = "criterion/assets"
+
   # Defaults to Rails.root.join("public/assets")
   # config.assets.manifest = YOUR_PATH
 
