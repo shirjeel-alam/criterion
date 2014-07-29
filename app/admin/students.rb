@@ -27,9 +27,9 @@ ActiveAdmin.register Student do
     panel 'Student Details' do
       attributes_table_for student do
         row(:id) { student.id }
-        row(:name) { student.name }
+        row(:name) { best_in_place_if((current_admin_user.super_admin_or_partner? || current_admin_user.admin?), student, :name, type: :input, path: [:admin, student]) }
         row(:email) { best_in_place_if((current_admin_user.super_admin_or_partner? || current_admin_user.admin?), student, :email, type: :input, path: [:admin, student]) }
-        row(:address) { student.address }
+        row(:address) { best_in_place_if((current_admin_user.super_admin_or_partner? || current_admin_user.admin?), student, :address, type: :input, path: [:admin, student]) }
         row(:phone_numbers) do
           if student.phone_numbers.present? 
             student.phone_numbers.each do |number|
