@@ -2,6 +2,7 @@
 lock '3.2.1'
 
 set :application, 'criterion'
+set :user, 'root'
 set :repo_url, 'git@bitbucket.org:shirjeelalam/criterion.git'
 
 # Default branch is :master
