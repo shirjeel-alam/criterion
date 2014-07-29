@@ -55,9 +55,9 @@ class Course < ActiveRecord::Base
   def update_status
     if start_date.blank? || start_date > Time.current.to_date
       self.status = NOT_STARTED
-    elsif start_date <= Time.current.to_date || end_date > Time.current.to_date
+    elsif start_date <= Time.current.to_date && end_date > Time.current.to_date
       self.status = IN_PROGRESS
-    elsif end_date >= Time.current.to_date
+    elsif end_date <= Time.current.to_date
       self.status = COMPLETED
     else
       self.status = CANCELLED
@@ -67,9 +67,9 @@ class Course < ActiveRecord::Base
   def set_end_date    
     case session.period
       when Session::MAY_JUNE
-        self.end_date = Date.parse("May #{session.year}")
+        self.end_date = Date.parse("31 May #{session.year}")
       when Session::OCT_NOV
-        self.end_date = Date.parse("October #{session.year}")
+        self.end_date = Date.parse("31 October #{session.year}")
     end unless end_date.present?
   end
   
