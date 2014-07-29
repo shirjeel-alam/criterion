@@ -7,7 +7,7 @@
 		f.input :cc, :as => :select, :multiple => true, :collection => Email.all_emails, :required => true, :input_html => { :class => 'chosen-select', :style => 'width:77.8%;', :disabled => disabled }
 		f.input :bcc, :as => :select, :multiple => true, :collection => Email.all_emails, :required => true, :input_html => { :class => 'chosen-select', :style => 'width:77.8%;', :disabled => disabled }
 		f.input :subject, :input_html => { :disabled => disabled }
-		f.input :body, :input_html => { :id => :mail_body }, :required => true
+		f.input :body, :as => :html_editor, :required => true
 	end
 
   f.buttons

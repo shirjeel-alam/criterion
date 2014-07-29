@@ -3,7 +3,6 @@
 //= require jquery_ujs
 //= require jquery.purr
 //= require best_in_place
-//= require tinymce-jquery
 //= require chosen-jquery
 //= require fancybox
 //= require moment
@@ -47,20 +46,6 @@ $(document).ready(function() {
   /*** Best In-Place ***/
   
   $('.best_in_place').best_in_place();
-
-  /*** END ***/
-
-  /*** TinyMCE ***/
-
-  $('#mail_body').tinymce({
-    theme: 'advanced',
-    mode: 'textareas',
-    plugins: 'noneditable'
-  });
-
-  $('.admin_criterion_mails').live('click', function() {
-  	$('#mail_body').val(tinyMCE.activeEditor.getContent());
-  });
 
   /*** END ***/
 

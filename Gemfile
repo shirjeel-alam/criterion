@@ -10,10 +10,10 @@ gem 'validates_timeliness'
 
 gem 'activeadmin', '0.4.4'
 gem 'sass-rails', '3.2.5'
+gem 'active_admin_editor'
 
 gem 'jquery-rails', '2.1.3'
 gem 'best_in_place'
-gem 'tinymce-rails', '3.5.8'
 gem 'chosen-rails'
 gem 'fancybox-rails'
 gem 'momentjs-rails'
