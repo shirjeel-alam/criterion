@@ -1,5 +1,5 @@
 ActiveAdmin.register CriterionSms do
-	menu parent: 'More Menus', label: 'Criterion SMS', if: proc { current_admin_user.super_admin_or_partner? }
+	menu parent: 'More Menus', label: 'Criterion SMS', if: proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? }
 
 	filter :id
 	filter :to
@@ -53,7 +53,7 @@ ActiveAdmin.register CriterionSms do
     before_filter :check_authorization
     
     def check_authorization
-      if current_admin_user.all_other?
+      if current_admin_user.all_other? && !current_admin_user.admin?
         if %w[index show edit update destroy].include?(action_name)
           flash[:error] = 'You are not authorized to perform this action'
           redirect_to_back
