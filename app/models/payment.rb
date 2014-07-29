@@ -33,6 +33,7 @@ class Payment < ActiveRecord::Base
   after_create :create_account_entry
   before_save :set_category
   after_save :set_period, :update_monthly_report
+  after_destroy :update_monthly_report
 
   validates :amount, presence: true, numericality: { only_integer: true, greater_than: 0 }
   validates :status, presence: true, inclusion: { in: [DUE, PAID, VOID, REFUNDED] }

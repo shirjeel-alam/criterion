@@ -10,25 +10,25 @@ ActiveAdmin.register Payment, as: 'Expenditure' do
 	filter :payment_method, as: :select, collection: proc { Payment.payment_methods }, input_html: { class: 'chosen-select' }
 
 	scope :all, default: true do |payments|
-		Payment.expenditure
+		Payment.expenditure.order('payment_date DESC')
 	end
 	scope :this_month do |payments|
-		Payment.expenditure.on(Payment.month(Time.current.to_date))
+		Payment.expenditure.on(Payment.month(Time.current.to_date)).order('payment_date DESC')
 	end
 	scope :last_month do |payments|
-		Payment.expenditure.on(Payment.month(Time.current.to_date << 1))
+		Payment.expenditure.on(Payment.month(Time.current.to_date << 1)).order('payment_date DESC')
 	end
 	scope :first_quarter do |payments|
-		Payment.expenditure.on(Payment.quarter(Time.current.to_date.year, 1))
+		Payment.expenditure.on(Payment.quarter(Time.current.to_date.year, 1)).order('payment_date DESC')
 	end
 	scope :second_quarter do |payments|
-		Payment.expenditure.on(Payment.quarter(Time.current.to_date.year, 2))
+		Payment.expenditure.on(Payment.quarter(Time.current.to_date.year, 2)).order('payment_date DESC')
 	end
 	scope :third_quarter do |payments|
-		Payment.expenditure.on(Payment.quarter(Time.current.to_date.year, 3))
+		Payment.expenditure.on(Payment.quarter(Time.current.to_date.year, 3)).order('payment_date DESC')
 	end
 	scope :fourth_quarter do |payments|
-		Payment.expenditure.on(Payment.quarter(Time.current.to_date.year, 4))
+		Payment.expenditure.on(Payment.quarter(Time.current.to_date.year, 4)).order('payment_date DESC')
 	end
 
 	index do
