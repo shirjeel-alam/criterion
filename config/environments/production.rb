@@ -76,6 +76,4 @@ Criterion::Application.configure do
   }
 
   config.time_zone = 'Karachi'
-
-  config.assets.initialize_on_precompile = false
 end
