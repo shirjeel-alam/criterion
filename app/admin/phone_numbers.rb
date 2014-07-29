@@ -75,7 +75,7 @@ ActiveAdmin.register PhoneNumber do
     before_filter :check_authorization, except: [:new, :create]
 
     def check_authorization
-      if current_admin_user.all_other?
+      if !current_admin_user.super_admin_or_partner? && !current_admin_user.admin?
         phone_numbers = current_admin_user.user.phone_numbers.mobile.collect(&:id)
 
         action_allowed = false
