@@ -33,7 +33,7 @@ set :ssh_options, {
   forward_agent: true
 }
 
-set :assets_prefix, "criterion/assets"
+# set :assets_prefix, "criterion/assets"
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
