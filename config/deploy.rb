@@ -1,54 +1,39 @@
-# require "bundler/capistrano"
+# config valid only for Capistrano 3.1
+lock '3.2.1'
 
-# The application name is used to determine what repository to pull from, name databases and other nifty stuff.
 set :application, 'criterion'
+set :repo_url, 'git@bitbucket.org:shirjeelalam/criterion.git'
 
-# Set the Rails Environment
-set :rails_env, 'production'
+# Default branch is :master
+# ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
 
-# Server Settings. The port is optional, default to 22.
-# server 'li69-232.members.linode.com', :web, :app, :db, primary: true
-server '198.211.100.110', :web, :app, :db, primary: true
-
-# User in the remote server. This is the user who's going to be used to deploy, and must have proper permissions.
-set :user, 'root'
-
-# Folder in the remote server where the revisions are going to be deployed.
+# Default deploy_to directory is /var/www/my_app
+# set :deploy_to, '/var/www/my_app'
 set :deploy_to, "/home/#{user}/rails_apps/#{application}"
 
-# The branch that's going to be checked out. Releases are going to be made everytime there's a new revision (+x commits ahead).
-set :branch, 'master'
+# Default value for :scm is :git
+# set :scm, :git
 
-# Database Settings.
-set :database_adapter,  'mysql2'
-set :database_password, 'aXe@r4zeR'
-set :database_username, user
+# Default value for :format is :pretty
+# set :format, :pretty
 
-# Use sudo when deploying the application.
-# Dunno what's default but true is evil.
-set :use_sudo, false
+# Default value for :log_level is :debug
+# set :log_level, :debug
 
-# Hack to allow Capistrano to prompt for password.
-# Comment out if the deployer user needs a password for sudo.
-# set :sudo_prompt, ""
+# Default value for :pty is false
+# set :pty, true
 
-# Choose the Source Control Management tool of your preference.
-# (Don't. Really. Use git).
-set :scm, :git
+# Default value for :linked_files is []
+# set :linked_files, %w{config/database.yml}
 
-# Set the repository we're going to pull from.
-set :repository,  'git@bitbucket.org:shirjeelalam/criterion.git'
+# Default value for linked_dirs is []
+# set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 
-# Setup the way you want the deploy to be done.
-# I sincerely suggest using :remote_cache.
-set :deploy_via, :remote_cache
+# Default value for default_env is {}
+# set :default_env, { path: "/opt/ruby/bin:$PATH" }
 
-# Pseudo Terminals.
-# If you want Capistrano client password prompt to work this must be true.
-default_run_options[:pty] = true
-
-# Imagine you ask a friend to give you his car keys to drive it by yourself.
-ssh_options[:forward_agent] = true
+# Default value for keep_releases is 5
+# set :keep_releases, 5
 
 namespace :deploy do
   desc "Make symlink for database yaml."
@@ -81,16 +66,6 @@ task :tail, :roles => :app do
     break if stream == :err
   end
 end
-
-# namespace :deploy do
-#  task :default do
-#    update
-#    assets.precompile
-#    restart
-#    cleanup
-#    # etc
-#  end
-# end
  
 namespace :assets do
   desc "Precompile assets locally and then rsync to app servers"
@@ -103,20 +78,6 @@ namespace :assets do
     run_locally "rm -rf public/assets"
   end
 end
-
-
-# Hooks
-# before "deploy",            "deploy:db_symlink"
-# before "deploy:migrations", "deploy:db_symlink"
-# before "deploy:db_setup",   "deploy:db_symlink"
-
-# after "deploy:update_code", "deploy:assets:precompile"
-# after "deploy:finalize_update", "deploy:assets:symlink"
-
-# after "deploy:finalize_update", "deploy:db_symlink"
-
-
-set :keep_releases, 5
 
 before "deploy", "deploy:setup"
 before "deploy:migrate", "deploy:db_symlink"
