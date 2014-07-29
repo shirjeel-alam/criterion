@@ -119,6 +119,9 @@ GEM
     fancybox-rails (0.2.1)
       railties (>= 3.1.0)
     fastercsv (1.5.5)
+    figaro (0.7.0)
+      bundler (~> 1.0)
+      rails (>= 3, < 5)
     formtastic (2.1.1)
       actionpack (~> 3.0)
     haml (4.0.3)
@@ -285,6 +288,7 @@ DEPENDENCIES
   coffee-rails
   faker
   fancybox-rails
+  figaro
   haml-rails
   hash_syntax
   jquery-rails (= 2.1.3)

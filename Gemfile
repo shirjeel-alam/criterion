@@ -7,6 +7,7 @@ gem 'mysql2'
 gem 'faker'
 gem 'airbrake'
 gem 'validates_timeliness'
+gem 'figaro'
 
 gem 'activeadmin', '0.4.4'
 gem 'sass-rails', '3.2.5'
