@@ -95,6 +95,9 @@ ActiveAdmin.register Enrollment do
           flash[:error] = 'You are not authorized to perform this action'
           redirect_to_back
         end
+      elsif current_admin_user.teacher?
+        flash[:error] = 'You are not authorized to perform this action'
+        redirect_to_back
       end
     end
 
@@ -220,17 +223,6 @@ ActiveAdmin.register Enrollment do
       span link_to('Start Enrollment', start_admin_enrollment_path(enrollment), method: :put, data: { confirm: 'Are you sure?' })
     elsif enrollment.started? && enrollment.action_requests.cancel.blank? 
       span link_to('Cancel Enrollment', cancel_admin_enrollment_path(enrollment), method: :put, data: { confirm: 'Are you sure?' })
-    end
-  end
-
-  controller do
-    before_filter :check_authorization
-
-    def check_authorization
-      if current_admin_user.teacher?
-        flash[:error] = 'You are not authorized to perform this action'
-        redirect_to_back
-      end
     end
   end
 end

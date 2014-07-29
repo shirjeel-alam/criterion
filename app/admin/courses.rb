@@ -4,7 +4,8 @@ ActiveAdmin.register Course do
   filter :id
   filter :name
   filter :level, as: :select, collection: proc { Course.levels }, input_html: { class: 'chosen-select' }
-  filter :teacher_name, as: :string
+  filter :teacher_name, as: :select, collection: proc { Teacher.get_all }, input_html: { class: 'chosen-select' }
+  filter :session, as: :select, collection: proc { Session.get_all }, input_html: { class: 'chosen-select' }
 
   scope :all, default: true do |courses|
     if current_admin_user.teacher?
