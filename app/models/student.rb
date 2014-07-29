@@ -68,7 +68,7 @@ class Student < ActiveRecord::Base
   def send_sms
     phone_numbers.mobile.each do |phone_number|
       sms_data = { to: phone_number.number, message: "Dear Student, Thank You for registering with Criterion Educational Institute. Your Student ID is #{id}, kindly use this ID for all future correspondence." }
-      received_messages.create(sms_data)
+      received_messages.create(sms_data) rescue false 
     end
   end
  
