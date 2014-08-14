@@ -63,9 +63,9 @@ ActiveAdmin.register CriterionSms do
 
     def new
       @due_fees = (params[:due_fees] == 'true')
-      @courses = Course.find(params[:courses].collect(&:second))
 
       if params[:courses].present?
+        @courses = Course.find(params[:courses].collect(&:second))
         if @due_fees
           @courses = @courses.collect(&:id)
           @payments = Payment.due_fees(Time.current.to_date)
