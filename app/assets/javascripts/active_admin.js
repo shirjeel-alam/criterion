@@ -93,9 +93,14 @@ $(document).ready(function() {
   /*** Criterion SMS ***/
 
   $('#criterion_sms_message').on('keyup', function() {
-    var msg_length = $(this).val().length
-    var str = msg_length.toString();
-    str += ' / 262 characters';
+    var msg_length = $(this).val().length;
+    var remaining_characters = 160 - msg_length;
+    
+    // var str = msg_length.toString();
+    // str += ' / 262 characters';
+
+    var str = remaining_characters.toString();
+    str += ' characters remaining';
 
     var counter = $(this).siblings('p.inline-hints');
     counter.text(str);
