@@ -19,10 +19,10 @@ class CriterionSms < ActiveRecord::Base
   attr_accessor :extra
   
   # SendSMS.pk
-	# API_KEY = '0eda5d8d442df99f3608'
+	API_KEY = '0eda5d8d442df99f3608'
 
   # SMSCenter.pk
-  API_KEY = 'b5bdd66678f0f2b205f2'
+  # API_KEY = 'b5bdd66678f0f2b205f2'
 
 	DEFAULT_VALID_MOBILE_NUMBER = '03132100200'
 
@@ -62,8 +62,8 @@ class CriterionSms < ActiveRecord::Base
 	end
 
 	def send_sms
-    # http = Net::HTTP.new('api.sendsms.pk')
-    http = Net::HTTP.new('api.smscenter.pk')
+    http = Net::HTTP.new('api.sendsms.pk')
+    # http = Net::HTTP.new('api.smscenter.pk')
 		request = Net::HTTP::Post.new("/sendsms/#{API_KEY}.json")
 		request.set_form_data(phone: to, msg: message, type: 0)
 		response = http.request(request)
