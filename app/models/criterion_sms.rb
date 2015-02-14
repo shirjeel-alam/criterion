@@ -19,10 +19,13 @@ class CriterionSms < ActiveRecord::Base
   attr_accessor :extra
   
   # SendSMS.pk
-	API_KEY = '0eda5d8d442df99f3608'
+	# API_KEY = '0eda5d8d442df99f3608'
 
   # SMSCenter.pk
   # API_KEY = 'b5bdd66678f0f2b205f2'
+
+  # VSMS.club
+  API_KEY = 'oT9Aj9GGbc27b7e4-4944-40dc-83d5-8c28ac5c179fgwUbiYff1423052435'
 
 	DEFAULT_VALID_MOBILE_NUMBER = '03132100200'
 
@@ -33,7 +36,7 @@ class CriterionSms < ActiveRecord::Base
 	before_create :associate_receiver
 	after_create :send_sms
 
-	validates :message, presence: true #, length: { maximum: 240 }
+	validates :message, presence: true
 
   scope :sent, where(status: true)
   scope :failed, where(status: false)
@@ -61,23 +64,16 @@ class CriterionSms < ActiveRecord::Base
 		self.receiver = (PhoneNumber.find_by_number(to).contactable rescue nil) unless receiver.present?
 	end
 
-	def send_sms
-    http = Net::HTTP.new('api.sendsms.pk')
-    # http = Net::HTTP.new('api.smscenter.pk')
-		request = Net::HTTP::Post.new("/sendsms/#{API_KEY}.json")
-		request.set_form_data(phone: to, msg: message, type: 0)
-		response = http.request(request)
-    
-    decoded_response = ActiveSupport::JSON.decode(response.body)
-    result = decoded_response['result']
-    api_response = decoded_response['message']
+  def send_sms
+    http = Net::HTTP.new('vsms.club')
+    request = Net::HTTP::Post.new('/api/Relay/SendSms')
+    request.set_form_data(apikey: API_KEY, phonenumber: '92' + to[1..-1], message: message, senderid: 'Criterion')
+    response = http.request(request)
 
-		if result == 'true'
-			update_attributes(status: true, api_response: api_response)
-		elsif result == 'false'
-			update_attributes(status: false, api_response: api_response)
-		else
-			raise 'Unknown Response SendSMS PK'
-		end
-	end
+    decoded_response = ActiveSupport::JSON.decode(response.body)
+    result = decoded_response['resultCode']
+    api_response = decoded_response['resultMessage']
+
+    update_attributes(status: (result == 0), api_response: api_response)
+  end
 end

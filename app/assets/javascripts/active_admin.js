@@ -94,11 +94,8 @@ $(document).ready(function() {
 
   $('#criterion_sms_message').on('keyup', function() {
     var msg_length = $(this).val().length;
-    var remaining_characters = 160 - msg_length;
+    var remaining_characters = 320 - msg_length;
     
-    // var str = msg_length.toString();
-    // str += ' / 262 characters';
-
     var str = remaining_characters.toString();
     str += ' characters remaining';
 
@@ -106,12 +103,12 @@ $(document).ready(function() {
     counter.text(str);
 
     var form = $(this).closest('form');
-    if (msg_length > 262) {
+    if (msg_length == 320) {
       counter.addClass('red');
-      form.find('input[type="submit"]').prop('disabled', true)
+      // form.find('input[type="submit"]').prop('disabled', true)
     } else {
       counter.removeClass('red');
-      form.find('input[type="submit"]').prop('disabled', false)
+      // form.find('input[type="submit"]').prop('disabled', false)
     }
   });
   
