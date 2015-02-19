@@ -67,7 +67,7 @@ class CriterionSms < ActiveRecord::Base
   def send_sms
     http = Net::HTTP.new('vsms.club')
     request = Net::HTTP::Post.new('/api/Relay/SendSms')
-    request.set_form_data(apikey: API_KEY, phonenumber: '92' + to[1..-1], message: message, senderid: 'Criterion')
+    request.set_form_data(apikey: API_KEY, phonenumber: '92' + to[1..-1], message: message, senderid: 'criterion')
     response = http.request(request)
 
     decoded_response = ActiveSupport::JSON.decode(response.body)
