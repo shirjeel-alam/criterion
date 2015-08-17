@@ -3,7 +3,7 @@ require 'rufus/scheduler'
 
 def execute_scheduler
   # Create your scheduler here
-  scheduler = Rufus::Scheduler.start_new  
+  scheduler = Rufus::Scheduler.new  
   logger = Logger.new(Rails.root.to_s + '/log/scheduler.log')
 
   scheduler.every '4h' do
