@@ -5,8 +5,8 @@
     <%= f.input :status, :as => :hidden %>
   <% end %>
   
-  <%= f.buttons do %>
-    <%= f.commit_button 'Pay' %>
+  <%= f.actions do %>
+    <%= f.button 'Pay' %>
     <li class='cancel'><%= link_to 'Cancel', request.env['HTTP_REFERER'] || admin_payments_path %></li>
   <% end %>
 <% end %>

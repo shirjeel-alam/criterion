@@ -3,7 +3,7 @@
   <div class="clear"></div>
   <%= f.select :id, Course.get_active_with_id, { include_blank: true }, { id: 'course_id', class: 'chosen-select-modal', style: 'width:400px' } %>
   
-  <%= f.buttons do %>
-    <%= f.commit_button 'Find Course' %>
+  <%= f.actions do %>
+    <%= f.button 'Find Course' %>
   <% end %>
 <% end %>
