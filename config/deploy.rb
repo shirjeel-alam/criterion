@@ -1,6 +1,3 @@
-# config valid only for Capistrano 3.1
-lock '3.2.1'
-
 set :application, 'criterion'
 set :user, 'root'
 set :repo_url, 'git@bitbucket.org:shirjeelalam/criterion.git'
@@ -84,15 +81,13 @@ set :ssh_options, {
 # end
 
 namespace :deploy do
-  desc 'Restart application'
-  task :restart do
-    on roles(:app), in: :sequence, wait: 5 do
-      # Restarts Phusion Passenger
-      execute :touch, release_path.join('tmp/restart.txt')
-    end
-  end
+  # desc 'Restart application'
+  # task :restart do
+  #   on roles(:app), in: :sequence, wait: 5 do
+  #     # Restarts Phusion Passenger
+  #     execute :touch, release_path.join('tmp/restart.txt')
+  #   end
+  # end
   
   after :finishing, 'deploy:cleanup'
-  after :publishing, :restart
-  after :publishing, 'deploy:restart'
 end

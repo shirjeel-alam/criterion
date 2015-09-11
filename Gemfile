@@ -25,6 +25,7 @@ gem 'ruby-hmac'
 gem 'hash_syntax'
 
 gem 'capistrano-rails'
+gem 'capistrano-passenger'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
@@ -53,7 +54,7 @@ group :development, :test do
 end
 
 group :development do
-  gem 'better_errors'
+  gem 'better_errors', '1.1.0'
   gem 'binding_of_caller'
   gem 'quiet_assets'
 end
