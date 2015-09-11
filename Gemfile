@@ -21,7 +21,6 @@ gem 'momentjs-rails'
 gem 'haml-rails'
 gem 'aasm'
 
-gem 'rufus-scheduler'
 gem 'ruby-hmac'
 gem 'hash_syntax'
 
