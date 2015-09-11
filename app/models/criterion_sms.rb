@@ -18,14 +18,9 @@
 class CriterionSms < ActiveRecord::Base
   attr_accessor :extra
   
-  # SendSMS.pk
-	# API_KEY = '0eda5d8d442df99f3608'
-
-  # SMSCenter.pk
-  # API_KEY = 'b5bdd66678f0f2b205f2'
-
-  # VSMS.club
-  API_KEY = 'oT9Aj9GGbc27b7e4-4944-40dc-83d5-8c28ac5c179fgwUbiYff1423052435'
+  # Sendpk.com
+  USERNAME = '923138238080'
+  PASSWORD = '1634'
 
 	DEFAULT_VALID_MOBILE_NUMBER = '03132100200'
 
@@ -44,6 +39,10 @@ class CriterionSms < ActiveRecord::Base
 	def successful?
 		status
 	end
+
+  def number
+    '92' + to[1..-1]
+  end
 
   ### View Helpers ###
 
@@ -65,15 +64,11 @@ class CriterionSms < ActiveRecord::Base
 	end
 
   def send_sms
-    http = Net::HTTP.new('vsms.club')
-    request = Net::HTTP::Post.new('/api/Relay/SendSms')
-    request.set_form_data(apikey: API_KEY, phonenumber: '92' + to[1..-1], message: message, senderid: 'criterion')
-    response = http.request(request)
-
-    decoded_response = ActiveSupport::JSON.decode(response.body)
-    result = decoded_response['resultCode']
-    api_response = decoded_response['resultMessage']
-
-    update_attributes(status: (result == 0), api_response: api_response)
+    url = "http://sendpk.com/api/sms.php?username=#{USERNAME}&password=#{PASSWORD}&sender=Criterion&mobile=#{number}&message=#{message}"
+    encoded_url = URI.encode(url)
+    uri = URI.parse(encoded_url)
+    response = Net::HTTP.get(uri)
+    result = response.split(' ').first == 'OK'
+    update_attributes(status: result, api_response: api_response)
   end
 end
