@@ -10,6 +10,8 @@ gem 'validates_timeliness'
 gem 'figaro'
 
 gem 'activeadmin', '0.4.4'
+gem 'bourbon', '3.2.4'
+
 gem 'sass-rails', '3.2.5'
 gem 'active_admin_editor'
 
