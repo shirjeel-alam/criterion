@@ -85,10 +85,14 @@ ActiveAdmin.register PhoneNumber do
             break
           end
         end
-        
+
         unless action_allowed
-          flash[:error] = 'You are not authorized to perform this action'
-          redirect_to_back
+          if current_admin_user.teacher?
+            redirect_to admin_teacher_path(current_admin_user.user)
+          else
+            flash[:error] = 'You are not authorized to perform this action'
+            redirect_to_back
+          end
         end
       end
     end
