@@ -141,7 +141,8 @@ ActiveAdmin::Dashboards.build do
       li "Active Enrollments: #{Enrollment.in_progress.count}"
       li do
         span "Accumulated Profit/Loss: "
-        span status_tag(number_to_currency(CriterionMonthlyReport.balance.to_s, unit: 'Rs. ', precision: 0), CriterionMonthlyReport.balance_tag)
+        # span status_tag(number_to_currency(CriterionMonthlyReport.balance.to_s, unit: 'Rs. ', precision: 0), CriterionMonthlyReport.balance_tag)
+        span status_tag(number_to_currency(CriterionAccount.criterion_account.balance.to_s , unit: 'Rs. ', precision: 0), CriterionAccount.criterion_account.balance_tag)
       end
       if current_admin_user.super_admin_or_partner?
         li "Pending Requests: #{ActionRequest.pending.count} #{link_to('(Show)', admin_action_requests_path)}".html_safe
