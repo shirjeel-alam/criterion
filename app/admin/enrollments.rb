@@ -170,7 +170,7 @@ ActiveAdmin.register Enrollment do
   member_action :start, method: :put do
     enrollment = Enrollment.find(params[:id])
     if enrollment.start!
-      flash[:error] = 'Enrollment Started'
+      flash[:notice] = 'Enrollment Started'
     else
       flash[:error] = 'Error Starting Enrollment'
     end
