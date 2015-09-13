@@ -44,6 +44,20 @@ class CriterionSms < ActiveRecord::Base
     '92' + to[1..-1]
   end
 
+  ### Class Methods ###
+
+  def self.send_cumulative_fee_received_sms(payment_ids)
+    payments = Payment.find(payment_ids)
+    cumulative_amount = payments.sum(&:amount)
+    course_names = payments.collect(&:payable).collect(&:course).collect(&:title).join(', ')
+    month_and_year = payments.first.period_label
+    student = payments.first.payable.student
+    student.phone_numbers.mobile.each do |phone_number|
+      sms_data = { to: phone_number.number, message: "Dear Student, Your payment of Rs. #{cumulative_amount} against #{course_names} for the period #{month_and_year} has been received. Thank You" }
+      student.received_messages.create(sms_data)
+    end
+  end
+
   ### View Helpers ###
 
   def status_label

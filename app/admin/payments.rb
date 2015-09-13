@@ -152,17 +152,20 @@ ActiveAdmin.register Payment do
     @payments = Payment.find(session[:payment_ids])
     @student = @payments.first.payable.student
 
+    successful_payment_ids = []
     count = 0
     @payments.each do |payment|
       if payment.due?
         payment.attributes = params[:payment]
         if payment.save
           payment.create_account_entry
-          payment.send_fee_received_sms
+          successful_payment_ids << payment.id
           count += 1
         end
       end
     end
+
+    CriterionSms.send_cumulative_fee_received_sms(successful_payment_ids)
 
     flash[:notice] = "#{count} of #{@payments.count} payment(s) successfully made."
     redirect_to admin_student_path(@student)
