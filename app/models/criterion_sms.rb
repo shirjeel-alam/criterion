@@ -69,6 +69,6 @@ class CriterionSms < ActiveRecord::Base
     uri = URI.parse(encoded_url)
     response = Net::HTTP.get(uri)
     result = response.split(' ').first == 'OK'
-    update_attributes(status: result, api_response: api_response)
+    update_attributes(status: result, api_response: response)
   end
 end
