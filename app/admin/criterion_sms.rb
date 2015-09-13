@@ -43,7 +43,7 @@ ActiveAdmin.register CriterionSms do
 		f.inputs do
 			f.input :to, as: :select, multiple: true, collection: PhoneNumber.all_mobile_numbers, required: true, input_html: { class: 'chosen-select', style: 'width:77.8%;' }
 			f.input :extra, as: :string, hint: 'Comma separated list of mobile numbers'
-			f.input :message, required: true, hint: '320 characters remaining', input_html: { maxlength: 320 }
+			f.input :message, required: true, hint: '160 characters remaining', input_html: { maxlength: 160 }
 		end
 
 		f.buttons
