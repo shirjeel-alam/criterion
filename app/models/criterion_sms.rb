@@ -48,7 +48,7 @@ class CriterionSms < ActiveRecord::Base
 
   def self.send_cumulative_fee_received_sms(payment_ids)
     payments = Payment.find(payment_ids)
-    cumulative_amount = payments.sum(&:amount)
+    cumulative_amount = payments.sum(&:net_amount)
     course_names = payments.collect(&:payable).collect(&:course).collect(&:title).join(', ')
     month_and_year = payments.first.period_label
     student = payments.first.payable.student
