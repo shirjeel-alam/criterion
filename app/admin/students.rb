@@ -86,8 +86,9 @@ ActiveAdmin.register Student do
           flip = true
           result.each do |cumulative_payment|
             tr class: "#{flip ? 'odd' : 'even'} header" do
-              cumulative_gross_amount = cumulative_payment.second.sum { |p| p.due? ? p.amount : 0 }
-              cumulative_discount = cumulative_payment.second.sum { |p| p.due? ? (p.discount.present? ? p.discount : 0) : 0 }
+              cumulative_payment_due = cumulative_payment.second.select(&:due?)
+              cumulative_gross_amount = cumulative_payment_due.sum(&:amount)
+              cumulative_discount = cumulative_payment_due.map(&:discount).compact.sum
               cumulative_net_amount = cumulative_gross_amount - cumulative_discount
 
               td class: 'arrow down' do
@@ -99,7 +100,7 @@ ActiveAdmin.register Student do
               td number_to_currency(cumulative_discount, unit: 'Rs. ', precision: 0)
               td number_to_currency(cumulative_net_amount, unit: 'Rs. ', precision: 0)
               td status_tag(cumulative_net_amount > 0 ? 'Due' : 'Paid', cumulative_net_amount > 0 ? :error : :ok)
-              td cumulative_net_amount > 0 ? link_to('Make Payment (Cumulative)', pay_cumulative_admin_payments_path(payments: cumulative_payment.second)) : nil
+              td cumulative_net_amount > 0 ? link_to('Make Payment (Cumulative)', pay_cumulative_admin_payments_path(payments: cumulative_payment_due)) : nil
             end
             
             flip = !flip
