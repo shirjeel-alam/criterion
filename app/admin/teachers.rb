@@ -49,7 +49,7 @@ ActiveAdmin.register Teacher do
       attributes_table_for teacher do
         row(:id) { teacher.id }
         row(:name) { teacher.name }
-        row(:email) { best_in_place_if(current_admin_user.super_admin_or_partner?, teacher, :email, type: :input, path: [:admin, teacher]) }
+        row(:email) { best_in_place_if(current_admin_user.super_admin_or_partner?, teacher, :email, as: :input, url: [:admin, teacher]) }
         row(:share) { number_to_percentage(teacher.share * 100, precision: 0) } if current_admin_user.super_admin_or_partner?
         row(:phone_numbers) do
           if teacher.phone_numbers.present? 

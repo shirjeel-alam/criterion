@@ -35,7 +35,7 @@ class Enrollment < ActiveRecord::Base
   after_create :associate_session
 
   before_save :update_status, :update_discount_applied
-  after_save :create_payments #, :evaluate_discount
+  after_save :create_payments
   
   scope :not_started, where(status: NOT_STARTED)
   scope :in_progress, where(status: IN_PROGRESS)
@@ -107,12 +107,18 @@ class Enrollment < ActiveRecord::Base
     end
   end
 
-  def void_payments
-    payments_to_be_void = payments.due.collect { |payment| payment if payment.period.future? && payment.due? }.compact
-    payments_to_be_void << payments.due.detect { |payment| payment if payment.period.beginning_of_month == Time.current.to_date.beginning_of_month && (Time.current.to_date - Time.current.to_date.beginning_of_month).to_i < 8 }
-    payments_to_be_void = payments_to_be_void.compact
-    payments_to_be_void.each do |payment|
-      payment.void!
+  def update_payments(action)
+    case action
+    when Payment::DUE
+      payments_to_be_updated = payments.void.collect { |payment| payment if payment.period.future? && payment.void? }.compact
+      payments_to_be_updated << payments.void.detect { |payment| payment if payment.period.beginning_of_month == Time.current.to_date.beginning_of_month && (Time.current.to_date - Time.current.to_date.beginning_of_month).to_i < 8 }
+      payments_to_be_updated = payments_to_be_updated.compact
+      payments_to_be_updated.map(&:due!)
+    when Payment::VOID
+      payments_to_be_updated = payments.due.collect { |payment| payment if payment.period.future? && payment.due? }.compact
+      payments_to_be_updated << payments.due.detect { |payment| payment if payment.period.beginning_of_month == Time.current.to_date.beginning_of_month && (Time.current.to_date - Time.current.to_date.beginning_of_month).to_i < 8 }
+      payments_to_be_updated = payments_to_be_updated.compact
+      payments_to_be_updated.map(&:void!)
     end
   end
 
@@ -164,6 +170,7 @@ class Enrollment < ActiveRecord::Base
 
   def start!
     self.update_attributes(status: IN_PROGRESS, enrollment_date: Time.current.to_date, start_date: Time.current.to_date)
+    update_payments(Payment::DUE)
   end
 
   def complete!
@@ -172,7 +179,7 @@ class Enrollment < ActiveRecord::Base
 
   def cancel!
     self.update_attributes(status: CANCELLED, enrollment_date: Time.current.to_date)
-    void_payments
+    update_payments(Payment::VOID)
   end
 
   def update_enrollment

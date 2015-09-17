@@ -56,8 +56,8 @@ ActiveAdmin.register Enrollment do
       table_for enrollment.payments.order(:id) do |t|
         t.column(:id) { |payment| link_to(payment.id, admin_payment_path(payment)) }
         t.column(:period) { |payment| payment.period_label}
-        t.column(:gross_amount) { |payment| number_to_currency(best_in_place_if(current_admin_user.super_admin_or_partner? || (current_admin_user.admin? && payment.due?) , payment, :amount, type: :input, path: [:admin, payment]), unit: 'Rs. ', precision: 0) }
-        t.column(:discount) { |payment| number_to_currency(best_in_place_if(current_admin_user.super_admin_or_partner? || (current_admin_user.admin? && payment.due?) , payment, :discount, type: :input, path: [:admin, payment]), unit: 'Rs. ', precision: 0) }
+        t.column(:gross_amount) { |payment| number_to_currency(best_in_place_if(current_admin_user.super_admin_or_partner? || (current_admin_user.admin? && payment.due?) , payment, :amount, as: :input, url: [:admin, payment]), unit: 'Rs. ', precision: 0) }
+        t.column(:discount) { |payment| number_to_currency(best_in_place_if(current_admin_user.super_admin_or_partner? || (current_admin_user.admin? && payment.due?) , payment, :discount, as: :input, url: [:admin, payment]), unit: 'Rs. ', precision: 0) }
         t.column(:net_amount) { |payment| number_to_currency(payment.net_amount, unit: 'Rs. ', precision: 0) }
         t.column(:status) { |payment| status_tag(payment.status_label, payment.status_tag) }
         t.column(:actions) do |payment| 
@@ -219,7 +219,7 @@ ActiveAdmin.register Enrollment do
       span link_to('Delete Enrollment', admin_enrollment_path(enrollment), method: :delete, data: { confirm: 'Are you sure?' })
     end
 
-    if enrollment.not_started?
+    if enrollment.not_started? || enrollment.cancelled?
       span link_to('Start Enrollment', start_admin_enrollment_path(enrollment), method: :put, data: { confirm: 'Are you sure?' })
     elsif enrollment.started? && enrollment.action_requests.cancel.blank? 
       span link_to('Cancel Enrollment', cancel_admin_enrollment_path(enrollment), method: :put, data: { confirm: 'Are you sure?' })

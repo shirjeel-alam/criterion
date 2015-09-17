@@ -27,9 +27,9 @@ ActiveAdmin.register Student do
     panel 'Student Details' do
       attributes_table_for student do
         row(:id) { student.id }
-        row(:name) { best_in_place_if((current_admin_user.super_admin_or_partner? || current_admin_user.admin?), student, :name, type: :input, path: [:admin, student]) }
-        row(:email) { best_in_place_if((current_admin_user.super_admin_or_partner? || current_admin_user.admin?), student, :email, type: :input, path: [:admin, student]) }
-        row(:address) { best_in_place_if((current_admin_user.super_admin_or_partner? || current_admin_user.admin?), student, :address, type: :input, path: [:admin, student]) }
+        row(:name) { best_in_place_if((current_admin_user.super_admin_or_partner? || current_admin_user.admin?), student, :name, as: :input, url: [:admin, student]) }
+        row(:email) { best_in_place_if((current_admin_user.super_admin_or_partner? || current_admin_user.admin?), student, :email, as: :input, url: [:admin, student]) }
+        row(:address) { best_in_place_if((current_admin_user.super_admin_or_partner? || current_admin_user.admin?), student, :address, as: :input, url: [:admin, student]) }
         row(:phone_numbers) do
           if student.phone_numbers.present? 
             student.phone_numbers.each do |number|
@@ -109,8 +109,8 @@ ActiveAdmin.register Student do
                 td link_to(payment.id, admin_payment_path(payment))
                 td nil # payment.period_label
                 td link_to(payment.payable.course.name, admin_course_path(payment.payable.course))
-                td number_to_currency(best_in_place_if(current_admin_user.super_admin_or_partner? || (current_admin_user.admin? && payment.due?) , payment, :amount, type: :input, path: [:admin, payment]), unit: 'Rs. ', precision: 0)
-                td number_to_currency(best_in_place_if(current_admin_user.super_admin_or_partner? || (current_admin_user.admin? && payment.due?) , payment, :discount, type: :input, path: [:admin, payment]), unit: 'Rs. ', precision: 0)
+                td number_to_currency(best_in_place_if(current_admin_user.super_admin_or_partner? || (current_admin_user.admin? && payment.due?) , payment, :amount, as: :input, url: [:admin, payment]), unit: 'Rs. ', precision: 0)
+                td number_to_currency(best_in_place_if(current_admin_user.super_admin_or_partner? || (current_admin_user.admin? && payment.due?) , payment, :discount, as: :input, url: [:admin, payment]), unit: 'Rs. ', precision: 0)
                 td number_to_currency(payment.net_amount, unit: 'Rs. ', precision: 0)
                 td status_tag(payment.status_label, payment.status_tag)
                 td do

@@ -134,6 +134,10 @@ class Payment < ActiveRecord::Base
     discount.present? ? (amount - discount) : amount
   end
 
+  def due!
+    self.update_attributes(status: DUE, payment_date: Time.current.to_date)
+  end
+
   def pay!
     self.update_attributes(status: PAID, payment_date: Time.current.to_date)
     create_account_entry
