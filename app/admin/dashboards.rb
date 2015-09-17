@@ -27,6 +27,15 @@ ActiveAdmin::Dashboards.build do
       li class: 'dashboard_btn' do 
         link_to 'Add Expenditure', new_admin_payment_path(payment: { status: Payment::PAID, payment_date: Time.current.to_date, payment_type: Payment::CREDIT }), class: 'btn'
       end
+      li class: 'dashboard_btn' do
+        link_to 'Send SMS', admin_criterion_sms_sender_path, class: 'btn'
+      end
+      li class: 'dashboard_btn' do
+        link_to 'Send E-Mail', admin_criterion_mailer_path, class: 'btn'
+      end
+      li class: 'dashboard_btn' do
+        link_to 'Appropriate To Partner(s)', new_admin_payment_path(payment: { payment_type: Payment::CREDIT, category_id: Category.appropriated.id, status: Payment::PAID, payment_date: Time.current.to_date, payment_method: Payment::INTERNAL }), class: 'btn'
+      end if current_admin_user.super_admin_or_partner?
     end
   end
 
