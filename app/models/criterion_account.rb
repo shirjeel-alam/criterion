@@ -48,6 +48,17 @@ class CriterionAccount < ActiveRecord::Base
 		self == CriterionAccount.bank_account
 	end
 
+	def running_balance(account_entry_id)
+		acc_entries = account_entries.where('id <= ?', account_entry_id)
+
+		case account_type
+		when BANK
+			acc_entries.debit.sum(:amount) - acc_entries.credit.sum(:amount) + initial_balance
+		else
+			acc_entries.credit.sum(:amount) - acc_entries.debit.sum(:amount) + initial_balance
+		end
+	end
+
 	def criterion_account?
 		self == CriterionAccount.criterion_account
 	end
