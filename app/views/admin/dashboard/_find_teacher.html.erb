@@ -4,6 +4,6 @@
   <%= f.select :id, Teacher.get_all_with_id, { include_blank: true }, { id: 'teacher_id', class: 'chosen-select-modal', style: 'width:400px' } %>
   
   <%= f.actions do %>
-    <%= f.button 'Find Teacher' %>
+    <%= f.action :submit, label: 'Find Teacher' %>
   <% end %>
 <% end %>

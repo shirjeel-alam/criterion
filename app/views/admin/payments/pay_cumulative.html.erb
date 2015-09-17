@@ -6,7 +6,7 @@
   <% end %>
   
   <%= f.actions do %>
-    <%= f.button 'Pay' %>
+    <%= f.action :submit, label: 'Pay' %>
     <li class='cancel'><%= link_to 'Cancel', request.env['HTTP_REFERER'] || admin_payments_path %></li>
   <% end %>
 <% end %>

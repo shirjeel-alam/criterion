@@ -4,6 +4,6 @@
   <%= f.select :id, Course.get_active_with_id, { include_blank: true }, { id: 'course_id', class: 'chosen-select-modal', style: 'width:400px' } %>
   
   <%= f.actions do %>
-    <%= f.button 'Find Course' %>
+    <%= f.action :submit, label: 'Find Course' %>
   <% end %>
 <% end %>
