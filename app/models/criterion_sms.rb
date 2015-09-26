@@ -67,7 +67,7 @@ class CriterionSms < ActiveRecord::Base
   def status_tag
     status ? :ok : :error
   end
-
+  
 	private
 	def strip_to
 		self.to = to.strip
@@ -85,4 +85,5 @@ class CriterionSms < ActiveRecord::Base
     result = response.split(' ').first == 'OK'
     update_attributes(status: result, api_response: response)
   end
+  handle_asynchronously :send_sms
 end

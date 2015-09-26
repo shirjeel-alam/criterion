@@ -82,7 +82,7 @@ ActiveAdmin.register CriterionMail do
       end
 
       if @criterion_mail.save
-        CriterionMailer.course_mail(@criterion_mail).deliver
+        CriterionMailer.delay.course_mail(@criterion_mail)
         flash[:notice] = 'Mail sent successfully'
         redirect_to admin_criterion_mailer_path
       else

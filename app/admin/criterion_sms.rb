@@ -100,12 +100,10 @@ ActiveAdmin.register CriterionSms do
             @criterion_sms = current_admin_user.sent_messages.build(sms_data)
           end
 
-          if @criterion_sms.save
-            successful_count += 1 if @criterion_sms.successful?
-          end
+          @criterion_sms.save
         end
 
-        flash[:notice] = "SMS sent to #{successful_count} of #{total_count} receipients"
+        flash[:notice] = "SMS sent to #{total_count} recipients"
         redirect_to admin_criterion_sms_sender_path
       else
         @criterion_sms.to = params[:criterion_sms][:to]

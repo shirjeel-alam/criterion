@@ -22,12 +22,14 @@ gem 'fancybox-rails'
 gem 'momentjs-rails'
 gem 'haml-rails'
 gem 'aasm'
+gem 'delayed_job_active_record'
 
 gem 'ruby-hmac'
 gem 'hash_syntax'
 
 gem 'capistrano-rails'
 gem 'capistrano-passenger'
+gem 'capistrano3-delayed-job'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'

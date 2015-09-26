@@ -7,6 +7,7 @@ require 'capistrano/deploy'
 require 'capistrano/bundler'
 require 'capistrano/rails'
 require 'capistrano/passenger'
+require 'capistrano/delayed-job'
 
 # Includes tasks from other gems included in your Gemfile
 #

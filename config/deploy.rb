@@ -30,64 +30,8 @@ set :ssh_options, {
   forward_agent: true
 }
 
-# Default value for default_env is {}
-# set :default_env, { path: "/opt/ruby/bin:$PATH" }
-
-# Default value for keep_releases is 5
-# set :keep_releases, 5
-
-# namespace :deploy do
-#   desc "Make symlink for database yaml."
-#   task :db_symlink do
-#     run "ln -snf #{shared_path}/config/database.yml #{latest_release}/config/database.yml"
-#   end
-
-#   desc "Setup the database."
-#   task :db_setup, roles: :app do
-#     run [
-#       "cd #{current_path}",
-#       "bundle exec rake db:setup RAILS_ENV=#{rails_env}"
-#     ].join(" && ")
-#   end
-
-#   # Passenger tasks
-#   task :start do ; end
-#   task :stop do ; end
-
-#   desc "Restart Application"
-#   task :restart, :roles => :app, :except => { :no_release => true } do
-#     run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
-#   end
-# end
-
-# desc "tail log files"
-# task :tail, :roles => :app do
-#   run "tail -f #{shared_path}/log/#{rails_env}.log" do |channel, stream, data|
-#     puts "#{channel[:host]}: #{data}"
-#     break if stream == :err
-#   end
-# end
- 
-# namespace :assets do
-#   desc "Precompile assets locally and then rsync to app servers"
-#   task :precompile, :only => { :primary => true } do
-#     run_locally "bundle exec rake assets:precompile;"
-#     servers = find_servers :roles => [:app], :except => { :no_release => true }
-#     servers.each do |server|
-#       run_locally "rsync -av ./public/assets/ #{user}@#{server}:#{current_path}/public/assets/;"
-#     end
-#     run_locally "rm -rf public/assets"
-#   end
-# end
+set :delayed_job_bin_path, 'script'
 
 namespace :deploy do
-  # desc 'Restart application'
-  # task :restart do
-  #   on roles(:app), in: :sequence, wait: 5 do
-  #     # Restarts Phusion Passenger
-  #     execute :touch, release_path.join('tmp/restart.txt')
-  #   end
-  # end
-  
   after :finishing, 'deploy:cleanup'
 end
