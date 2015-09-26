@@ -23,8 +23,9 @@ gem 'momentjs-rails'
 gem 'haml-rails'
 gem 'aasm'
 
-gem 'delayed_job_active_record'
 gem 'daemons'
+gem 'delayed_job_active_record'
+gem 'clockwork'
 
 gem 'ruby-hmac'
 gem 'hash_syntax'

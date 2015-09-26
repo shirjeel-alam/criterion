@@ -58,6 +58,15 @@ class CriterionSms < ActiveRecord::Base
     end
   end
 
+  def self.send_test_sms
+    number = '923222463936'
+    message = "Test SMS sent on #{Date.today.strftime("%d/%m/%Y")} at #{Time.now.strftime("%I:%M%p")}"
+    url = "http://sendpk.com/api/sms.php?username=#{USERNAME}&password=#{PASSWORD}&sender=Criterion&mobile=#{number}&message=#{message}"
+    encoded_url = URI.encode(url)
+    uri = URI.parse(encoded_url)
+    response = Net::HTTP.get(uri)
+  end
+
   ### View Helpers ###
 
   def status_label
