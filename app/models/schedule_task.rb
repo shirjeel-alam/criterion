@@ -1,12 +1,12 @@
 class ScheduleTask
 	def self.sms_and_email_cleanup
+		date = Time.current.to_date
 		CriterionSms.where('created_at < ?', date.advance(weeks: -1).beginning_of_day).destroy_all
 		CriterionMail.where('created_at < ?', date.advance(weeks: -1).beginning_of_day).destroy_all
 	end
 
 	def self.criterion_report_refresh
 		date = Time.current.to_date
-
     crd = CriterionReportDate.find_by_report_date(date)
     if crd.present?
       cr = crd.criterion_report
