@@ -307,6 +307,7 @@ DEPENDENCIES
   capistrano3-delayed-job
   chosen-rails
   coffee-rails
+  daemons
   delayed_job_active_record
   faker
   fancybox-rails
