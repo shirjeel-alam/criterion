@@ -32,6 +32,7 @@ gem 'hash_syntax'
 
 gem 'capistrano-rails'
 gem 'capistrano-passenger'
+gem 'capistrano-clockwork'
 gem 'capistrano3-delayed-job'
 
 # To use ActiveModel has_secure_password
