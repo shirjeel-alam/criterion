@@ -58,6 +58,8 @@ class CriterionSms < ActiveRecord::Base
     end
   end
 
+  ### Test Method ###
+
   def self.send_test_sms
     number = '923222463936'
     message = "Test SMS sent on #{Date.today.strftime("%d/%m/%Y")} at #{Time.now.strftime("%I:%M%p")}"
