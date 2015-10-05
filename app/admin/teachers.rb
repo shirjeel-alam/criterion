@@ -56,7 +56,6 @@ ActiveAdmin.register Teacher do
             teacher.phone_numbers.each do |number|
               div do
                 span number.label
-                # span link_to('View', admin_phone_number_path(number))
                 span link_to('Edit', edit_admin_phone_number_path(number))
                 span link_to('Delete', admin_phone_number_path(number), method: :delete, data: { confirm: 'Are you sure?' })
               end
@@ -120,7 +119,7 @@ ActiveAdmin.register Teacher do
                 td class: 'arrow down nested' do
                   '&nbsp;'.html_safe
                 end
-                td nil # payment.period_label
+                td nil
                 td nil
                 td link_to(payment.payable.course.name, admin_course_path(payment.payable.course))
                 td '-'
@@ -132,28 +131,15 @@ ActiveAdmin.register Teacher do
               course_payment.second.each do |payment|
                 tr class: "#{flip ? 'odd' : 'even'} content" do
                   td link_to(payment.id, admin_payment_path(payment))
-                  td nil # payment.period_label
+                  td nil
                   td link_to(payment.payable.student.name, admin_student_path(payment.payable.student))
-                  td nil # link_to(payment.payable.course.name, admin_course_path(payment.payable.course))
+                  td nil
                   td number_to_currency(payment.net_amount, unit: 'Rs. ', precision: 0)
                   td status_tag(payment.status_label, payment.status_tag)
                   td number_to_currency(payment.net_amount * teacher.share, unit: 'Rs. ', precision: 0)
                 end
               end
             end
-            
-            # flip = !flip
-            # cumulative_payment.second.each do |payment|
-            #   tr class: "#{flip ? 'odd' : 'even'} content" do
-            #     td link_to(payment.id, admin_payment_path(payment))
-            #     td payment.period_label
-            #     td link_to(payment.payable.student.name, admin_student_path(payment.payable.student))
-            #     td link_to(payment.payable.course.name, admin_course_path(payment.payable.course))
-            #     td number_to_currency(payment.net_amount, unit: 'Rs. ', precision: 0)
-            #     td status_tag(payment.status_label, payment.status_tag)
-            #     td number_to_currency(payment.net_amount * teacher.share, unit: 'Rs. ', precision: 0)
-            #   end
-            # end
           end
         end
       end

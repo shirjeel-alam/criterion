@@ -51,7 +51,6 @@ ActiveAdmin.register Staff do
             staff.phone_numbers.each do |number|
               div do
                 span number.label
-                # span link_to('View', admin_phone_number_path(number))
                 span link_to('Edit', edit_admin_phone_number_path(number))
                 span link_to('Delete', admin_phone_number_path(number), method: :delete, data: { confirm: 'Are you sure?' })
               end
@@ -94,8 +93,6 @@ ActiveAdmin.register Staff do
   end
 
   controller do
-    # active_admin_config.clear_action_items!
-
     before_filter :check_authorization
     
     def check_authorization

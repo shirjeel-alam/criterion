@@ -35,7 +35,6 @@ class Teacher < ActiveRecord::Base
 
   delegate :balance, to: :criterion_account
 
-  # has_one :criterion_account, through: :admin_user
   def criterion_account
     admin_user.try(:criterion_account) || partner.try(:criterion_account)
   end

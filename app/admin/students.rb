@@ -107,7 +107,7 @@ ActiveAdmin.register Student do
             cumulative_payment.second.sort_by(&:id).each do |payment|
               tr class: "#{flip ? 'odd' : 'even'} content" do
                 td link_to(payment.id, admin_payment_path(payment))
-                td nil # payment.period_label
+                td nil
                 td link_to(payment.payable.course.name, admin_course_path(payment.payable.course))
                 td number_to_currency(best_in_place_if(current_admin_user.super_admin_or_partner? || (current_admin_user.admin? && payment.due?) , payment, :amount, as: :input, url: [:admin, payment]), unit: 'Rs. ', precision: 0)
                 td number_to_currency(best_in_place_if(current_admin_user.super_admin_or_partner? || (current_admin_user.admin? && payment.due?) , payment, :discount, as: :input, url: [:admin, payment]), unit: 'Rs. ', precision: 0)

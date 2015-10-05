@@ -55,21 +55,6 @@ ActiveAdmin.register Session do
       end
     end
 
-    # panel 'Payment (Registration Fees)' do
-    #   table_for session.registration_fees.each do |t|
-    #     t.column(:id) { |registration_fee| registration_fee.id.to_s }
-    #     t.column(:student) { |registration_fee| link_to(registration_fee.payable.name, admin_student_path(registration_fee.payable)) }
-    #     t.column(:amount) { |registration_fee| number_to_currency(registration_fee.amount, :unit => 'Rs. ', :precision => 0) }
-    #     t.column(:status) { |registration_fee| status_tag(registration_fee.status_label, registration_fee.status_tag) }
-    #     t.column do |registration_fee|
-    #       if registration_fee.due?
-    #         li link_to('Make Payment', pay_admin_payment_path(registration_fee), :method => :put)
-    #         li link_to('Void Payment', void_admin_payment_path(registration_fee), :method => :put)
-    #       end
-    #     end
-    #   end
-    # end
-
     active_admin_comments
   end
 
