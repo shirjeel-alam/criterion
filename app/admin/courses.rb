@@ -112,10 +112,10 @@ ActiveAdmin.register Course do
     end
     
     panel 'Course Enrollments' do
-      table_for course.enrollments do |t|
+      table_for course.enrollments.sort do |t|
         t.column(:id) { |enrollment| link_to(enrollment.id, admin_enrollment_path(enrollment)) }
         t.column(:student) { |enrollment| link_to(enrollment.student.name, admin_student_path(enrollment.student)) }
-        t.column(:phone_number) { |enrollment| enrollment.student.phone_numbers.first.number rescue nil }
+        t.column(:phone_number) { |enrollment| enrollment.student.phone_numbers.collect(&:number).join(', ') rescue nil }
         t.column(:status) { |enrollment| status_tag(enrollment.status_label, enrollment.status_tag) }
         t.column(:registration_fee) { |enrollment| status_tag(enrollment.registration_fee.status_label, enrollment.registration_fee.status_tag) rescue nil }
         t.column do |enrollment|
@@ -130,9 +130,9 @@ ActiveAdmin.register Course do
 
     panel 'Course Fees Table' do
       months = months_between(course.start_date, course.end_date)
-      table_for course.enrollments.order('start_date') do |t|
+      table_for course.enrollments.sort do |t|
         t.column(:student) { |enrollment| link_to(enrollment.student.name, admin_student_path(enrollment.student)) }
-        t.column(:join_date) { |enrollment| date_format(enrollment.start_date) }
+        t.column(:join_date ) { |enrollment| date_format(enrollment.start_date) }
         months.each do |month|
           t.column(date_format(month, true)) do |enrollment| 
             payment = enrollment.payment(month)

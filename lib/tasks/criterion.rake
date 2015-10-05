@@ -1,5 +1,4 @@
 namespace :criterion do
-  
   desc "Generate sessions"
   task :generate_sessions, [:period] => :environment do |t, args|
     MAY_JUNE = 0
@@ -58,6 +57,16 @@ namespace :criterion do
   task copy_balances: :environment do
     CriterionAccount.all.each do |criterion_account|
       criterion_account.update_attribute(:initial_balance, criterion_account.balance)
+    end
+  end
+
+  desc "Reset Passwords"
+  task reset_passwords: :environment do
+    if Rails.env.development?
+      AdminUser.all.each do |user|
+        user.password = 'password'
+        user.save!
+      end
     end
   end
 end

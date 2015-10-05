@@ -242,4 +242,16 @@ class Enrollment < ActiveRecord::Base
         :error
     end
   end
+
+  private
+  def <=>(other_item)
+    other_status = other_item.status
+    if status == other_item.status
+      id <=> other_item.id
+    elsif (status == IN_PROGRESS) || (status == NOT_STARTED && other_status != IN_PROGRESS) || (status == CANCELLED && other_status == COMPLETED)
+      -1
+    else
+      1
+    end
+  end
 end
