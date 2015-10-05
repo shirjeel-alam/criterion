@@ -55,7 +55,7 @@ ActiveAdmin.register CriterionAccount do
     end
 
     panel 'Account Entries' do
-      paginated_collection(criterion_account.account_entries.page(params[:page]).per(25), params: { abc: 'details' }) do
+      paginated_collection(criterion_account.account_entries.page(params[:page]).per(25)) do
         table_for collection do |t|
           t.column(:id) { |account_entry| link_to(account_entry.id, admin_account_entry_path(account_entry)) }
           t.column(:date) { |account_entry| date_format(account_entry.created_at) } 
