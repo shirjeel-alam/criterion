@@ -56,6 +56,8 @@ ActiveAdmin.register Student do
           if session_student.registration_fee? && session_student.registration_fee.due?
             li link_to('Make Payment', pay_admin_payment_path(session_student.registration_fee), method: :get)
             li link_to('Void Payment', void_admin_payment_path(session_student.registration_fee), method: :put, data: { confirm: 'Are you sure?' })
+          elsif session_student.registration_fee.present? && session_student.registration_fee.void?
+            li link_to('Make Payment Due', due_admin_payment_path(session_student.registration_fee), method: :put, data: { confirm: 'Are you sure?' })
           end
         end
       end
@@ -122,6 +124,8 @@ ActiveAdmin.register Student do
                       li span link_to('Refund Payment', refund_admin_payment_path(payment), method: :put, data: { confirm: 'Are you sure?' })
                     elsif payment.refunded?
                       li span link_to('Make Payment', pay_admin_payment_path(payment))
+                    elsif payment.void?
+                      li link_to('Make Payment Due', due_admin_payment_path(payment), method: :put, data: { confirm: 'Are you sure?' })
                     end
                   end
                 end

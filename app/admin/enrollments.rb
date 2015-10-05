@@ -69,6 +69,8 @@ ActiveAdmin.register Enrollment do
               li span link_to('Refund Payment', refund_admin_payment_path(payment), method: :put, data: { confirm: 'Are you sure?' })
             elsif payment.refunded?
               li span link_to('Make Payment', pay_admin_payment_path(payment))
+            elsif payment.void?
+              li link_to('Make Payment Due', due_admin_payment_path(payment), method: :put, data: { confirm: 'Are you sure?' })
             end
           end
         end

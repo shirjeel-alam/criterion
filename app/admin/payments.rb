@@ -124,7 +124,7 @@ ActiveAdmin.register Payment do
   member_action :void, method: :put do
     if current_admin_user.super_admin_or_partner?
       payment = Payment.find(params[:id])
-      payment.void! ? flash[:notice] = 'Payment successfully voided.' : flash[:notice] = 'Error in processing payment.'
+      payment.void! ? flash[:notice] = 'Payment successfully voided.' : flash[:error] = 'Error in processing payment.'
       redirect_to_back
     else
       payment = Payment.find(params[:id])
@@ -136,10 +136,16 @@ ActiveAdmin.register Payment do
       redirect_to_back
     end
   end
+
+  member_action :due, method: :put do
+    payment = Payment.find(params[:id])
+    payment.due! ? flash[:notice] = 'Payment successfully updated.' : flash[:error] = 'Error in processing payment.'
+    redirect_to_back
+  end
   
   member_action :refund, method: :put do
     payment = Payment.find(params[:id])
-    payment.refund! ? flash[:notice] = 'Payment successfully refunded.' : flash[:notice] = 'Error in processing payment.'
+    payment.refund! ? flash[:notice] = 'Payment successfully refunded.' : flash[:error] = 'Error in processing payment.'
     redirect_to_back
   end
 

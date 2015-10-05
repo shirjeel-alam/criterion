@@ -123,6 +123,8 @@ ActiveAdmin.register Course do
           if registration_fee.present? && registration_fee.due?
             li link_to('Make Payment', pay_admin_payment_path(registration_fee), method: :get)
             li link_to('Void Payment', void_admin_payment_path(registration_fee), method: :put, data: { confirm: 'Are you sure?' })
+          elsif registration_fee.present? && registration_fee.void?
+            li link_to('Make Payment Due', due_admin_payment_path(registration_fee), method: :put, data: { confirm: 'Are you sure?' })
           end
         end
       end
