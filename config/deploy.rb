@@ -32,15 +32,26 @@ set :ssh_options, {
 
 set :delayed_job_bin_path, 'script'
 
-namespace :deploy do
-  after :finishing, 'deploy:cleanup'
-end
-
 namespace :delayed_job do
+    %w(start stop).each do |command|
+    desc "#{command.capitalize} delayed_job"
+  	task command do
+  		on roles(:app) do
+  			execute "cd #{current_path}; RAILS_ENV=#{fetch(:rails_env).to_s} script/delayed_job #{command}"
+  		end
+  	end
+  end
+
   desc 'Restart delayed_job'
   task :restart do
   	on roles(:app) do
 	    execute "cd #{current_path}; RAILS_ENV=#{fetch(:rails_env).to_s} script/delayed_job stop; RAILS_ENV=#{fetch(:rails_env).to_s} script/delayed_job start"
 	  end
   end
+end
+
+namespace :deploy do
+	before :starting, 'delayed_job:stop'
+  after :finishing, 'deploy:cleanup'
+  after :finishing, 'delayed_job:start'
 end
