@@ -171,7 +171,7 @@ ActiveAdmin.register Payment do
       end
     end
 
-    CriterionSms.delay.send_cumulative_fee_received_sms(successful_payment_ids)
+    CriterionSms.delay.send_cumulative_fee_received_sms(successful_payment_ids) if successful_payment_ids.present?
 
     flash[:notice] = "#{count} of #{@payments.count} payment(s) successfully made."
     redirect_to admin_student_path(@student)
