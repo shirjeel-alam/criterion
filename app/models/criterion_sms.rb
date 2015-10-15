@@ -61,9 +61,17 @@ class CriterionSms < ActiveRecord::Base
   ### Test Method ###
 
   def self.send_test_sms
-    number = '923222463936'
     message = "Test SMS sent on #{Date.today.strftime("%d/%m/%Y")} at #{Time.now.strftime("%I:%M%p")}"
-    url = "http://sendpk.com/api/sms.php?username=#{USERNAME}&password=#{PASSWORD}&sender=Criterion&mobile=#{number}&message=#{message}"
+    
+    bulk = false
+    if !bulk
+      number = '923222463936'
+      url = "http://sendpk.com/api/sms.php?username=#{USERNAME}&password=#{PASSWORD}&sender=Criterion&mobile=#{number}&message=#{message}"
+    else
+      number = '923222463936,923129089081'
+      url = "http://sendpk.com/api/bulksms.php?username=#{USERNAME}&password=#{PASSWORD}&sender=Criterion&mobile=#{number}&message=#{message}"
+    end
+    
     encoded_url = URI.encode(url)
     uri = URI.parse(encoded_url)
     response = Net::HTTP.get(uri)
@@ -85,7 +93,7 @@ class CriterionSms < ActiveRecord::Base
 	end
 
 	def associate_receiver
-		self.receiver = (PhoneNumber.find_by_number(to).contactable rescue nil) unless receiver.present?
+    self.receiver = (PhoneNumber.find_by_number(to).contactable rescue nil) unless receiver.present?
 	end
 
   def send_sms

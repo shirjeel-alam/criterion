@@ -94,12 +94,12 @@ ActiveAdmin.register Payment do
   end
   
   member_action :pay, method: :get do
-    @payment = Payment.find(params[:id])
+    @payment = Payment.where('status in (?) AND id=?', [Payment::DUE, Payment::REFUNDED], params[:id]).first
     @payment.attributes = { status: Payment::PAID, payment_date: Time.current.to_date }
   end
 
   member_action :paid, method: :put do
-    @payment = Payment.find(params[:id])
+    @payment = Payment.where('status in (?) AND id=?', [Payment::DUE, Payment::REFUNDED], params[:id]).first
     @payment.attributes = params[:payment]
 
     if @payment.save
@@ -150,12 +150,12 @@ ActiveAdmin.register Payment do
   end
 
   collection_action :pay_cumulative, method: :get do
-  	@payments = Payment.find(params[:payments])
+    @payments = Payment.where('status in (?) AND id in (?)', [Payment::DUE, Payment::REFUNDED], params[:payments])
     session[:payment_ids] = @payments.collect(&:id)
   end
 
   collection_action :paid_cumulative, method: :post do
-    @payments = Payment.find(session[:payment_ids])
+    @payments = Payment.where('status in (?) AND id in (?)', [Payment::DUE, Payment::REFUNDED], session[:payment_ids])
     @student = @payments.first.payable.student
 
     successful_payment_ids = []
