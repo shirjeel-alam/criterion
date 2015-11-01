@@ -10,7 +10,7 @@ ActiveAdmin.register ActionRequest do
 
   index do
     column 'ID', sortable: :id do |action_request|
-      link_to(action_request.id, admin_action_request_path(action_request))
+      action_request.id
     end
     column :action_item, sortable: :action_item_id do |action_request|
       action_item = action_request.action_item
@@ -22,20 +22,22 @@ ActiveAdmin.register ActionRequest do
         elsif action_item.payable.is_a?(SessionStudent)
           link_to("#{action_item.payable.session.title} (Registration Payment)", admin_payment_path(action_item))
         end
+      else
+        "Deleted #{action_request.action_item_type} - ID: #{action_request.action_item_id}"
       end 
     end
     column :action
-    column :requested_by, sortable: :requested_by do |action_request|
+    column :requested_by, sortable: :requested_by_id do |action_request|
       admin = action_request.requested_by
       case admin.role
       when AdminUser::TEACHER
-        link_to(admin.user.name, admin_teacher_path(admin.user)) rescue nil
+        link_to(admin.user.name, admin_teacher_path(admin.user)) rescue admin.email
       when AdminUser::STUDENT
-        link_to(admin.user.name, admin_student_path(admin.user)) rescue nil
+        link_to(admin.user.name, admin_student_path(admin.user)) rescue admin.email
       when AdminUser::PARTNER
-        link_to(admin.user.name, admin_partner_path(admin.user)) rescue nil
+        link_to(admin.user.name, admin_partner_path(admin.user)) rescue admin.email
       when AdminUser::ADMIN, AdminUser::STAFF
-        link_to(admin.user.name, admin_staff_path(admin.user)) rescue nil
+        link_to(admin.user.name, admin_staff_path(admin.user)) rescue admin.email
       end
     end
     column :state, sortable: :state do |action_request|
@@ -43,7 +45,7 @@ ActiveAdmin.register ActionRequest do
     end
 
     column nil do |action_request|
-      if action_request.pending?
+      if action_request.pending? && action_request.action_item.present?
         span link_to('Approve', approve_admin_action_request_path(action_request), method: :put, class: :member_link)
         span link_to('Reject', reject_admin_action_request_path(action_request), method: :put, class: :member_link)
       end

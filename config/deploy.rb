@@ -30,8 +30,6 @@ set :ssh_options, {
   forward_agent: true
 }
 
-set :delayed_job_bin_path, 'script'
-
 namespace :delayed_job do
     %w(start stop).each do |command|
     desc "#{command.capitalize} delayed_job"

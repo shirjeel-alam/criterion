@@ -31,11 +31,6 @@ gem 'clockwork'
 gem 'ruby-hmac'
 gem 'hash_syntax'
 
-gem 'capistrano-rails'
-gem 'capistrano-passenger'
-gem 'capistrano-clockwork'
-gem 'capistrano3-delayed-job'
-
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
@@ -66,4 +61,9 @@ group :development do
   gem 'better_errors', '1.1.0'
   gem 'binding_of_caller'
   gem 'quiet_assets'
+
+  gem 'capistrano-rails'
+  gem 'capistrano-passenger'
+  gem 'capistrano-clockwork'
+  gem 'capistrano-rails-console'
 end
