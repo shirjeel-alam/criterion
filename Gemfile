@@ -5,9 +5,10 @@ gem 'rails', '3.2.22'
 gem 'mysql2', '0.3.20'
 
 gem 'faker'
-gem 'airbrake'
 gem 'validates_timeliness'
 gem 'figaro'
+
+gem 'airbrake'
 gem 'rollbar'
 
 gem 'activeadmin', '0.4.4'
