@@ -8,6 +8,7 @@ gem 'faker'
 gem 'airbrake'
 gem 'validates_timeliness'
 gem 'figaro'
+gem 'rollbar'
 
 gem 'activeadmin', '0.4.4'
 gem 'bourbon', '3.2.4'
