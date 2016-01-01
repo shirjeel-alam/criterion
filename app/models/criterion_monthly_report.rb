@@ -49,7 +49,7 @@ class CriterionMonthlyReport < ActiveRecord::Base
 
   def payments(entry_type)
     time_range = Range.new(report_month.beginning_of_month, report_month.end_of_month)
-    Payment.joins(:account_entries).where(period: time_range).where('account_entries.criterion_account_id = ? AND account_entries.entry_type = ? AND payments.category_id != ?' , CriterionAccount.criterion_account.id, entry_type, Category.find_by_name('appropriated').id)
+    Payment.joins(:account_entries).where(period: time_range).where('account_entries.criterion_account_id = ? AND account_entries.entry_type = ? AND (payments.category_id != ? OR payments.category_id IS NULL)' , CriterionAccount.criterion_account.id, entry_type, Category.find_by_name('appropriated').id)
   end
 
   ### Class Methods ###
