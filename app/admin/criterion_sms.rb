@@ -100,7 +100,8 @@ ActiveAdmin.register CriterionSms do
             @criterion_sms = current_admin_user.sent_messages.build(sms_data)
           end
 
-          @criterion_sms.save
+          # @criterion_sms.save
+          SmsJob.new.async.perform(2, @criterion_sms)
         end
 
         flash[:notice] = "SMS sent to #{total_count} recipients"

@@ -29,6 +29,7 @@ gem 'daemons'
 gem 'daemon-spawn'
 gem 'delayed_job_active_record'
 gem 'clockwork'
+gem 'sucker_punch'
 
 gem 'ruby-hmac'
 gem 'hash_syntax'

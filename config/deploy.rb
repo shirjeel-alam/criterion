@@ -49,7 +49,7 @@ namespace :delayed_job do
 end
 
 namespace :deploy do
-	before :starting, 'delayed_job:stop'
+	# before :starting, 'delayed_job:stop'
   after :finishing, 'deploy:cleanup'
-  after :finishing, 'delayed_job:start'
+  # after :finishing, 'delayed_job:start'
 end

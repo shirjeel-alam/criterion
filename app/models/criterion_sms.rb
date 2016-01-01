@@ -104,5 +104,5 @@ class CriterionSms < ActiveRecord::Base
     result = response.split(' ').first == 'OK'
     update_attributes(status: result, api_response: response)
   end
-  handle_asynchronously :send_sms
+  # handle_asynchronously :send_sms
 end
