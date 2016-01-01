@@ -45,9 +45,9 @@ ActiveAdmin::Dashboards.build do
   section 'Payments', priority: 2, if: proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? } do
     due_payments = Payment.due_fees(Time.current.to_date).collect do |payment|
       payment.period = payment.period.beginning_of_month
-      payment
+      payment.payable.course.completed? ? nil : payment
     end
-    result = due_payments.group_by { |payment| payment.payable.course }.sort_by { |course_payments| course_payments.first.name }
+    result = due_payments.compact.group_by { |payment| payment.payable.course }.sort_by { |course_payments| course_payments.first.name }
 
     due_registration_fees = Payment.due_registration_fees
 
