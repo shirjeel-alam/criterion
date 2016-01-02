@@ -25,9 +25,6 @@ gem 'momentjs-rails'
 gem 'haml-rails'
 gem 'aasm'
 
-gem 'daemons'
-gem 'daemon-spawn'
-gem 'delayed_job_active_record'
 gem 'clockwork'
 gem 'sucker_punch'
 
