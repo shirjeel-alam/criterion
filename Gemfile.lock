@@ -334,6 +334,7 @@ DEPENDENCIES
   chosen-rails
   clockwork
   coffee-rails
+  daemons
   faker
   fancybox-rails
   figaro
