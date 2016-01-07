@@ -1,0 +1,1 @@
+SuckerPunch.logger = Logger.new(Rails.root.join('log', 'sucker_punch.log'))

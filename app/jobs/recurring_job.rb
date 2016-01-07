@@ -4,11 +4,17 @@ class RecurringJob
   def perform(task)
     case task
     when 1
+      SuckerPunch.logger.info "Task 1: CriterionReportRefresh, Time: #{Time.now}"
       ScheduleTask.criterion_report_refresh
+      SuckerPunch.logger.info "Task 1 - Completed"
     when 2
+      SuckerPunch.logger.info "Task 2: CourseEnrollmentRefresh, Time: #{Time.now}"
       ScheduleTask.course_and_enrollment_refresh
+      SuckerPunch.logger.info "Task 2 - Completed"
     when 3
+      SuckerPunch.logger.info "Task 3: SmsEmailCleanup, Time: #{Time.now}"
       ScheduleTask.sms_and_email_cleanup
+      SuckerPunch.logger.info "Task 2 - Completed"
     when 4
       ScheduleTask.send_sms_test
     end
