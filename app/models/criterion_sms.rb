@@ -44,6 +44,16 @@ class CriterionSms < ActiveRecord::Base
     '92' + to[1..-1]
   end
 
+  def send_sms
+    url = "http://sendpk.com/api/sms.php?username=#{USERNAME}&password=#{PASSWORD}&sender=Criterion&mobile=#{number}&message=#{message}"
+    encoded_url = URI.encode(url)
+    uri = URI.parse(encoded_url)
+    response = Net::HTTP.get(uri)
+    result = response.split(' ').first == 'OK'
+    SmsJob.new.async.later(30.minutes, 3, self) unless result
+    update_attributes(status: result, api_response: response)
+  end
+
   ### Class Methods ###
 
   def self.send_cumulative_fee_received_sms(payment_ids)
@@ -95,14 +105,4 @@ class CriterionSms < ActiveRecord::Base
 	def associate_receiver
     self.receiver = (PhoneNumber.find_by_number(to).contactable rescue nil) unless receiver.present?
 	end
-
-  def send_sms
-    url = "http://sendpk.com/api/sms.php?username=#{USERNAME}&password=#{PASSWORD}&sender=Criterion&mobile=#{number}&message=#{message}"
-    encoded_url = URI.encode(url)
-    uri = URI.parse(encoded_url)
-    response = Net::HTTP.get(uri)
-    result = response.split(' ').first == 'OK'
-    update_attributes(status: result, api_response: response)
-  end
-  # handle_asynchronously :send_sms
 end
