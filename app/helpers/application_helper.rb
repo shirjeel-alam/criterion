@@ -48,4 +48,8 @@ module ApplicationHelper
 
     _rooms    
   end
+
+  def status_tag(label, tag)
+    content_tag(:span, label, class: "status #{tag}")
+  end
 end

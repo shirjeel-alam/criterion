@@ -207,6 +207,16 @@ ActiveAdmin.register Student do
     end
   end
 
+  member_action :new_fee_receipt, method: :get do
+    @student = resource
+    @session_students = @student.session_students.joins(:registration_fee).where('payments.status = ?', Payment::DUE)
+    @payments = @student.payments.due.collect do |payment|
+        payment.period = payment.period.beginning_of_month
+        payment
+      end
+    @payments = @payments.group_by(&:period).sort_by(&:first) 
+  end
+
   controller do
     before_filter :check_authorization
 

@@ -6,6 +6,7 @@
 //= require chosen-jquery
 //= require fancybox
 //= require moment
+//= require admin/fee_receipt
 
 $(document).ready(function() {
 

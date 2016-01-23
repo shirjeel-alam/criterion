@@ -1,0 +1,136 @@
+.panel
+  %h3 Student Details
+  .panel_contents
+    .attributes_table
+      %table
+        %tbody
+          %tr
+            %th ID
+            %td= @student.id
+          %tr
+            %th Name
+            %td= best_in_place_if((current_admin_user.super_admin_or_partner? || current_admin_user.admin?), @student, :name, as: :input, url: [:admin, @student])
+          %tr
+            %th Email
+            %td= best_in_place_if((current_admin_user.super_admin_or_partner? || current_admin_user.admin?), @student, :email, as: :input, url: [:admin, @student])
+          %tr
+            %th Address
+            %td= best_in_place_if((current_admin_user.super_admin_or_partner? || current_admin_user.admin?), @student, :address, as: :input, url: [:admin, @student])
+          %tr
+            %th Phone Numbers
+            %td
+              - if @student.phone_numbers.present? 
+                - @student.phone_numbers.each do |number|
+                  %div
+                    = number.label
+                    = link_to('Edit', edit_admin_phone_number_path(number))
+                    = link_to('Delete', admin_phone_number_path(number), method: :delete, data: { confirm: 'Are you sure?' })
+              - else
+                'No Phone Numbers Present'
+
+- if @session_students.present?
+  .panel
+    %h3 Payment (Registration Fees)
+    .panel_contents
+      %table
+        %thead
+          %tr
+            %th
+            %th Id
+            %th Session
+            %th Amount
+            %th Status
+            %th
+        %tbody
+          - flip = true
+          - @session_students.each do |session_student|
+            %tr{ class: "#{flip ? 'odd' : 'even'}" }
+              %td= check_box_tag('payments[]', session_student.registration_fee.id, false, { id: "payment#{session_student.registration_fee.id}", class: 'payment' })
+              %td= link_to(session_student.registration_fee.id, admin_payment_path(session_student.registration_fee))
+              %td= link_to(session_student.session.label, admin_session_path(session_student.session))
+              %td.gross_amount{ data: { value: session_student.registration_fee.amount } }= number_to_currency(session_student.registration_fee.amount, unit: 'Rs. ', precision: 0)
+              %td= status_tag(session_student.registration_fee.status_label, session_student.registration_fee.status_tag)
+              %td
+                - if session_student.registration_fee? && session_student.registration_fee.due?
+                  %li= link_to('Make Payment', pay_admin_payment_path(session_student.registration_fee), method: :get)
+                  %li= link_to('Void Payment', void_admin_payment_path(session_student.registration_fee), method: :put, data: { confirm: 'Are you sure?' })
+                - elsif session_student.registration_fee.present? && session_student.registration_fee.void?
+                  %li= link_to('Make Payment Due', due_admin_payment_path(session_student.registration_fee), method: :put, data: { confirm: 'Are you sure?' })
+
+- if @payments
+  .panel
+    %h3 Payments
+    .panel_contents
+      %table
+        %thead
+          %tr
+            %th
+            %th ID
+            %th Period
+            %th Course
+            %th Gross Amount
+            %th Discount
+            %th Net Amount
+            %th Status
+            %th
+        %tbody
+          - flip = true
+          - @payments.each do |cumulative_payment|
+            %tr{ class: "#{flip ? 'odd' : 'even'} header" }
+              - cumulative_payment_due = cumulative_payment.second.select(&:due?)
+              - cumulative_gross_amount = cumulative_payment_due.sum(&:amount)
+              - cumulative_discount = cumulative_payment_due.map(&:discount).compact.sum
+              - cumulative_net_amount = cumulative_gross_amount - cumulative_discount
+              %td{ class: 'arrow down' }
+              %td= cumulative_payment.first.strftime('%B %Y')
+              %td= nil
+              %td= number_to_currency(cumulative_gross_amount, unit: 'Rs. ', precision: 0)
+              %td= number_to_currency(cumulative_discount, unit: 'Rs. ', precision: 0)
+              %td= number_to_currency(cumulative_net_amount, unit: 'Rs. ', precision: 0)
+              %td= status_tag(cumulative_net_amount > 0 ? 'Due' : 'Paid', cumulative_net_amount > 0 ? :error : :ok)
+              %td= cumulative_net_amount > 0 ? link_to('Make Payment (Cumulative)', pay_cumulative_admin_payments_path(payments: cumulative_payment_due)) : nil
+
+            - flip = !flip
+            - cumulative_payment.second.sort_by(&:id).each do |payment|
+              %tr{ class: "#{flip ? 'odd' : 'even'} content" }
+                %td= check_box_tag('payments[]', payment.id, false, { id: "payment#{payment.id}", class: 'payment' })
+                %td= link_to(payment.id, admin_payment_path(payment))
+                %td= nil
+                %td= link_to(payment.payable.course.name, admin_course_path(payment.payable.course))
+                %td.gross_amount{ data: { value: payment.amount } }= number_to_currency(best_in_place_if(current_admin_user.super_admin_or_partner? || (current_admin_user.admin? && payment.due?) , payment, :amount, as: :input, url: [:admin, payment]), unit: 'Rs. ', precision: 0)
+                %td.discount{ data: { value: payment.discount } }= number_to_currency(best_in_place_if(current_admin_user.super_admin_or_partner? || (current_admin_user.admin? && payment.due?) , payment, :discount, as: :input, url: [:admin, payment]), unit: 'Rs. ', precision: 0)
+                %td= number_to_currency(payment.net_amount, unit: 'Rs. ', precision: 0)
+                %td= status_tag(payment.status_label, payment.status_tag)
+                %td
+                  %ul
+                    - if payment.due?
+                      %li= link_to('Make Payment', pay_admin_payment_path(payment))
+                      %li= link_to('Void Payment', void_admin_payment_path(payment), method: :put, data: { confirm: 'Are you sure?' })
+                    - elsif payment.paid?
+                      %li= link_to('Refund Payment', refund_admin_payment_path(payment), method: :put, data: { confirm: 'Are you sure?' })
+                    - elsif payment.refunded?
+                      %li= link_to('Make Payment', pay_admin_payment_path(payment))
+                    - elsif payment.void?
+                      %li= link_to('Make Payment Due', due_admin_payment_path(payment), method: :put, data: { confirm: 'Are you sure?' })
+
+.panel
+  %h3 Total
+  .panel_contents
+    .attributes_table
+      %table
+        %tbody
+          %tr
+            %th Total Gross Amount
+            %td#total-gross-amount 0
+          %tr
+            %th Total Discount
+            %td#total-discount 0
+          %tr
+            %th Total Net Amount
+            %td#total-net-amount 0
+          %tr
+            %th Amount Received
+            %td#amount-received 0
+          %tr
+            %th Change
+            %td#change 0
