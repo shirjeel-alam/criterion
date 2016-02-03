@@ -219,7 +219,6 @@ class Payment < ActiveRecord::Base
     end
   end
 
-  # Handle when registration fee paid
   def send_fee_received_sms
     if payable.is_a?(SessionStudent)
       student = payable.student

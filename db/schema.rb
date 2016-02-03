@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150926061715) do
+ActiveRecord::Schema.define(:version => 20160203073004) do
 
   create_table "account_entries", :force => true do |t|
     t.integer  "criterion_account_id"
@@ -149,9 +149,9 @@ ActiveRecord::Schema.define(:version => 20150926061715) do
     t.string   "sender_type"
     t.integer  "receiver_id"
     t.string   "receiver_type"
-    t.boolean  "status"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.boolean  "status",        :default => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
     t.text     "api_response"
   end
 

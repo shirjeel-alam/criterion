@@ -9,7 +9,7 @@
 #  sender_type   :string(255)
 #  receiver_id   :integer
 #  receiver_type :string(255)
-#  status        :boolean
+#  status        :boolean          default(FALSE)
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #  api_response  :text
@@ -44,14 +44,16 @@ class CriterionSms < ActiveRecord::Base
     '92' + to[1..-1]
   end
 
-  def send_sms
+  def send_sms(count=10)
+    return if status || count == 0
     url = "http://sendpk.com/api/sms.php?username=#{USERNAME}&password=#{PASSWORD}&sender=Criterion&mobile=#{number}&message=#{message}"
     encoded_url = URI.encode(url)
     uri = URI.parse(encoded_url)
     response = Net::HTTP.get(uri)
     result = response.split(' ').first == 'OK'
-    SmsJob.new.async.later(30.minutes, 3, self) unless result
     update_attributes(status: result, api_response: response)
+    count -= 1
+    send_sms(count)
   end
 
   ### Class Methods ###

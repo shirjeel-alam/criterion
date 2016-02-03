@@ -322,7 +322,7 @@ DEPENDENCIES
   active_admin_editor
   activeadmin (= 0.4.4)
   airbrake
-  annotate
+  annotate (= 2.6.10)
   best_in_place
   better_errors (= 1.1.0)
   binding_of_caller

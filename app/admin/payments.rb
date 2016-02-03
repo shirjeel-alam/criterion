@@ -171,7 +171,6 @@ ActiveAdmin.register Payment do
       end
     end
 
-    # CriterionSms.delay.send_cumulative_fee_received_sms(successful_payment_ids) if successful_payment_ids.present?
     SmsJob.new.async.perform(1, successful_payment_ids) if successful_payment_ids.present?
 
     flash[:notice] = "#{count} of #{@payments.count} payment(s) successfully made."
