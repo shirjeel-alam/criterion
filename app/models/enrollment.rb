@@ -175,6 +175,7 @@ class Enrollment < ActiveRecord::Base
 
   def complete!
     self.update_attributes(status: COMPLETED, enrollment_date: Time.current.to_date)
+    update_payments(Payment::VOID)
   end
 
   def cancel!
