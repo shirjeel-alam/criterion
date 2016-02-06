@@ -171,7 +171,7 @@ ActiveAdmin.register Payment do
       end
     end
 
-    SmsJob.new.async.perform(1, successful_payment_ids) if successful_payment_ids.present?
+    SmsJob.perform_async(1, successful_payment_ids) if successful_payment_ids.present?
 
     flash[:notice] = "#{count} of #{@payments.count} payment(s) successfully made."
     redirect_to admin_student_path(@student)

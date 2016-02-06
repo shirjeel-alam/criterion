@@ -82,8 +82,7 @@ ActiveAdmin.register CriterionMail do
       end
 
       if @criterion_mail.save
-        # CriterionMailer.delay.course_mail(@criterion_mail)
-        MailJob.new.async.perform(1, @criterion_mail)
+        MailJob.perform_async(1, @criterion_mail)
         flash[:notice] = 'Mail sent successfully'
         redirect_to admin_criterion_mailer_path
       else

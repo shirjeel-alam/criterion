@@ -81,23 +81,6 @@ GEM
       capistrano-bundler (~> 1.1)
     capistrano-rails-console (1.0.0)
       capistrano (>= 3.1.0, < 4.0.0)
-    celluloid (0.17.2)
-      celluloid-essentials
-      celluloid-extras
-      celluloid-fsm
-      celluloid-pool
-      celluloid-supervision
-      timers (>= 4.1.1)
-    celluloid-essentials (0.20.5)
-      timers (>= 4.1.1)
-    celluloid-extras (0.20.5)
-      timers (>= 4.1.1)
-    celluloid-fsm (0.20.5)
-      timers (>= 4.1.1)
-    celluloid-pool (0.20.5)
-      timers (>= 4.1.1)
-    celluloid-supervision (0.20.5)
-      timers (>= 4.1.1)
     chosen-rails (1.4.3)
       coffee-rails (>= 3.2)
       compass-rails (>= 2.0.4)
@@ -132,6 +115,7 @@ GEM
       compass (~> 1.0.0)
       sass-rails (< 5.1)
       sprockets (< 2.13)
+    concurrent-ruby (1.0.0)
     daemons (1.2.3)
     debug_inspector (0.0.2)
     devise (3.5.2)
@@ -169,7 +153,6 @@ GEM
       object_regex (~> 1.0.1)
       trollop (~> 1.16.2)
     hike (1.2.3)
-    hitimes (1.2.3)
     i18n (0.7.0)
     inherited_resources (1.6.0)
       actionpack (>= 3.2, < 5)
@@ -284,8 +267,8 @@ GEM
       colorize (>= 0.7.0)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
-    sucker_punch (1.6.0)
-      celluloid (~> 0.17.2)
+    sucker_punch (2.0.0)
+      concurrent-ruby (~> 1.0.0)
     taps (0.3.24)
       rack (>= 1.0.1)
       rest-client (>= 1.4.0, < 1.7.0)
@@ -299,8 +282,6 @@ GEM
     thread_safe (0.3.5)
     tilt (1.4.1)
     timeliness (0.3.7)
-    timers (4.1.1)
-      hitimes
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
