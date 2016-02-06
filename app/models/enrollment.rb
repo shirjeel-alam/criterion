@@ -42,6 +42,7 @@ class Enrollment < ActiveRecord::Base
   scope :completed, where(status: COMPLETED)
   scope :cancelled, where(status: CANCELLED)
   scope :started_or_completed, where(status: [IN_PROGRESS, COMPLETED])
+  scope :not_cancelled, where('status NOT IN (?)', [CANCELLED])
 
   scope :active, where(status: [NOT_STARTED, IN_PROGRESS])
   scope :discount_given, where(discount_applied: true)

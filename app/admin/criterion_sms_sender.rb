@@ -16,6 +16,7 @@ ActiveAdmin.register_page "Criterion SMS Sender" do
       end if params[:search].present?
 
       @due_fees = params[:due_fees].present?
+      @include_cancelled = params[:include_cancelled].present?
       @search = Course.search(params[:search])
       @courses = @due_fees ? @search.relation.with_due_fees(Time.current.to_date).uniq : @search.relation
     end

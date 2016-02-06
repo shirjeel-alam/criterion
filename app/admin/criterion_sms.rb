@@ -63,18 +63,27 @@ ActiveAdmin.register CriterionSms do
 
     def new
       @due_fees = (params[:due_fees] == 'true')
+      @include_cancelled = (params[:include_cancelled] == 'true')
 
       if params[:courses].present?
         @courses = Course.find(params[:courses].collect(&:second))
+        @numbers = nil
+
         if @due_fees
-          @courses = @courses.collect(&:id)
-          @payments = Payment.due_fees(Time.current.to_date)
-          @payments.reject! { |payment| payment unless @courses.include?((payment.payable.course_id rescue nil)) || payment.period.blank? }
+          @payments = @courses.collect { |course| course.payments.due_fees(Time.current.to_date) }.flatten
+          @payments.reject! { |payment| payment if payment.payable.cancelled? rescue false } unless @include_cancelled
           @numbers = @payments.collect { |payment| payment.payable.student.phone_numbers.mobile.collect(&:number) }.flatten
-          @criterion_sms = CriterionSms.new(to: @numbers)
         else
-          @criterion_sms = CriterionSms.new(to: @courses.collect { |course| course.phone_numbers.collect(&:second) }.flatten)
+          @students = nil
+          if @include_cancelled
+            @students = @courses.collect(&:students).flatten.uniq
+          else
+            @students = @courses.collect { |course| course.enrollments.not_cancelled }.flatten.collect(&:student).uniq
+          end
+          @numbers = @students.collect { |student| student.phone_numbers.mobile.collect(&:number) }.flatten
         end
+
+        @criterion_sms = CriterionSms.new(to: @numbers)
       else
         @criterion_sms = current_admin_user.sent_messages.build
       end

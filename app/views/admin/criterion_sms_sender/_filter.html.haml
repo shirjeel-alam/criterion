@@ -13,4 +13,8 @@
     = check_box_tag :due_fees, true, @due_fees, style: 'float:left'
     = label_tag :due_fees, 'DUE FEES', style: 'float:left;padding-left:5px'
   .clear
+  %div{ style: 'padding-top:10px;padding-bottom:25px' }
+    = check_box_tag :include_cancelled, true, @include_cancelled, style: 'float:left'
+    = label_tag :include_cancelled, 'INCLUDE CANCELLED', style: 'float:left;padding-left:5px'
+  .clear
   = submit_tag 'Filter'
