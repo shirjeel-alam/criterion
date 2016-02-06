@@ -166,6 +166,23 @@ ActiveRecord::Schema.define(:version => 20160203074515) do
     t.boolean  "discount_applied", :default => false
   end
 
+  create_table "invoices", :force => true do |t|
+    t.integer  "student_id"
+    t.string   "bill_to"
+    t.date     "paid_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "line_items", :force => true do |t|
+    t.decimal  "price",       :precision => 10, :scale => 0
+    t.string   "description"
+    t.integer  "invoice_id"
+    t.integer  "payment_id"
+    t.datetime "created_at",                                 :null => false
+    t.datetime "updated_at",                                 :null => false
+  end
+
   create_table "partners", :force => true do |t|
     t.string   "name"
     t.string   "email"

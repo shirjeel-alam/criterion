@@ -50,6 +50,10 @@ class Enrollment < ActiveRecord::Base
   delegate :end_date, to: :course
   delegate :level, to: :course
 
+  def should_be_cancelled?
+    payments.void.count > (payments.count / 2)
+  end
+
   def set_status
     if course.not_started?
       self.status = NOT_STARTED
@@ -63,11 +67,13 @@ class Enrollment < ActiveRecord::Base
   end
   
   def update_status
-    if course.not_started? || course.completed? || course.cancelled?
-      self.status = course.status
-    else
+    return if completed? || cancelled?
+
+    if course.not_started?
+      self.status = NOT_STARTED
+    elsif course.started?
       self.start_date = start_date < course.start_date ? course.start_date : start_date
-      self.status = start_date > Time.current.to_date ? NOT_STARTED : IN_PROGRESS unless completed? || cancelled?
+      self.status = start_date > Time.current.to_date ? NOT_STARTED : IN_PROGRESS
     end
   end
 
@@ -249,7 +255,7 @@ class Enrollment < ActiveRecord::Base
     other_status = other_item.status
     if status == other_item.status
       id <=> other_item.id
-    elsif (status == IN_PROGRESS) || (status == NOT_STARTED && other_status != IN_PROGRESS) || (status == CANCELLED && other_status == COMPLETED)
+    elsif (status == IN_PROGRESS) || (status == NOT_STARTED && other_status != IN_PROGRESS)
       -1
     else
       1
