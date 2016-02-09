@@ -44,16 +44,15 @@ class CriterionSms < ActiveRecord::Base
     '92' + to[1..-1]
   end
 
-  def send_sms(count=10)
-    return if status || count == 0
+  def send_sms
+    return if status
     url = "http://sendpk.com/api/sms.php?username=#{USERNAME}&password=#{PASSWORD}&sender=Criterion&mobile=#{number}&message=#{message}"
     encoded_url = URI.encode(url)
     uri = URI.parse(encoded_url)
     response = Net::HTTP.get(uri)
     result = response.split(' ').first == 'OK'
     update_attributes(status: result, api_response: response)
-    count -= 1
-    send_sms(count)
+    status
   end
 
   ### Class Methods ###

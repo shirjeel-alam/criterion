@@ -36,7 +36,7 @@ ActiveAdmin.register CriterionSms do
       sms.api_response
     end
     
-		default_actions	
+		default_actions
 	end
 
 	form do |f|
@@ -48,6 +48,22 @@ ActiveAdmin.register CriterionSms do
 
 		f.buttons
 	end
+
+  member_action :resend, method: :put do
+    sms = CriterionSms.find(params[:id])
+    if sms.send_sms
+      flash[:notice] = 'Sms sent successfully'
+    else
+      flash[:error] = 'Error sending sms. Try again later'
+    end
+    redirect_to action: :show
+  end
+
+  action_item only: :show do
+    if (current_admin_user.super_admin_or_partner? || current_admin_user.admin?) && !criterion_sms.status
+      span link_to('Resend', resend_admin_criterion_sm_path(criterion_sms), method: :put)
+    end
+  end
 
 	controller do
     before_filter :check_authorization
