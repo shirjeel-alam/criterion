@@ -179,7 +179,8 @@ ActiveAdmin.register Student do
       
       f.has_many :phone_numbers do |fp|
         fp.input :number
-        fp.input :category, as: :select, collection: PhoneNumber.categories, include_blank: false, input_html: { class: 'chosen-select' }
+        fp.input :category, as: :radio, collection: PhoneNumber.categories, required: true
+        fp.input :belongs_to, as: :radio, collection: PhoneNumber.belongs_to, required: true
       end
       
       f.has_many :enrollments do |fe|

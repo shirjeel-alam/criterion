@@ -28,10 +28,11 @@ ActiveAdmin.register PhoneNumber do
 
   form do |f|
     f.inputs do
+      f.input :contactable_id, input_html: { disabled: true }
+      f.input :contactable_type, input_html: { disabled: true }
       f.input :number, required: true
-      f.input :category, as: :select, collection: PhoneNumber.categories, include_blank: false, required: true
-      f.input :contactable_id, as: :hidden
-      f.input :contactable_type, as: :hidden
+      f.input :category, as: :radio, collection: PhoneNumber.categories, required: true
+      f.input :belongs_to, as: :radio, collection: PhoneNumber.belongs_to, required: true
     end
 
     f.buttons

@@ -9,10 +9,12 @@
 #  contactable_type :string(255)
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
+#  belongs_to       :integer
 #
 
 class PhoneNumber < ActiveRecord::Base
-  MOBILE, HOME, WORK, GENERAL = 0, 1, 2, 3
+  MOBILE, LANDLINE = 0, 1
+  STUDENT, FATHER, MOTHER = 0, 1, 2
 
   belongs_to :contactable, polymorphic: true
 
@@ -20,27 +22,17 @@ class PhoneNumber < ActiveRecord::Base
 
   validates :number, presence: true, uniqueness: true, numericality: true
   validates :number, format: { with: /^03\d{9}$/ }, if: :mobile?
-  validates :category, presence: true, inclusion: { in: [MOBILE, HOME, WORK, GENERAL] }
+  validates :category, presence: true, inclusion: { in: [MOBILE, LANDLINE] }
+  validates :belongs_to, presence: true, inclusion: { in: [STUDENT, FATHER, MOTHER] }
 
   scope :mobile, where(category: MOBILE)
-  scope :home, where(category: HOME)
-  scope :work, where(category: WORK)
-  scope :general, where(category: GENERAL)
 
   def mobile?
     category == MOBILE
   end
 
-  def home?
-    category == HOME
-  end
-
-  def work?
-    category == WORK
-  end
-
-  def general?
-    category == GENERAL
+  def landline?
+    category == LANDLINE
   end
 
   def sent_sms
@@ -50,33 +42,40 @@ class PhoneNumber < ActiveRecord::Base
   ### Class Methods ###
 
   def self.categories
-    [['Mobile', MOBILE], ['Home', HOME], ['Work', WORK], ['General', GENERAL]]
+    [['Mobile', MOBILE], ['Landline', LANDLINE]]
+  end
+
+  def self.belongs_to
+    [['Student', STUDENT], ['Father', FATHER], ['Mother', MOTHER]]
   end
 
   def self.all_mobile_numbers
     PhoneNumber.mobile.collect { |phone_number| ["#{phone_number.contactable.name + ' -' rescue nil} #{phone_number.number}".lstrip, phone_number.number] }
   end
 
-  def self.valid_mobile_number?(number)
-    number.match(/^03\d{9}$/).present?
-  end
-
   ### View Helpers ###
 
   def label
-    "#{number} - #{category_label}"
+    "#{number} - #{belongs_to_label} (#{category_label})"
   end
   
   def category_label
     case category
     when MOBILE
       'Mobile'
-    when HOME
-      'Home'
-    when WORK
-      'Work'
-    when GENERAL
-      'General'
+    when LANDLINE
+      'Landline'
+    end
+  end
+
+  def belongs_to_label
+    case belongs_to
+    when STUDENT
+      'Student'
+    when FATHER
+      'Father'
+    when MOTHER
+      'Mother'
     end
   end
 
