@@ -54,7 +54,7 @@ end
 group :development, :test do
   gem 'pry-rails'
   gem 'annotate', '2.6.10'
-  gem 'puma'
+  gem 'unicorn-rails'
   gem 'mailcatcher'
 end
 
