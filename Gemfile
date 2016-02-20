@@ -67,4 +67,5 @@ group :development do
   gem 'capistrano-passenger'
   gem 'capistrano-clockwork'
   gem 'capistrano-rails-console'
+  gem 'airbrussh', require: false
 end

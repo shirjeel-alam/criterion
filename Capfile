@@ -9,6 +9,7 @@ require 'capistrano/rails'
 require 'capistrano/passenger'
 require 'capistrano/clockwork'
 require 'capistrano/rails/console'
+require 'airbrussh/capistrano'
 
 # Loads custom tasks from `lib/capistrano/tasks' if you have any defined.
 Dir.glob('lib/capistrano/tasks/*.rake').each { |r| import r }
