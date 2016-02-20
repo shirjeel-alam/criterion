@@ -32,4 +32,10 @@ class ScheduleTask
 	def self.send_sms_test
 		CriterionSms.send_test_sms
 	end
+
+  def self.action_request_invalid_reject
+    ActionRequest.pending.find_each do |ar|
+      ar.reject_request!(AdminUser.find_by_email('admin@criterion.edu')) if ar.action_item.blank?
+    end
+  end
 end

@@ -38,6 +38,25 @@ ActiveAdmin.register ActionRequest do
         link_to(admin.user.name, admin_partner_path(admin.user)) rescue admin.email
       when AdminUser::ADMIN, AdminUser::STAFF
         link_to(admin.user.name, admin_staff_path(admin.user)) rescue admin.email
+      else
+        'System'
+      end
+    end
+    column :facilitated_by, sortable: :facilitated_by_id do |action_request|
+      admin = action_request.facilitated_by
+      if admin.present?
+        case admin.role
+        when AdminUser::TEACHER
+          link_to(admin.user.name, admin_teacher_path(admin.user)) rescue admin.email
+        when AdminUser::STUDENT
+          link_to(admin.user.name, admin_student_path(admin.user)) rescue admin.email
+        when AdminUser::PARTNER
+          link_to(admin.user.name, admin_partner_path(admin.user)) rescue admin.email
+        when AdminUser::ADMIN, AdminUser::STAFF
+          link_to(admin.user.name, admin_staff_path(admin.user)) rescue admin.email
+        when AdminUser::SUPER_ADMIN
+          'System'
+        end
       end
     end
     column :state, sortable: :state do |action_request|

@@ -16,7 +16,9 @@ class RecurringJob
       ScheduleTask.sms_and_email_cleanup
       SuckerPunch.logger.info "Task 3 - Completed"
     when 4
-      ScheduleTask.send_sms_test
+      SuckerPunch.logger.info "Task 4: ActionRequestInvalidReject, Time: #{Time.now}"
+      ScheduleTask.action_request_invalid_reject
+      SuckerPunch.logger.info "Task 4 - Completed"
     end
   end
 end
