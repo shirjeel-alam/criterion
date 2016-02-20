@@ -19,6 +19,9 @@ ActiveAdmin.register PhoneNumber do
     end
     column :contactable_type
     column :number
+    column :belongs_to, sortable: :belongs_to do |number|
+      number.belongs_to_label
+    end
     column :category, sortable: :category do |number|
       number.category_label
     end
@@ -31,8 +34,8 @@ ActiveAdmin.register PhoneNumber do
       f.input :contactable_id, input_html: { disabled: true }
       f.input :contactable_type, input_html: { disabled: true }
       f.input :number, required: true
-      f.input :category, as: :radio, collection: PhoneNumber.categories, required: true
       f.input :belongs_to, as: :radio, collection: PhoneNumber.belongs_to, required: true
+      f.input :category, as: :radio, collection: PhoneNumber.categories, required: true
     end
 
     f.buttons
@@ -56,6 +59,7 @@ ActiveAdmin.register PhoneNumber do
         end
         row(:contactable_type) { phone_number.contactable_type }
         row(:number) { phone_number.number }
+        row(:belongs_to) { phone_number.belongs_to_label }
         row(:category) { phone_number.category_label }
       end
     end
