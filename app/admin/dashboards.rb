@@ -149,7 +149,7 @@ ActiveAdmin::Dashboards.build do
 
   section 'Statistics', priority: 3 do
     ul do
-      li "Active Students: #{Student.count}"
+      li "Active Students: #{Student.active.count}"
       li "Active Enrollments: #{Enrollment.in_progress.count}"
       li do
         span "Accumulated Profit/Loss: "

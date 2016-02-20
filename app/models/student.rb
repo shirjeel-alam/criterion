@@ -31,6 +31,8 @@ class Student < ActiveRecord::Base
   validates :email, presence: true
 
   after_create :send_sms
+
+  scope :active, -> { joins(:enrollments).where('enrollments.status = ?', Enrollment::IN_PROGRESS).uniq }
   
   def enrolled_courses
     Course.active.collect { |c| c if c.has_enrollment?(self) }.compact.uniq
