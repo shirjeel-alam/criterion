@@ -5,7 +5,7 @@ ActiveAdmin.register Student do
   filter :name
   filter :email
   filter :phone_numbers_number, as: :string, label: 'Phone Number'
-  
+
   index do
     column 'ID', sortable: :id do |student|
       link_to(student.id, admin_student_path(student))
@@ -19,10 +19,10 @@ ActiveAdmin.register Student do
     column 'Contact Number' do |student|
       student.phone_numbers.each { |number| div number.label } if student.phone_numbers.present?
     end
-    
+
     default_actions
   end
-  
+
   show title: :name do
     panel 'Student Details' do
       attributes_table_for student do
@@ -31,7 +31,7 @@ ActiveAdmin.register Student do
         row(:email) { best_in_place_if((current_admin_user.super_admin_or_partner? || current_admin_user.admin?), student, :email, as: :input, url: [:admin, student]) }
         row(:address) { best_in_place_if((current_admin_user.super_admin_or_partner? || current_admin_user.admin?), student, :address, as: :input, url: [:admin, student]) }
         row(:phone_numbers) do
-          if student.phone_numbers.present? 
+          if student.phone_numbers.present?
             student.phone_numbers.each do |number|
               div do
                 span number.label
@@ -62,14 +62,14 @@ ActiveAdmin.register Student do
         end
       end
     end
-    
+
     panel 'Payments' do
       temp_payments = student.payments.collect do |payment|
         payment.period = payment.period.beginning_of_month
         payment
       end
       result = temp_payments.group_by(&:period).sort_by(&:first)
-      
+
       table do
         thead do
           tr do
@@ -83,7 +83,7 @@ ActiveAdmin.register Student do
             th nil
           end
         end
-        
+
         tbody do
           flip = true
           result.each do |cumulative_payment|
@@ -104,7 +104,7 @@ ActiveAdmin.register Student do
               td status_tag(cumulative_net_amount > 0 ? 'Due' : 'Paid', cumulative_net_amount > 0 ? :error : :ok)
               td cumulative_net_amount > 0 ? link_to('Make Payment (Cumulative)', pay_cumulative_admin_payments_path(payments: cumulative_payment_due)) : nil
             end
-            
+
             flip = !flip
             cumulative_payment.second.sort_by(&:id).each do |payment|
               tr class: "#{flip ? 'odd' : 'even'} content" do
@@ -135,7 +135,7 @@ ActiveAdmin.register Student do
         end
       end
     end
-    
+
     panel 'Student Enrollments' do
       table_for student.enrollments do |t|
         t.column(:id) { |enrollment| link_to(enrollment.id, admin_enrollment_path(enrollment)) }
@@ -143,9 +143,9 @@ ActiveAdmin.register Student do
         t.column(:session) { |enrollment| link_to(enrollment.course.session.label, admin_session_path(enrollment.course.session)) rescue nil }
         t.column(:teacher) { |enrollment| link_to(enrollment.course.teacher.name, admin_teacher_path(enrollment.course.teacher)) }
         t.column(:status) { |enrollment| status_tag(enrollment.status_label, enrollment.status_tag) }
-      end 
+      end
     end if student.enrollments.present?
-    
+
     panel 'Student Fees Table' do
       sessions = student.enrollments.started_or_completed.sort_by(&:session_id).group_by(&:session_id)
 
@@ -158,7 +158,7 @@ ActiveAdmin.register Student do
             t.column(:course) { |enrollment| link_to(enrollment.course.name, admin_course_path(enrollment.course)) }
             t.column(:join_date) { |enrollment| date_format(enrollment.start_date) }
             months.each do |month|
-              t.column(date_format(month, true)) do |enrollment| 
+              t.column(date_format(month, true)) do |enrollment|
                 payment = enrollment.payment(month)
                 payment.present? ? status_tag(payment.status_label, payment.status_tag) : '-'
               end
@@ -170,28 +170,38 @@ ActiveAdmin.register Student do
 
     active_admin_comments
   end
-    
+
   form do |f|
     f.inputs do
       f.input :name, required: true
       f.input :email
       f.input :address
-      
+
       f.has_many :phone_numbers do |fp|
         fp.input :number
         fp.input :belongs_to, as: :radio, collection: PhoneNumber.belongs_to, required: true
         fp.input :category, as: :radio, collection: PhoneNumber.categories, required: true
       end
-      
+
       f.has_many :enrollments do |fe|
         fe.input :course_id, as: :select, include_blank: false, collection: Course.get_active, input_html: { class: 'chosen-select' }
         fe.input :start_date, as: :datepicker, label: 'Start Date', input_html: { class: 'date_input' }
       end
     end
-    
+
     f.buttons
   end
-    
+
+  csv do
+    column :id
+    column :name
+    column :email
+    column :address
+    column 'Contact Number' do |student|
+      student.phone_numbers.collect { |number| number.label } if student.phone_numbers.present?
+    end
+  end
+
   action_item only: :show do
     span link_to('Add Enrollment', new_admin_enrollment_path(student_id: student))
     span link_to('Add PhoneNumber', new_admin_phone_number_path(phone_number: { contactable_id: student.id, contactable_type: student.class.name }))
@@ -215,7 +225,7 @@ ActiveAdmin.register Student do
         payment.period = payment.period.beginning_of_month
         payment
       end
-    @payments = @payments.group_by(&:period).sort_by(&:first) 
+    @payments = @payments.group_by(&:period).sort_by(&:first)
   end
 
   controller do
@@ -230,7 +240,7 @@ ActiveAdmin.register Student do
       elsif current_admin_user.all_other?
         flash[:error] = 'You are not authorized to perform this action'
         redirect_to_back
-      end 
+      end
     end
 
     def create
