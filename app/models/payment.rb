@@ -130,6 +130,10 @@ class Payment < ActiveRecord::Base
     payable_id.blank? && payment_type == CREDIT && payment_method.include?([CASH, CHEQUE]) rescue false
   end
 
+  def book?
+    item_id.present? && item_type == Book.name
+  end
+
   def +(payment)
     if payment.is_a?(Payment)
       Payment.new(amount: (self.amount.to_i + payment.amount.to_i), discount: (self.discount.to_i + payment.discount.to_i))
@@ -165,9 +169,15 @@ class Payment < ActiveRecord::Base
   def create_account_entry
     if payable.is_a?(Enrollment)
       if paid?
-        CriterionAccount.bank_account.account_entries.create!(payment_id: self.id, amount: net_amount, entry_type: AccountEntry::DEBIT)
-        CriterionAccount.criterion_account.account_entries.create!(payment_id: self.id, amount: (net_amount * (1 - payable.teacher.share)).round, entry_type: AccountEntry::CREDIT)
-        payable.teacher.criterion_account.account_entries.create!(payment_id: self.id, amount: (net_amount * payable.teacher.share).round, entry_type: AccountEntry::CREDIT)
+        if book?
+          CriterionAccount.bank_account.account_entries.create!(payment_id: self.id, amount: net_amount, entry_type: AccountEntry::DEBIT)
+          CriterionAccount.criterion_account.account_entries.create!(payment_id: self.id, amount: (net_amount * (1 - item.share)).round, entry_type: AccountEntry::CREDIT)
+          payable.teacher.criterion_account.account_entries.create!(payment_id: self.id, amount: (net_amount * item.share).round, entry_type: AccountEntry::CREDIT)
+        else
+          CriterionAccount.bank_account.account_entries.create!(payment_id: self.id, amount: net_amount, entry_type: AccountEntry::DEBIT)
+          CriterionAccount.criterion_account.account_entries.create!(payment_id: self.id, amount: (net_amount * (1 - payable.teacher.share)).round, entry_type: AccountEntry::CREDIT)
+          payable.teacher.criterion_account.account_entries.create!(payment_id: self.id, amount: (net_amount * payable.teacher.share).round, entry_type: AccountEntry::CREDIT)
+        end
       elsif refunded?
         CriterionAccount.bank_account.account_entries.create!(payment_id: self.id, amount: net_amount, entry_type: AccountEntry::CREDIT)
         CriterionAccount.criterion_account.account_entries.create!(payment_id: self.id, amount: (net_amount * (1 - payable.teacher.share)).round, entry_type: AccountEntry::DEBIT)
@@ -241,10 +251,18 @@ class Payment < ActiveRecord::Base
     elsif payable.is_a?(Enrollment)
       student = payable.student
       course_name = payable.course.title
-      month_and_year = period_label
+      message = nil
+
+      if book?
+        book_name = item.name
+        message = "Dear Student, Your payment of Rs. #{net_amount} against #{course_name} for #{book_name} has been received. Thank You"
+      else
+        month_and_year = period_label
+        message = "Dear Student, Your payment of Rs. #{net_amount} against #{course_name} for the period #{month_and_year} has been received. Thank You"
+      end
 
       student.phone_numbers.mobile.each do |phone_number|
-        sms_data = { to: phone_number.number, message: "Dear Student, Your payment of Rs. #{net_amount} against #{course_name} for the period #{month_and_year} has been received. Thank You" }
+        sms_data = { to: phone_number.number, message: message }
         student.received_messages.create(sms_data)
       end
     end
@@ -337,7 +355,7 @@ class Payment < ActiveRecord::Base
 
   def particular
     if payable.is_a?(Enrollment)
-      "#{payable.student.name}, #{payable.course.name}"
+      book? ? "#{payable.student.name}, #{payable.course.name}, #{item.name}" : "#{payable.student.name}, #{payable.course.name}"
     elsif payable.is_a?(SessionStudent)
       "#{payable.student.name}, Registration"
     elsif payable.is_a?(Teacher) || payable.is_a?(Staff) || payable.is_a?(Partner)
@@ -353,7 +371,7 @@ class Payment < ActiveRecord::Base
 
   def particular_extended
     if payable.is_a?(Enrollment)
-      "#{payable.student.name}, #{payable.course.name}"
+      book? ? "#{payable.student.name}, #{payable.course.name}, #{item.name}" : "#{payable.student.name}, #{payable.course.name}"
     elsif payable.is_a?(SessionStudent)
       "#{payable.student.name}, Registration"
     elsif payable.is_a?(Teacher) || payable.is_a?(Staff) || payable.is_a?(Partner)

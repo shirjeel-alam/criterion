@@ -24,9 +24,13 @@ class CriterionMonthlyReport < ActiveRecord::Base
   end
 
   def calc_revenue
-    payments(AccountEntry::CREDIT).sum do |payment| 
+    payments(AccountEntry::CREDIT).sum do |payment|
       if payment.payable.is_a?(Enrollment)
-        (payment.net_amount * (1 - payment.payable.teacher.share)).round
+        if book?
+          (payment.net_amount * (1 - payment.item.share)).round
+        else
+          (payment.net_amount * (1 - payment.payable.teacher.share)).round
+        end
       else
         payment.net_amount
       end
@@ -34,9 +38,13 @@ class CriterionMonthlyReport < ActiveRecord::Base
   end
 
   def calc_expenditure
-    payments(AccountEntry::DEBIT).sum do |payment| 
+    payments(AccountEntry::DEBIT).sum do |payment|
       if payment.payable.is_a?(Enrollment)
-        (payment.net_amount * (1 - payment.payable.teacher.share)).round
+        if book?
+          (payment.net_amount * (1 - payment.item.share)).round
+        else
+          (payment.net_amount * (1 - payment.payable.teacher.share)).round
+        end
       else
         payment.net_amount
       end

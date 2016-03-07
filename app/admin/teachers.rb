@@ -73,7 +73,8 @@ ActiveAdmin.register Teacher do
     end
 
     panel 'Payments (Income)' do
-      temp_payments = teacher.payments.debit.where('courses.status IN (?)', [Course::NOT_STARTED, Course::IN_PROGRESS]).collect do |payment|
+      # FIX: Books are exluded
+      temp_payments = teacher.payments.fees.debit.where('courses.status IN (?)', [Course::NOT_STARTED, Course::IN_PROGRESS]).collect do |payment|
         payment.period = payment.period.beginning_of_month
         payment
       end
