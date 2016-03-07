@@ -19,26 +19,26 @@
 class Course < ActiveRecord::Base
   NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED = 0, 1, 2, 3
   O_LEVEL, AS_LEVEL, A2_LEVEL, ACCA = 0, 1, 2, 4
-  
+
   belongs_to :teacher
   belongs_to :session
-  
+
   has_many :enrollments, dependent: :destroy
   has_many :payments, through: :enrollments
   has_many :students, through: :enrollments
   has_many :schedules
-  
+
   before_validation :set_end_date
 
   before_save :update_status
   after_save :update_session, :create_payments
-  
+
   validates :name, presence: true
   validates :teacher_id, presence: true
   validates :session_id, presence: true
   validates :status, presence: true, inclusion: { in: [NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED] }
   validates :monthly_fee, presence: true, numericality: { only_integer: true, greater_than: 0 }
-  validates :start_date, timeliness: { type: :date, before: lambda { end_date }, allow_blank: true } 
+  validates :start_date, timeliness: { type: :date, before: lambda { end_date }, allow_blank: true }
   validates :end_date, timeliness: { type: :date, allow_blank: true }
   validates :level, presence: true, inclusion: { in: [O_LEVEL, AS_LEVEL, A2_LEVEL, ACCA] }
 
@@ -51,7 +51,7 @@ class Course < ActiveRecord::Base
 
   scope :with_due_fees, lambda { |date| joins(:payments).where('payments.status = ? AND payments.period <= ?', Payment::DUE, date) }
   scope :with_schedule, joins(:schedules)
-  
+
   def update_status
     if start_date.blank? || start_date > Time.current.to_date
       self.status = NOT_STARTED
@@ -64,7 +64,7 @@ class Course < ActiveRecord::Base
     end unless (completed? || cancelled?)
   end
 
-  def set_end_date    
+  def set_end_date
     case session.period
       when Session::MAY_JUNE
         self.end_date = Date.parse("31 May #{session.year}")
@@ -72,20 +72,20 @@ class Course < ActiveRecord::Base
         self.end_date = Date.parse("31 October #{session.year}")
     end unless end_date.present?
   end
-  
-  def create_payments    
+
+  def create_payments
     enrollments.each do |enrollment|
       enrollment.create_payments
     end if started?
   end
-  
+
   def calculate_revenue
     months = months_between(course.start_date, course.end_date)
     months.each do |date|
       calculate_month_revenue(date)
     end
   end
-  
+
   def calculate_month_revenue(date)
     revenue = 0
     curr_payments = payments.paid.where(period: date.beginning_of_month..date.end_of_month)
@@ -94,7 +94,7 @@ class Course < ActiveRecord::Base
     end
     revenue
   end
-  
+
   def not_started?
     status == NOT_STARTED
   end
@@ -102,7 +102,7 @@ class Course < ActiveRecord::Base
   def started?
     status == IN_PROGRESS
   end
-  
+
   def completed?
     status == COMPLETED
   end
@@ -129,11 +129,11 @@ class Course < ActiveRecord::Base
     self.update_attributes(status: CANCELLED, course_date: Time.current.to_date)
     cancel_enrollments
   end
-  
+
   def has_enrollment?(student)
     enrollments.collect(&:student_id).compact.include?(student.id)
   end
-  
+
   def months_between(start_date, end_date)
     months = []
     months << start_date
@@ -143,9 +143,9 @@ class Course < ActiveRecord::Base
       ptr = ptr >> 1
     end
     months << end_date unless (start_date.beginning_of_month == end_date.beginning_of_month || months.last.beginning_of_month == end_date.beginning_of_month)
-    months      
+    months
   end
-  
+
   def not_enrolled_students
     Student.all.collect { |student| student unless self.has_enrollment?(student) }.compact.uniq
   end
@@ -185,7 +185,7 @@ class Course < ActiveRecord::Base
     last_status = status
     update_status
     current_status = status
-    
+
     unless last_status == current_status
       case current_status
       when IN_PROGRESS
@@ -204,7 +204,7 @@ class Course < ActiveRecord::Base
   end
 
   ### Class Methods ###
-  
+
   def self.get_all
     Course.all.collect { |course| [course.label, course.id] }
   end
@@ -227,7 +227,7 @@ class Course < ActiveRecord::Base
 
   ### View Helpers ###
 
-  def label 
+  def label
     "#{name} | #{session.label} | #{teacher.name}"
   end
 

@@ -7,7 +7,7 @@ ActiveAdmin.register Course do
   filter :session, as: :select, collection: proc { Session.get_all }, input_html: { class: 'chosen-select' }
   filter :teacher_id, as: :select, collection: proc { Teacher.get_all }, input_html: { class: 'chosen-select' }
   filter :status, as: :select, collection: proc { Course.statuses }, input_html: { class: 'chosen-select' }
-  
+
   scope :all, default: true do |courses|
     if current_admin_user.teacher?
       courses.where(teacher_id: current_admin_user.user.id)
@@ -47,7 +47,7 @@ ActiveAdmin.register Course do
       courses.cancelled
     end
   end
-  
+
   index do
     column 'ID' do |course|
       link_to(course.id, admin_course_path(course))
@@ -77,10 +77,10 @@ ActiveAdmin.register Course do
     column :no_of_enrollments do |course|
       course.enrollments.active.count
     end
-    
+
     default_actions
   end
-  
+
   show title: :title do
     panel 'Course Details' do
       attributes_table_for course do
@@ -107,10 +107,10 @@ ActiveAdmin.register Course do
           else
             'No Time Table Present'
           end
-        end 
+        end
       end
     end
-    
+
     panel 'Course Enrollments' do
       table_for course.enrollments.sort do |t|
         t.column(:id) { |enrollment| link_to(enrollment.id, admin_enrollment_path(enrollment)) }
@@ -136,7 +136,7 @@ ActiveAdmin.register Course do
         t.column(:student) { |enrollment| link_to(enrollment.student.name, admin_student_path(enrollment.student)) }
         t.column(:join_date ) { |enrollment| date_format(enrollment.start_date) }
         months.each do |month|
-          t.column(date_format(month, true)) do |enrollment| 
+          t.column(date_format(month, true)) do |enrollment|
             payment = enrollment.payment(month)
             payment.present? ? status_tag(payment.status_label, payment.status_tag) : '-'
           end
@@ -146,7 +146,7 @@ ActiveAdmin.register Course do
 
     active_admin_comments
   end
-  
+
   form do |f|
     f.inputs do
       f.input :name, required: true
@@ -158,10 +158,10 @@ ActiveAdmin.register Course do
       f.input :start_date, as: :datepicker, order: [:day, :month, :year]
       f.input :end_date, as: :datepicker, order: [:day, :month, :year], hint: 'Will be automatically set if left blank'
     end
-    
+
     f.buttons
   end
-  
+
   member_action :start, method: :put do
     course = Course.find(params[:id])
     if course.start!
@@ -181,7 +181,7 @@ ActiveAdmin.register Course do
     end
     redirect_to action: :show
   end
-  
+
   member_action :finish, method: :put do
     course = Course.find(params[:id])
     if course.complete!
@@ -202,7 +202,7 @@ ActiveAdmin.register Course do
       redirect_to_back
     end
   end
-  
+
   action_item only: :show do
     if current_admin_user.super_admin_or_partner? || current_admin_user.admin?
       span link_to('Add Enrollment', new_admin_enrollment_path(course_id: course)) unless (course.completed? || course.cancelled?)
@@ -212,7 +212,7 @@ ActiveAdmin.register Course do
           span link_to('Start Course', start_admin_course_path(course), method: :put, data: { confirm: 'Are you sure?' })
         elsif course.started?
           span link_to('Cancel Course', cancel_admin_course_path(course), method: :put, data: { confirm: 'Are you sure?' })
-          span link_to('Finish Course', finish_admin_course_path(course), method: :put, data: { confirm: 'Are you sure?' })  
+          span link_to('Finish Course', finish_admin_course_path(course), method: :put, data: { confirm: 'Are you sure?' })
         end
       end
     end

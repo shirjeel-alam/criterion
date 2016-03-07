@@ -22,12 +22,12 @@ class Payment < ActiveRecord::Base
   DUE, PAID, VOID, REFUNDED = 0, 1, 2, 3
   CREDIT, DEBIT = true, false
   CASH, CHEQUE, INTERNAL = 0, 1, 2
-  
+
   belongs_to :payable, polymorphic: :true
   belongs_to :category
   belongs_to :sessions_student
   has_many :account_entries, dependent: :destroy
-  
+
   before_validation :check_payment, on: :create, if: "payable_type == 'Enrollment'"
   before_validation :check_appropriated_amount, on: :create, if: 'appropriated?'
   after_create :create_account_entry
@@ -40,12 +40,12 @@ class Payment < ActiveRecord::Base
   validates :discount, numericality: { only_integer: true, greater_than: 0 }, allow_blank: true
   validates :payment_date, timeliness: { type: :date, allow_blank: true }
   validates :payment_method, inclusion: { in: [CASH, CHEQUE, INTERNAL] }, if: 'paid?'
-  
+
   scope :paid, where(status: PAID)
   scope :due, where(status: DUE)
   scope :void, where(status: VOID)
   scope :refunded, where(status: REFUNDED)
-  
+
   scope :credit, where(payment_type: CREDIT)
   scope :debit, where(payment_type: DEBIT)
 
@@ -63,7 +63,7 @@ class Payment < ActiveRecord::Base
   scope :all_due_fees, lambda { |date| due.where('period <= ? OR period IS NULL', date) }
 
   attr_accessor :other_account
-  
+
   def check_payment
     errors.add(:duplicate, 'Entry already exists') if Payment.where(period: period.beginning_of_month..period.end_of_month, payable_id: payable_id, payable_type: payable_type, payment_type: payment_type).present?
   end
@@ -129,7 +129,7 @@ class Payment < ActiveRecord::Base
       raise payment.inspect
     end
   end
-  
+
   def net_amount
     discount.present? ? (amount - discount) : amount
   end
@@ -227,7 +227,7 @@ class Payment < ActiveRecord::Base
       student.phone_numbers.mobile.each do |phone_number|
         sms_data = { to: phone_number.number, message: "Dear Student, Your payment of Rs. #{net_amount} as registration fee for #{session.label} has been received. Thank You" }
         student.received_messages.create(sms_data)
-      end      
+      end
     elsif payable.is_a?(Enrollment)
       student = payable.student
       course_name = payable.course.title
@@ -239,7 +239,7 @@ class Payment < ActiveRecord::Base
       end
     end
   end
-  
+
   ### Class Methods ###
 
   def self.statuses
@@ -279,7 +279,7 @@ class Payment < ActiveRecord::Base
         'Refunded'
     end
   end
-  
+
   def status_tag
     case status
       when DUE
@@ -290,7 +290,7 @@ class Payment < ActiveRecord::Base
         :warning
     end
   end
-      
+
   def type_label
     payment_type ? 'Credit' : 'Debit'
   end
@@ -334,7 +334,7 @@ class Payment < ActiveRecord::Base
       if credit?
         additional_info.present? ? additional_info : 'Withdrawal'
       else debit?
-        additional_info.present? ? additional_info : 'Deposit' 
+        additional_info.present? ? additional_info : 'Deposit'
       end
     else
       "#{category.try(:name_label)}, #{period_label}"
@@ -350,7 +350,7 @@ class Payment < ActiveRecord::Base
       if credit?
         additional_info.present? ? "#{additional_info}, #{payable.name}" : 'Withdrawal'
       else debit?
-        additional_info.present? ? "#{additional_info}, #{payable.name}" : 'Deposit' 
+        additional_info.present? ? "#{additional_info}, #{payable.name}" : 'Deposit'
       end
     else
       "#{category.try(:name_label)}, #{period_label}"

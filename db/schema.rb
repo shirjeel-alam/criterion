@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160220115425) do
+ActiveRecord::Schema.define(:version => 20160307051524) do
 
   create_table "account_entries", :force => true do |t|
     t.integer  "criterion_account_id"
@@ -73,6 +73,17 @@ ActiveRecord::Schema.define(:version => 20160220115425) do
 
   add_index "admin_users", ["email"], :name => "index_admin_users_on_email", :unique => true
   add_index "admin_users", ["reset_password_token"], :name => "index_admin_users_on_reset_password_token", :unique => true
+
+  create_table "books", :force => true do |t|
+    t.string   "name"
+    t.integer  "amount"
+    t.float    "share"
+    t.integer  "course_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "books", ["course_id"], :name => "index_books_on_course_id"
 
   create_table "categories", :force => true do |t|
     t.string   "name"
@@ -164,23 +175,6 @@ ActiveRecord::Schema.define(:version => 20160220115425) do
     t.date     "enrollment_date"
     t.date     "start_date"
     t.boolean  "discount_applied", :default => false
-  end
-
-  create_table "invoices", :force => true do |t|
-    t.integer  "student_id"
-    t.string   "bill_to"
-    t.date     "paid_at"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
-  create_table "line_items", :force => true do |t|
-    t.decimal  "price",       :precision => 10, :scale => 0
-    t.string   "description"
-    t.integer  "invoice_id"
-    t.integer  "payment_id"
-    t.datetime "created_at",                                 :null => false
-    t.datetime "updated_at",                                 :null => false
   end
 
   create_table "partners", :force => true do |t|
