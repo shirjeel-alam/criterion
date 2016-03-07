@@ -127,6 +127,21 @@ ActiveAdmin.register Course do
             li link_to('Make Payment Due', due_admin_payment_path(registration_fee), method: :put, data: { confirm: 'Are you sure?' })
           end
         end
+        course.books.each do |book|
+          t.column(book.name) do |enrollment|
+            payment = enrollment.payments.books.where(item_id: book.id).first
+            payment.present? ? status_tag(payment.status_label, payment.status_tag) : '-'
+          end
+          t.column do |enrollment|
+            book_fee = book.payment(enrollment)
+            if book_fee.present? && book_fee.due?
+              li link_to('Make Payment', pay_admin_payment_path(book_fee), method: :get)
+              li link_to('Void Payment', void_admin_payment_path(book_fee), method: :put, data: { confirm: 'Are you sure?' })
+            elsif book_fee.present? && book_fee.void?
+              li link_to('Make Payment Due', due_admin_payment_path(book_fee), method: :put, data: { confirm: 'Are you sure?' })
+            end
+          end
+        end
       end
     end if course.enrollments.present?
 
@@ -143,18 +158,6 @@ ActiveAdmin.register Course do
         end
       end
     end if course.enrollments.present? && course.started_or_completed?
-
-    panel 'Course Book Fees Table' do
-      table_for course.enrollments.sort do |t|
-        t.column(:student) { |enrollment| link_to(enrollment.student.name, admin_student_path(enrollment.student)) }
-        course.books.each do |book|
-          t.column(book.name) do |enrollment|
-            payment = enrollment.payments.books.where(item_id: book.id).first
-            payment.present? ? status_tag(payment.status_label, payment.status_tag) : '-'
-          end
-        end
-      end
-    end if course.enrollments.present?
 
     active_admin_comments
   end

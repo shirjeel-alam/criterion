@@ -23,6 +23,10 @@ class Book < ActiveRecord::Base
   before_validation :set_share
   after_save :create_payments
 
+  def payment(enrollment)
+    payments.where(payable_id: enrollment.id, payable_type: enrollment.class.name).first
+  end
+
   ### View Helpers ###
 
   def title
