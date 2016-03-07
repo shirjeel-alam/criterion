@@ -32,20 +32,6 @@ gem 'sucker_punch'
 gem 'ruby-hmac'
 gem 'hash_syntax'
 
-# To use ActiveModel has_secure_password
-# gem 'bcrypt-ruby', '~> 3.0.0'
-
-# Use unicorn as the web server
-# gem 'unicorn'
-
-# Deploy with Capistrano
-# gem 'capistrano'
-
-# For heroku db:push and db:pull
-gem 'taps'
-
-# Gems used only for assets and not required
-# in production environments by default.
 group :assets do
   gem 'coffee-rails'
   gem 'uglifier'
