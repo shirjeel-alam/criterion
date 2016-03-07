@@ -27,6 +27,7 @@ class Course < ActiveRecord::Base
   has_many :payments, through: :enrollments
   has_many :students, through: :enrollments
   has_many :schedules
+  has_many :books
 
   before_validation :set_end_date
 
@@ -75,7 +76,7 @@ class Course < ActiveRecord::Base
 
   def create_payments
     enrollments.each do |enrollment|
-      enrollment.create_payments
+      enrollment.map(&:save)
     end if started?
   end
 

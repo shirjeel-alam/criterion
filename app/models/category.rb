@@ -40,7 +40,11 @@ class Category < ActiveRecord::Base
   def self.appropriated
     Category.find_by_name('appropriated')
   end
-  
+
+  def self.book_fee
+    Category.find_by_name('book fee')
+  end
+
 	### View Helpers ###
 
 	def name_label

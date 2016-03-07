@@ -13,6 +13,7 @@
 
 class Book < ActiveRecord::Base
   belongs_to :course
+  has_many :payments, as: :item, dependent: :destroy
 
   validates :name, presence: true
   validates :amount, presence: true, numericality: { only_integer: true, greater_than: 0 }
@@ -20,6 +21,7 @@ class Book < ActiveRecord::Base
   validates :course_id, presence: true
 
   before_validation :set_share
+  after_save :create_payments
 
   ### View Helpers ###
 
@@ -31,5 +33,9 @@ class Book < ActiveRecord::Base
 
   def set_share
     self.share = course.teacher.share if share.blank?
+  end
+
+  def create_payments
+    course.enrollments.map(&:save)
   end
 end

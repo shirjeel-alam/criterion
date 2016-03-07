@@ -13,9 +13,9 @@
 #  discount_applied :boolean          default(FALSE)
 #
 
-class Enrollment < ActiveRecord::Base  
+class Enrollment < ActiveRecord::Base
   NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED = 0, 1, 2, 3
-  
+
   belongs_to :course
   belongs_to :student
 
@@ -24,19 +24,19 @@ class Enrollment < ActiveRecord::Base
 
   has_many :payments, as: :payable, dependent: :destroy
   has_many :action_requests, as: :action_item
-  
+
   validates :course_id, uniqueness: { scope: :student_id }
   validates :status, presence: true, inclusion: { in: [NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED] }
   validates :start_date, timeliness: { type: :date, allow_blank: true }
   validates :enrollment_date, timeliness: { type: :date, allow_blank: true }
 
   before_validation :set_start_date, :set_status
-  
+
   after_create :associate_session
 
   before_save :update_status, :update_discount_applied
   after_save :create_payments
-  
+
   scope :not_started, where(status: NOT_STARTED)
   scope :in_progress, where(status: IN_PROGRESS)
   scope :completed, where(status: COMPLETED)
@@ -64,9 +64,9 @@ class Enrollment < ActiveRecord::Base
   end
 
   def set_start_date
-    self.start_date = Time.current.to_date unless start_date.present? 
+    self.start_date = Time.current.to_date unless start_date.present?
   end
-  
+
   def update_status
     return if completed? || cancelled?
 
@@ -82,7 +82,7 @@ class Enrollment < ActiveRecord::Base
     self.discount_applied = payments.where('discount IS NOT NULL').present?
     true
   end
-  
+
   def first_month_payment
     user_date = course.start_date > start_date ? course.start_date : start_date
 
@@ -103,9 +103,13 @@ class Enrollment < ActiveRecord::Base
   end
 
   def create_payments
+    course.books.each do |book|
+      Payment.create(amount: book.amount, status: Payment::DUE, payment_type: Payment::DEBIT, payable_id: id, payable_type: self.class.name, item_id: book.id, item_type: book.class.name)
+    end
+
     if course.started? && self.started?
       months = course.start_date > start_date ? months_between(course.start_date, course.end_date) : months_between(start_date, course.end_date)
-      
+
       # First month payment
       Payment.create(period: months.first, amount: first_month_payment, status: Payment::DUE, payment_type: Payment::DEBIT, payable_id: id, payable_type: self.class.name)
       months[1...months.length].each do |date|
@@ -142,7 +146,7 @@ class Enrollment < ActiveRecord::Base
     end
     self.save
   end
-  
+
   def associate_session
     SessionStudent.find_or_create_by_student_id_and_session_id(student_id, session.id)
   end
@@ -154,7 +158,7 @@ class Enrollment < ActiveRecord::Base
   def started?
     status == IN_PROGRESS
   end
-  
+
   def completed?
     status == COMPLETED
   end
@@ -162,7 +166,7 @@ class Enrollment < ActiveRecord::Base
   def cancelled?
     status == CANCELLED
   end
-  
+
   def months_between(start_date, end_date)
     months = []
     months << start_date
@@ -172,7 +176,7 @@ class Enrollment < ActiveRecord::Base
       ptr = ptr >> 1
     end
     months << end_date unless (start_date.beginning_of_month == end_date.beginning_of_month || months.last.beginning_of_month == end_date.beginning_of_month)
-    months      
+    months
   end
 
   def start!
@@ -194,7 +198,7 @@ class Enrollment < ActiveRecord::Base
     last_status = status
     update_status
     current_status = status
-    
+
     unless last_status == current_status
       case current_status
       when IN_PROGRESS
@@ -224,7 +228,7 @@ class Enrollment < ActiveRecord::Base
   def title
     "#{student.name} - #{course.title}" rescue nil
   end
-  
+
   def status_label
     case status
       when NOT_STARTED

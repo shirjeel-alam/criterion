@@ -16,6 +16,8 @@
 #  category_id     :integer
 #  payment_method  :integer
 #  additional_info :text
+#  item_id         :integer
+#  item_type       :string(255)
 #
 
 class Payment < ActiveRecord::Base
@@ -27,9 +29,11 @@ class Payment < ActiveRecord::Base
   belongs_to :category
   belongs_to :sessions_student
   has_many :account_entries, dependent: :destroy
+  belongs_to :item, polymorphic: :true
 
   before_validation :check_payment, on: :create, if: "payable_type == 'Enrollment'"
   before_validation :check_appropriated_amount, on: :create, if: 'appropriated?'
+  before_validation :check_payment_book, on: :create, if: "item_type == 'Book'"
   after_create :create_account_entry
   before_save :set_category
   after_save :set_period, :update_monthly_report
@@ -65,11 +69,15 @@ class Payment < ActiveRecord::Base
   attr_accessor :other_account
 
   def check_payment
-    errors.add(:duplicate, 'Entry already exists') if Payment.where(period: period.beginning_of_month..period.end_of_month, payable_id: payable_id, payable_type: payable_type, payment_type: payment_type).present?
+    errors.add(:duplicate_fee, 'Entry already exists') if period.present? && Payment.where(period: period.beginning_of_month..period.end_of_month, payable_id: payable_id, payable_type: payable_type, payment_type: payment_type).present?
   end
 
   def check_appropriated_amount
     errors.add(:amount, 'Amount exceeds Criterion Account balance') if amount > CriterionAccount.criterion_account.balance
+  end
+
+  def check_payment_book
+    errors.add(:duplicate_book, 'Entry already exists') if Payment.where(payable_id: payable_id, payable_type: payable_type, payment_type: payment_type, item_id: item_id, item_type: item_type).present?
   end
 
   def session
@@ -360,10 +368,12 @@ class Payment < ActiveRecord::Base
   private
 
   def set_category
-    if payable.is_a?(Enrollment)
+    if payable.is_a?(Enrollment) && item_type.blank?
       self.category = Category.monthly_fee
     elsif payable.is_a?(SessionStudent)
       self.category = Category.registration_fee
+    elsif payable.is_a?(Enrollment) && item_type == 'Book'
+      self.category = Category.book_fee
     end
   end
 

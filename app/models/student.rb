@@ -20,10 +20,10 @@ class Student < ActiveRecord::Base
   has_many :registration_fees, through: :session_students
   has_many :phone_numbers, as: :contactable, dependent: :destroy
   has_many :received_messages, as: :receiver, class_name: 'CriterionSms', dependent: :destroy
-  
+
   accepts_nested_attributes_for :enrollments
   accepts_nested_attributes_for :phone_numbers
-  
+
   before_validation :check_mobile_number
   before_validation :set_email
 
@@ -33,18 +33,18 @@ class Student < ActiveRecord::Base
   after_create :send_sms
 
   scope :active, -> { joins(:enrollments).where('enrollments.status = ?', Enrollment::IN_PROGRESS).uniq }
-  
+
   def enrolled_courses
     Course.active.collect { |c| c if c.has_enrollment?(self) }.compact.uniq
   end
-  
+
   def not_enrolled_courses
     Course.active.collect { |c| c unless c.has_enrollment?(self) }.compact.uniq
   end
 
   def evaluate_discount(session)
     session_enrollments = enrollments.in_progress.where(course_id: session.courses.collect(&:id))
-    
+
     same_level_enrollments = session_enrollments.group_by(&:level)
     same_level_enrollments.each do |same_level_enrollment|
       give_discount = same_level_enrollment.second.count > 1
@@ -70,10 +70,10 @@ class Student < ActiveRecord::Base
   def send_sms
     phone_numbers.mobile.each do |phone_number|
       sms_data = { to: phone_number.number, message: "Dear Student, Thank You for registering with Criterion Educational Institute. Your Student ID is #{id}, kindly use this ID for all future correspondence." }
-      received_messages.create(sms_data) rescue false 
+      received_messages.create(sms_data) rescue false
     end
   end
- 
+
   ### Class Methods ###
 
   def self.get_all
@@ -87,9 +87,9 @@ class Student < ActiveRecord::Base
   def self.emails
     Student.all.collect { |student| ["#{student.name} - #{student.email}", student.email] }
   end
-  
+
   ### View Helpers ###
-  
+
   def address_label
     address.present? ? address : 'N/A'
   end

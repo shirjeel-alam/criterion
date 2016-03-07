@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20160307051524) do
+ActiveRecord::Schema.define(:version => 20160307145458) do
 
   create_table "account_entries", :force => true do |t|
     t.integer  "criterion_account_id"
@@ -199,6 +199,8 @@ ActiveRecord::Schema.define(:version => 20160307051524) do
     t.integer  "category_id"
     t.integer  "payment_method"
     t.text     "additional_info"
+    t.integer  "item_id"
+    t.string   "item_type"
   end
 
   create_table "phone_numbers", :force => true do |t|
