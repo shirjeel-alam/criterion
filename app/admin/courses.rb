@@ -144,6 +144,18 @@ ActiveAdmin.register Course do
       end
     end if course.enrollments.present? && course.started_or_completed?
 
+    panel 'Course Book Fees Table' do
+      table_for course.enrollments.sort do |t|
+        t.column(:student) { |enrollment| link_to(enrollment.student.name, admin_student_path(enrollment.student)) }
+        course.books.each do |book|
+          t.column(book.name) do |enrollment|
+            payment = enrollment.payments.books.where(item_id: book.id).first
+            payment.present? ? status_tag(payment.status_label, payment.status_tag) : '-'
+          end
+        end
+      end
+    end if course.enrollments.present?
+
     active_admin_comments
   end
 
