@@ -51,6 +51,10 @@ class Teacher < ActiveRecord::Base
     admin_user.update_attribute(:email, email) if admin_user.present?
   end
 
+  def teacher_balance
+    criterion_account.account_entries.credit.joins(:payment).where('payments.period <= ?', Date.today).sum(:amount) - criterion_account.account_entries.debit.sum(:amount) + criterion_account.initial_balance
+  end
+
   ### Class Methods ###
 
   def self.get_all

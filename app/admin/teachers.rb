@@ -1,6 +1,6 @@
 ActiveAdmin.register Teacher do
   menu priority: 2, if: proc { current_admin_user.super_admin_or_partner? }
-  
+
   filter :id
   filter :name
   filter :email
@@ -17,13 +17,13 @@ ActiveAdmin.register Teacher do
     end if current_admin_user.super_admin_or_partner?
     column 'Contact Number' do |teacher|
       if teacher.phone_numbers.present?
-        teacher.phone_numbers.each { |number| div number.label } 
+        teacher.phone_numbers.each { |number| div number.label }
       else
         'No Phone Numbers Present'
       end
     end
     column 'Balance' do |teacher|
-      status_tag(number_to_currency(teacher.balance, unit: 'Rs. ', precision: 0), teacher.balance_tag) rescue nil
+      status_tag(number_to_currency(teacher.teacher_balance, unit: 'Rs. ', precision: 0), teacher.balance_tag) rescue nil
     end
 
     default_actions
@@ -52,7 +52,7 @@ ActiveAdmin.register Teacher do
         row(:email) { best_in_place_if(current_admin_user.super_admin_or_partner?, teacher, :email, as: :input, url: [:admin, teacher]) }
         row(:share) { number_to_percentage(teacher.share * 100, precision: 0) } if current_admin_user.super_admin_or_partner?
         row(:phone_numbers) do
-          if teacher.phone_numbers.present? 
+          if teacher.phone_numbers.present?
             teacher.phone_numbers.each do |number|
               div do
                 span number.label
@@ -66,7 +66,7 @@ ActiveAdmin.register Teacher do
         end
 
         if current_admin_user.super_admin_or_partner? || current_admin_user.teacher?
-          row(:balance) { status_tag(number_to_currency(teacher.balance, unit: 'Rs. ', precision: 0), teacher.balance_tag) rescue nil }
+          row(:balance) { status_tag(number_to_currency(teacher.teacher_balance, unit: 'Rs. ', precision: 0), teacher.balance_tag) rescue nil }
         end
         row(:active_enrollments) { teacher.enrollments.active.count }
       end
@@ -78,7 +78,7 @@ ActiveAdmin.register Teacher do
         payment
       end
       result = temp_payments.group_by(&:period).sort_by(&:first)
-      
+
       table do
         thead do
           tr do
@@ -91,7 +91,7 @@ ActiveAdmin.register Teacher do
             th 'Net Amount'
           end
         end
-        
+
         tbody do
           flip = false
           result.each do |cumulative_payment|
@@ -191,7 +191,7 @@ ActiveAdmin.register Teacher do
 
   controller do
     before_filter :check_authorization
-    
+
     def check_authorization
       if current_admin_user.admin?
         if %w[index edit destroy].include?(action_name)
