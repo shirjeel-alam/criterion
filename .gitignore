@@ -17,6 +17,7 @@ pickle-email-*.html
 .redcar/*
 .ruby-version
 .ruby-gemset
+.env
 
 # Ignore application configuration
 /config/application.yml

@@ -56,6 +56,7 @@ group :development, :test do
   gem 'annotate', '2.6.10'
   gem 'unicorn-rails'
   gem 'mailcatcher'
+  gem 'dotenv-rails'
 end
 
 group :development do

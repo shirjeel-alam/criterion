@@ -19,10 +19,10 @@ class CriterionSms < ActiveRecord::Base
   attr_accessor :extra
 
   # Sendpk.com
-  USERNAME = '923138238080'
-  PASSWORD = '1634'
+  USERNAME = ENV['SMS_USERNAME']
+  PASSWORD = ENV['SMS_PASSWORD']
 
-	DEFAULT_VALID_MOBILE_NUMBER = '03132100200'
+	DEFAULT_VALID_MOBILE_NUMBER = ENV['DEFAULT_VALID_MOBILE_NUMBER']
 
 	belongs_to :sender, polymorphic: true
 	belongs_to :receiver, polymorphic: true
@@ -45,7 +45,7 @@ class CriterionSms < ActiveRecord::Base
   end
 
   def send_sms
-    return if status || Rails.env.development?
+    return if status || ENV['SEND_SMS'] == 'false'
     url = "http://sendpk.com/api/sms.php?username=#{USERNAME}&password=#{PASSWORD}&sender=Criterion&mobile=#{number}&message=#{message}"
     encoded_url = URI.encode(url)
     uri = URI.parse(encoded_url)
