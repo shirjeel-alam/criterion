@@ -8,7 +8,7 @@ ActiveAdmin.register CriterionSms do
   scope :all
   scope :sent
   scope :failed
-	
+
 	index do
 		column 'ID', sortable: :id do |sms|
 			link_to(sms.id, admin_criterion_sm_path(sms))
@@ -29,13 +29,13 @@ ActiveAdmin.register CriterionSms do
         link_to(receiver.name, admin_staff_path(receiver))
 			end rescue nil
 		end
-    column :status, sortable: :status do |sms| 
+    column :status, sortable: :status do |sms|
       status_tag(sms.status_label, sms.status_tag)
     end
     column 'API Response', sortable: :api_response do |sms|
       sms.api_response
     end
-    
+
 		default_actions
 	end
 
@@ -67,7 +67,7 @@ ActiveAdmin.register CriterionSms do
 
 	controller do
     before_filter :check_authorization
-    
+
     def check_authorization
       if current_admin_user.all_other? && !current_admin_user.admin?
         if %w[index show edit update destroy].include?(action_name)

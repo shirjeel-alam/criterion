@@ -17,7 +17,7 @@
 
 class CriterionSms < ActiveRecord::Base
   attr_accessor :extra
-  
+
   # Sendpk.com
   USERNAME = '923138238080'
   PASSWORD = '1634'
@@ -45,7 +45,7 @@ class CriterionSms < ActiveRecord::Base
   end
 
   def send_sms
-    return if status
+    return if status || Rails.env.development?
     url = "http://sendpk.com/api/sms.php?username=#{USERNAME}&password=#{PASSWORD}&sender=Criterion&mobile=#{number}&message=#{message}"
     encoded_url = URI.encode(url)
     uri = URI.parse(encoded_url)
@@ -73,7 +73,7 @@ class CriterionSms < ActiveRecord::Base
 
   def self.send_test_sms
     message = "Test SMS sent on #{Date.today.strftime("%d/%m/%Y")} at #{Time.now.strftime("%I:%M%p")}"
-    
+
     bulk = false
     if !bulk
       number = '923222463936'
@@ -82,7 +82,7 @@ class CriterionSms < ActiveRecord::Base
       number = '923222463936,923129089081'
       url = "http://sendpk.com/api/bulksms.php?username=#{USERNAME}&password=#{PASSWORD}&sender=Criterion&mobile=#{number}&message=#{message}"
     end
-    
+
     encoded_url = URI.encode(url)
     uri = URI.parse(encoded_url)
     response = Net::HTTP.get(uri)
@@ -97,7 +97,7 @@ class CriterionSms < ActiveRecord::Base
   def status_tag
     status ? :ok : :error
   end
-  
+
 	private
 	def strip_to
 		self.to = to.strip
