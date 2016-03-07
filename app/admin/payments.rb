@@ -68,6 +68,12 @@ ActiveAdmin.register Payment do
           end
         end
         row(:payable_type) { payment.payable_type }
+        row(:item) do
+          if payment.item.is_a?(Book)
+            link_to(payment.item.name, admin_book_path(payment.item))
+          end
+        end
+        row(:item_type) { payment.item_type }
         row(:period) { payment.period_label }
         row(:amount) { number_to_currency(payment.amount, unit: 'Rs. ', precision: 0) }
         row(:discount) { number_to_currency(payment.discount, unit: 'Rs. ', precision: 0) }
@@ -92,7 +98,7 @@ ActiveAdmin.register Payment do
 
     active_admin_comments
   end
-  
+
   member_action :pay, method: :get do
     @payment = Payment.where('status in (?) AND id=?', [Payment::DUE, Payment::REFUNDED], params[:id]).first
     @payment.attributes = { status: Payment::PAID, payment_date: Time.current.to_date }
@@ -142,7 +148,7 @@ ActiveAdmin.register Payment do
     payment.due! ? flash[:notice] = 'Payment successfully updated.' : flash[:error] = 'Error in processing payment.'
     redirect_to_back
   end
-  
+
   member_action :refund, method: :put do
     payment = Payment.find(params[:id])
     payment.refund! ? flash[:notice] = 'Payment successfully refunded.' : flash[:error] = 'Error in processing payment.'
@@ -220,7 +226,7 @@ ActiveAdmin.register Payment do
 
       amount_exceeded = false
       amount_exceeded = (@payment.amount > @payment.payable.balance rescue false) if current_admin_user.admin?
-      
+
       if !amount_exceeded && @payment.save
         session.delete :holder_id
         session.delete :holder_type
@@ -251,7 +257,7 @@ ActiveAdmin.register Payment do
         elsif session[:holder_type] == 'Partner'
           @account_holder = Partner.find(session[:holder_id])
         end
-        
+
         render :new
       end
     end
