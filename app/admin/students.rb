@@ -63,8 +63,33 @@ ActiveAdmin.register Student do
       end
     end
 
+    panel 'Payments (Books)' do
+      table_for student.payments.books.order(:id) do |t|
+        t.column(:id) { |payment| link_to(payment.id, admin_payment_path(payment)) }
+        t.column(:book) { |payment| link_to(payment.item.name, admin_book_path(payment.item)) }
+        t.column(:gross_amount) { |payment| number_to_currency(best_in_place_if(current_admin_user.super_admin_or_partner? || (current_admin_user.admin? && payment.due?) , payment, :amount, as: :input, url: [:admin, payment]), unit: 'Rs. ', precision: 0) }
+        t.column(:discount) { |payment| number_to_currency(best_in_place_if(current_admin_user.super_admin_or_partner? || (current_admin_user.admin? && payment.due?) , payment, :discount, as: :input, url: [:admin, payment]), unit: 'Rs. ', precision: 0) }
+        t.column(:net_amount) { |payment| number_to_currency(payment.net_amount, unit: 'Rs. ', precision: 0) }
+        t.column(:status) { |payment| status_tag(payment.status_label, payment.status_tag) }
+        t.column(:actions) do |payment|
+          ul do
+            if payment.due?
+              li span link_to('Make Payment', pay_admin_payment_path(payment))
+              li span link_to('Void Payment', void_admin_payment_path(payment), method: :put, data: { confirm: 'Are you sure?' })
+            elsif payment.paid?
+              li span link_to('Refund Payment', refund_admin_payment_path(payment), method: :put, data: { confirm: 'Are you sure?' })
+            elsif payment.refunded?
+              li span link_to('Make Payment', pay_admin_payment_path(payment))
+            elsif payment.void?
+              li link_to('Make Payment Due', due_admin_payment_path(payment), method: :put, data: { confirm: 'Are you sure?' })
+            end
+          end
+        end
+      end
+    end
+
     panel 'Payments' do
-      temp_payments = student.payments.collect do |payment|
+      temp_payments = student.payments.fees.collect do |payment|
         payment.period = payment.period.beginning_of_month
         payment
       end
