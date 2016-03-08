@@ -32,6 +32,8 @@ gem 'sucker_punch'
 gem 'ruby-hmac'
 gem 'hash_syntax'
 
+gem 'figaro'
+
 group :assets do
   gem 'coffee-rails'
   gem 'uglifier'
@@ -42,7 +44,6 @@ group :development, :test do
   gem 'annotate', '2.6.10'
   gem 'unicorn-rails'
   gem 'mailcatcher'
-  gem 'dotenv-rails'
 end
 
 group :development do

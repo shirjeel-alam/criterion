@@ -51,23 +51,15 @@ ActiveAdmin.register CriterionSms do
 
   member_action :resend, method: :put do
     sms = CriterionSms.find(params[:id])
-    if sms.send_sms
-      flash[:notice] = 'Sms sent successfully'
-    else
-      flash[:error] = 'Error sending sms. Try again later'
-    end
+    SmsJob.perform_async(3, sms)
+    flash[:notice] = 'SMS re-sent'
     redirect_to action: :show
   end
 
   collection_action :resend, method: :put do
     failed_sms = CriterionSms.failed
-    count = 0
-
-    failed_sms.find_each do |sms|
-      count += 1 if sms.send_sms
-    end
-
-    flash[:notice] = "#{count} of #{failed_sms.count} sms sent successfully"
+    failed_sms.map { |sms| SmsJob.perform_async(3, sms) }
+    flash[:notice] = "#{failed_sms.count} SMS re-sent"
     redirect_to action: :index
   end
 
@@ -124,7 +116,7 @@ ActiveAdmin.register CriterionSms do
     end
 
     def create
-      @criterion_sms = CriterionSms.new(to: CriterionSms::DEFAULT_VALID_MOBILE_NUMBER, message: params[:criterion_sms][:message])
+      @criterion_sms = CriterionSms.new(to: ENV['DEFAULT_VALID_MOBILE_NUMBER'], message: params[:criterion_sms][:message])
 
       if @criterion_sms.valid?
         receipients = params[:criterion_sms][:to]

@@ -18,12 +18,6 @@
 class CriterionSms < ActiveRecord::Base
   attr_accessor :extra
 
-  # Sendpk.com
-  USERNAME = ENV['SMS_USERNAME']
-  PASSWORD = ENV['SMS_PASSWORD']
-
-  DEFAULT_VALID_MOBILE_NUMBER = ENV['DEFAULT_VALID_MOBILE_NUMBER']
-
   belongs_to :sender, polymorphic: true
   belongs_to :receiver, polymorphic: true
 
@@ -46,7 +40,7 @@ class CriterionSms < ActiveRecord::Base
 
   def send_sms
     return if status || ENV['SEND_SMS'] == 'false'
-    url = "http://sendpk.com/api/sms.php?username=#{USERNAME}&password=#{PASSWORD}&sender=Criterion&mobile=#{number}&message=#{message}"
+    url = "http://sendpk.com/api/sms.php?username=#{ENV['SMS_USERNAME']}&password=#{ENV['SMS_PASSWORD']}&sender=Criterion&mobile=#{number}&message=#{message}"
     encoded_url = URI.encode(url)
     uri = URI.parse(encoded_url)
     response = Net::HTTP.get(uri)
@@ -77,10 +71,10 @@ class CriterionSms < ActiveRecord::Base
     bulk = false
     if !bulk
       number = '923222463936'
-      url = "http://sendpk.com/api/sms.php?username=#{USERNAME}&password=#{PASSWORD}&sender=Criterion&mobile=#{number}&message=#{message}"
+      url = "http://sendpk.com/api/sms.php?username=#{ENV['SMS_USERNAME']}&password=#{ENV['SMS_PASSWORD']}&sender=Criterion&mobile=#{number}&message=#{message}"
     else
       number = '923222463936,923129089081'
-      url = "http://sendpk.com/api/bulksms.php?username=#{USERNAME}&password=#{PASSWORD}&sender=Criterion&mobile=#{number}&message=#{message}"
+      url = "http://sendpk.com/api/bulksms.php?username=#{ENV['SMS_USERNAME']}&password=#{ENV['SMS_PASSWORD']}&sender=Criterion&mobile=#{number}&message=#{message}"
     end
 
     encoded_url = URI.encode(url)
