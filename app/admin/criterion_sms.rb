@@ -59,9 +59,27 @@ ActiveAdmin.register CriterionSms do
     redirect_to action: :show
   end
 
+  collection_action :resend, method: :put do
+    failed_sms = CriterionSms.failed
+    count = 0
+
+    failed_sms.find_each do |sms|
+      count += 1 if sms.send_sms
+    end
+
+    flash[:notice] = "#{count} of #{failed_sms.count} sms sent successfully"
+    redirect_to action: :index
+  end
+
   action_item only: :show do
     if (current_admin_user.super_admin_or_partner? || current_admin_user.admin?) && !criterion_sms.status
       span link_to('Resend', resend_admin_criterion_sm_path(criterion_sms), method: :put)
+    end
+  end
+
+  action_item only: :index do
+    if (current_admin_user.super_admin_or_partner? || current_admin_user.admin?) && CriterionSms.failed.present?
+      span link_to('Resend All', resend_admin_criterion_sms_path, method: :put)
     end
   end
 
