@@ -31,8 +31,8 @@ ActiveAdmin.register PhoneNumber do
 
   form do |f|
     f.inputs do
-      f.input :contactable_id, input_html: { disabled: true }
-      f.input :contactable_type, input_html: { disabled: true }
+      f.input :contactable_id, input_html: { readonly: true }
+      f.input :contactable_type, input_html: { readonly: true }
       f.input :number, required: true
       f.input :belongs_to, as: :radio, collection: PhoneNumber.belongs_to, required: true
       f.input :category, as: :radio, collection: PhoneNumber.categories, required: true
@@ -86,7 +86,7 @@ ActiveAdmin.register PhoneNumber do
         action_allowed = false
         phone_numbers.each do |phone_number|
           if request.path == admin_phone_number_path(phone_number) || request.path == edit_admin_phone_number_path(phone_number)
-            action_allowed = true 
+            action_allowed = true
             break
           end
         end
@@ -104,7 +104,6 @@ ActiveAdmin.register PhoneNumber do
 
     def create
       @phone_number = PhoneNumber.new(params[:phone_number])
-      
       if @phone_number.save
         flash[:notice] = 'PhoneNumber Added'
         contactable = @phone_number.contactable
@@ -125,7 +124,7 @@ ActiveAdmin.register PhoneNumber do
     def update
       @phone_number = PhoneNumber.find(params[:id])
       @phone_number.attributes = params[:phone_number]
-      
+
       if @phone_number.save
         flash[:notice] = 'PhoneNumber Updated'
         contactable = @phone_number.contactable
