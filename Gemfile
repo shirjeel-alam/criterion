@@ -32,8 +32,6 @@ gem 'sucker_punch'
 gem 'ruby-hmac'
 gem 'hash_syntax'
 
-gem 'figaro'
-
 group :assets do
   gem 'coffee-rails'
   gem 'uglifier'
