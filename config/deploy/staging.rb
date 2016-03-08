@@ -1,4 +1,4 @@
-set :stage, :production
+set :stage, :staging
 set :branch, 'develop'
 
 server '198.199.83.180', user: fetch(:user), roles: %w{web app db}, primary: true
