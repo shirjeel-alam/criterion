@@ -124,7 +124,7 @@ ActiveAdmin.register CriterionSms do
     end
 
     def create
-      @criterion_sms = CriterionSms.new(to: CriterionSms::DEFAULT_VALID_MOBILE_NUMBER, message: params[:criterion_sms][:message])
+      @criterion_sms = CriterionSms.new(to: ENV['DEFAULT_VALID_MOBILE_NUMBER'], message: params[:criterion_sms][:message])
 
       if @criterion_sms.valid?
         receipients = params[:criterion_sms][:to]
