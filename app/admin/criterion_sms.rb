@@ -1,34 +1,34 @@
 ActiveAdmin.register CriterionSms do
-	menu parent: 'More Menus', label: 'Criterion SMS', if: proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? }
+  menu parent: 'More Menus', label: 'Criterion SMS', if: proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? }
 
-	filter :id
-	filter :to
-	filter :created_at, label: 'SMS SENT BETWEEN'
+  filter :id
+  filter :to
+  filter :created_at, label: 'SMS SENT BETWEEN'
 
   scope :all
   scope :sent
   scope :failed
 
-	index do
-		column 'ID', sortable: :id do |sms|
-			link_to(sms.id, admin_criterion_sm_path(sms))
-		end
-		column :to
-		column :sender, sortable: :sender_id do |sms|
-			sms.sender.email rescue nil
-		end
-		column :receiver, sortable: :receiver_id do |sms|
-			receiver = sms.receiver
-			if sms.receiver.is_a?(Student)
-				link_to(receiver.name, admin_student_path(receiver))
-			elsif sms.receiver.is_a?(Teacher)
-				link_to(receiver.name, admin_teacher_path(receiver))
+  index do
+    column 'ID', sortable: :id do |sms|
+      link_to(sms.id, admin_criterion_sm_path(sms))
+    end
+    column :to
+    column :sender, sortable: :sender_id do |sms|
+      sms.sender.email rescue nil
+    end
+    column :receiver, sortable: :receiver_id do |sms|
+      receiver = sms.receiver
+      if sms.receiver.is_a?(Student)
+        link_to(receiver.name, admin_student_path(receiver))
+      elsif sms.receiver.is_a?(Teacher)
+        link_to(receiver.name, admin_teacher_path(receiver))
       elsif sms.receiver.is_a?(Partner)
         link_to(receiver.name, admin_partner_path(receiver))
       elsif sms.receiver.is_a?(Staff)
         link_to(receiver.name, admin_staff_path(receiver))
-			end rescue nil
-		end
+      end rescue nil
+    end
     column :status, sortable: :status do |sms|
       status_tag(sms.status_label, sms.status_tag)
     end
@@ -36,18 +36,18 @@ ActiveAdmin.register CriterionSms do
       sms.api_response
     end
 
-		default_actions
-	end
+    default_actions
+  end
 
-	form do |f|
-		f.inputs do
-			f.input :to, as: :select, multiple: true, collection: PhoneNumber.all_mobile_numbers, required: true, input_html: { class: 'chosen-select', style: 'width:77.8%;' }
-			f.input :extra, as: :string, hint: 'Comma separated list of mobile numbers'
-			f.input :message, required: true, hint: '160 characters remaining', input_html: { maxlength: 160 }
-		end
+  form do |f|
+    f.inputs do
+      f.input :to, as: :select, multiple: true, collection: PhoneNumber.all_mobile_numbers, required: true, input_html: { class: 'chosen-select', style: 'width:77.8%;' }
+      f.input :extra, as: :string, hint: 'Comma separated list of mobile numbers'
+      f.input :message, required: true, hint: '160 characters remaining', input_html: { maxlength: 160 }
+    end
 
-		f.buttons
-	end
+    f.buttons
+  end
 
   member_action :resend, method: :put do
     sms = CriterionSms.find(params[:id])
@@ -83,7 +83,7 @@ ActiveAdmin.register CriterionSms do
     end
   end
 
-	controller do
+  controller do
     before_filter :check_authorization
 
     def check_authorization

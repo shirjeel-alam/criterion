@@ -13,7 +13,7 @@
 class Partner < ActiveRecord::Base
   has_one :admin_user, as: :user, dependent: :destroy
   has_one :criterion_account, through: :admin_user
-	has_many :transactions, as: :payable, class_name: 'Payment', dependent: :destroy
+  has_many :transactions, as: :payable, class_name: 'Payment', dependent: :destroy
   has_many :phone_numbers, as: :contactable, dependent: :destroy
   has_many :criterion_mails, as: :mailable
   has_many :received_messages, as: :receiver, class_name: 'CriterionSms', dependent: :destroy

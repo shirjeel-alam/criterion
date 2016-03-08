@@ -4,12 +4,12 @@ ActiveAdmin.register CriterionAccount do
   actions :index, :show, :edit, :update
 
   index do
-  	column 'ID', sortable: :id do |account|
+    column 'ID', sortable: :id do |account|
       link_to(account.id, admin_criterion_account_path(account))
     end
     column 'Account Holder', sortable: :admin_user_id do |account|
-    	account_holder = account.admin_user
-    	case account_holder.role
+      account_holder = account.admin_user
+      case account_holder.role
       when AdminUser::TEACHER
         link_to(account_holder.user.name, admin_teacher_path(account_holder.user)) rescue nil
       when AdminUser::STAFF
@@ -35,20 +35,20 @@ ActiveAdmin.register CriterionAccount do
   end
 
   show title: :title do
-  	panel 'Criterion Account Details' do
+    panel 'Criterion Account Details' do
       attributes_table_for criterion_account do
         row(:id) { criterion_account.id }
-        row(:account_holder) do 
-        	admin = criterion_account.admin_user
-    			case admin.role
-      		when AdminUser::TEACHER
-        		link_to(admin.user.name, admin_teacher_path(admin.user)) rescue nil
-      		when AdminUser::STUDENT
-        		link_to(admin.user.name, admin_student_path(admin.user)) rescue nil
-      		else
-      			link_to(admin.email, admin_admin_user_path(admin))
-      		end if admin.present?
-	      end
+        row(:account_holder) do
+          admin = criterion_account.admin_user
+          case admin.role
+          when AdminUser::TEACHER
+            link_to(admin.user.name, admin_teacher_path(admin.user)) rescue nil
+          when AdminUser::STUDENT
+            link_to(admin.user.name, admin_student_path(admin.user)) rescue nil
+          else
+            link_to(admin.email, admin_admin_user_path(admin))
+          end if admin.present?
+        end
         row(:current_balance) { status_tag(number_to_currency(criterion_account.balance, unit: 'Rs. ', precision: 0), criterion_account.balance_tag) }
       end
     end
@@ -57,7 +57,7 @@ ActiveAdmin.register CriterionAccount do
       paginated_collection(criterion_account.account_entries.page(params[:page]).per(25)) do
         table_for collection do |t|
           t.column(:id) { |account_entry| link_to(account_entry.id, admin_account_entry_path(account_entry)) }
-          t.column(:date) { |account_entry| date_format(account_entry.created_at) } 
+          t.column(:date) { |account_entry| date_format(account_entry.created_at) }
           t.column(:particular) { |account_entry| criterion_account.criterion_account? ? account_entry.payment.particular_extended : account_entry.payment.particular }
           t.column(:payment) { |account_entry| link_to(account_entry.payment_id, admin_payment_path(account_entry.payment)) }
           t.column(:debit) { |account_entry| number_to_currency(account_entry.amount, unit: 'Rs. ', precision: 0) if account_entry.debit? }

@@ -13,7 +13,7 @@ ActiveAdmin.register Staff do
     column :email
     column 'Contact Number' do |staff|
       if staff.phone_numbers.present?
-        staff.phone_numbers.each { |number| div number.label } 
+        staff.phone_numbers.each { |number| div number.label }
       else
         'No Phone Numbers Present'
       end
@@ -47,7 +47,7 @@ ActiveAdmin.register Staff do
         row(:name) { staff.name }
         row(:email) { staff.email }
         row(:phone_numbers) do
-          if staff.phone_numbers.present? 
+          if staff.phone_numbers.present?
             staff.phone_numbers.each do |number|
               div do
                 span number.label
@@ -94,7 +94,7 @@ ActiveAdmin.register Staff do
 
   controller do
     before_filter :check_authorization
-    
+
     def check_authorization
       unless current_admin_user.super_admin_or_partner? || current_admin_user.admin?
         flash[:error] = 'You are not authorized to perform this action'

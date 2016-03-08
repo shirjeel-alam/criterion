@@ -12,7 +12,7 @@
 class Staff < ActiveRecord::Base
   has_one :admin_user, as: :user, dependent: :destroy
   has_one :criterion_account, through: :admin_user
-	has_many :transactions, as: :payable, class_name: 'Payment', dependent: :destroy
+  has_many :transactions, as: :payable, class_name: 'Payment', dependent: :destroy
   has_many :phone_numbers, as: :contactable, dependent: :destroy
   has_many :criterion_mails, as: :mailable
   has_many :received_messages, as: :receiver, class_name: 'CriterionSms', dependent: :destroy
@@ -39,7 +39,7 @@ class Staff < ActiveRecord::Base
   def create_admin_user
     admin_user_attributes = { email: email, password: AdminUser::DEFAULT_PASSWORD, role: AdminUser::ADMIN, user: self }
     admin_user_attributes.merge!(role: AdminUser::STAFF, status: AdminUser::DEACTIVE) if admin_user_confirmation == 'false'
-    AdminUser.create!(admin_user_attributes) 
+    AdminUser.create!(admin_user_attributes)
   end
 
   def update_admin_user_email

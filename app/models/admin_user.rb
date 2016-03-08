@@ -23,9 +23,9 @@
 #
 
 class AdminUser < ActiveRecord::Base
-	DEFAULT_PASSWORD = 'criterion'
-	SUPER_ADMIN, ADMIN, TEACHER, STUDENT, STAFF, PARTNER = 0, 1, 2, 3, 4, 5
-	ACTIVE, DEACTIVE = true, false
+  DEFAULT_PASSWORD = 'criterion'
+  SUPER_ADMIN, ADMIN, TEACHER, STUDENT, STAFF, PARTNER = 0, 1, 2, 3, 4, 5
+  ACTIVE, DEACTIVE = true, false
 
   # Include default devise modules. Others available are:
   # :token_authenticatable, :encryptable, :confirmable, :lockable, :timeoutable and :omniauthable
@@ -42,7 +42,7 @@ class AdminUser < ActiveRecord::Base
 
   scope :admin, where(role: [ADMIN, SUPER_ADMIN, PARTNER])
   scope :signed_in, where(signed_in: true)
-   
+
   def password_required?
     new_record? ? false : super
   end
@@ -86,11 +86,11 @@ class AdminUser < ActiveRecord::Base
   ### Class Methods ###
 
   def self.roles
-  	[['Super Admin', SUPER_ADMIN], ['Admin', ADMIN], ['Teacher', TEACHER], ['Student', STUDENT], ['Staff', STAFF], ['Partner', PARTNER]]
+    [['Super Admin', SUPER_ADMIN], ['Admin', ADMIN], ['Teacher', TEACHER], ['Student', STUDENT], ['Staff', STAFF], ['Partner', PARTNER]]
   end
 
   def self.admin_roles
-  	[['Super Admin', SUPER_ADMIN], ['Admin', ADMIN], ['Partner', PARTNER]]
+    [['Super Admin', SUPER_ADMIN], ['Admin', ADMIN], ['Partner', PARTNER]]
   end
 
   def self.statuses
@@ -104,27 +104,27 @@ class AdminUser < ActiveRecord::Base
   ### View Helpers ###
 
   def role_label
-  	case role
-	  	when SUPER_ADMIN
-	  		'Super Admin'
-	  	when ADMIN
-	  		'Admin'
-	  	when TEACHER
-	  		'Teacher'
-	  	when STUDENT
-	  		'Student'
+    case role
+      when SUPER_ADMIN
+        'Super Admin'
+      when ADMIN
+        'Admin'
+      when TEACHER
+        'Teacher'
+      when STUDENT
+        'Student'
       when STAFF
         'Staff'
       when PARTNER
         'Partner'
-  	end
+    end
   end
 
   def status_label
     status ? 'Active' : 'Deactive'
   end
-  
+
   def status_tag
-  	status ? :ok : :error
+    status ? :ok : :error
   end
 end

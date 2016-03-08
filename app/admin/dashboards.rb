@@ -6,25 +6,25 @@ ActiveAdmin::Dashboards.build do
 
   section 'Quick Actions', priority: 1, if: proc { current_admin_user.super_admin_or_partner? || current_admin_user.admin? } do
     ul style: 'list-style:none' do
-      li class: 'dashboard_btn' do 
+      li class: 'dashboard_btn' do
         link_to 'Add Student', new_admin_student_path, class: 'btn'
       end
-      li class: 'dashboard_btn' do 
+      li class: 'dashboard_btn' do
         link_to 'Find Student', '#find_student', class: 'btn fancybox'
       end
-      li class: 'dashboard_btn' do 
+      li class: 'dashboard_btn' do
         link_to 'Add Course', new_admin_course_path, class: 'btn'
       end
-      li class: 'dashboard_btn' do 
+      li class: 'dashboard_btn' do
         link_to 'Find Course', '#find_course', class: 'btn fancybox'
       end
       li class: 'dashboard_btn' do
         link_to 'Add Teacher', new_admin_teacher_path, class: 'btn'
       end if current_admin_user.super_admin_or_partner?
-      li class: 'dashboard_btn' do 
+      li class: 'dashboard_btn' do
         link_to 'Find Teacher', '#find_teacher', class: 'btn fancybox'
       end
-      li class: 'dashboard_btn' do 
+      li class: 'dashboard_btn' do
         link_to 'Add Expenditure', new_admin_payment_path(payment: { status: Payment::PAID, payment_date: Time.current.to_date, payment_type: Payment::CREDIT }), class: 'btn'
       end
       li class: 'dashboard_btn' do

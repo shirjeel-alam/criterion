@@ -20,7 +20,7 @@ module ApplicationHelper
       ptr = ptr >> 1
     end
     months << end_date unless (start_date.beginning_of_month == end_date.beginning_of_month || months.last.beginning_of_month == end_date.beginning_of_month)
-    months      
+    months
   end
 
   def separate_name(user)
@@ -46,7 +46,7 @@ module ApplicationHelper
       _rooms << ["Room #{room_no}", room_no]
     end
 
-    _rooms    
+    _rooms
   end
 
   def status_tag(label, tag)

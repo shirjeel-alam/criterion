@@ -58,7 +58,7 @@ class PhoneNumber < ActiveRecord::Base
   def label
     "#{number} - #{belongs_to_label} (#{category_label})"
   end
-  
+
   def category_label
     case category
     when MOBILE

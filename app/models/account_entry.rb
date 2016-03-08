@@ -12,12 +12,12 @@
 #
 
 class AccountEntry < ActiveRecord::Base
-	CREDIT, DEBIT = true, false
-	
-	belongs_to :criterion_account
-	belongs_to :payment
+  CREDIT, DEBIT = true, false
 
-	scope :credit, where(entry_type: CREDIT)
+  belongs_to :criterion_account
+  belongs_to :payment
+
+  scope :credit, where(entry_type: CREDIT)
   scope :debit, where(entry_type: DEBIT)
 
   scope :on, lambda { |date| where(created_at: date.beginning_of_day..date.end_of_day) }
@@ -34,9 +34,9 @@ class AccountEntry < ActiveRecord::Base
     entry_type == DEBIT
   end
 
-	### View Helpers ###
+  ### View Helpers ###
 
-	def entry_type_label
+  def entry_type_label
     entry_type ? 'Credit' : 'Debit'
   end
 

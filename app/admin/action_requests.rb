@@ -24,7 +24,7 @@ ActiveAdmin.register ActionRequest do
         end
       else
         "Deleted #{action_request.action_item_type} - ID: #{action_request.action_item_id}"
-      end 
+      end
     end
     column :action
     column :requested_by, sortable: :requested_by_id do |action_request|

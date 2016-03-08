@@ -9,21 +9,21 @@
 #
 
 class Category < ActiveRecord::Base
-	has_many :payments
+  has_many :payments
 
-	before_save :downcase_name
+  before_save :downcase_name
 
-	validates :name, presence: true, uniqueness: :true
+  validates :name, presence: true, uniqueness: :true
 
-	def downcase_name
-		self.name = name.downcase
-	end
+  def downcase_name
+    self.name = name.downcase
+  end
 
-	### Class Methods ###
+  ### Class Methods ###
 
-	def self.categories
-		Category.all.collect { |category| [category.name_label, category.id] }
-	end
+  def self.categories
+    Category.all.collect { |category| [category.name_label, category.id] }
+  end
 
   def self.monthly_fee
     Category.find_by_name('monthly fee')
@@ -45,9 +45,9 @@ class Category < ActiveRecord::Base
     Category.find_by_name('book fee')
   end
 
-	### View Helpers ###
+  ### View Helpers ###
 
-	def name_label
-		name.titleize
-	end
+  def name_label
+    name.titleize
+  end
 end

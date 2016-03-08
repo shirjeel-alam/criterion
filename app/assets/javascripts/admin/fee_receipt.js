@@ -13,7 +13,7 @@ var FeeReceiptForm = {
   addToTotal: function(checkbox) {
     var gross_amount = parseInt($(checkbox).parent().siblings('.gross_amount').data('value'));
     var discount = parseInt($(checkbox).parent().siblings('.discount').data('value'));
-    
+
     if(!isNaN(gross_amount))
       $('#total-gross-amount').text(parseInt($('#total-gross-amount').text()) + gross_amount);
     if(!isNaN(discount))
@@ -24,12 +24,12 @@ var FeeReceiptForm = {
   removeFromTotal: function(checkbox) {
     var gross_amount = parseInt($(checkbox).parent().siblings('.gross_amount').data('value'));
     var discount = parseInt($(checkbox).parent().siblings('.discount').data('value'));
-    
+
     if(!isNaN(gross_amount))
       $('#total-gross-amount').text(parseInt($('#total-gross-amount').text()) - gross_amount);
     if(!isNaN(discount))
       $('#total-discount').text(parseInt($('#total-discount').text()) - discount);
-    
+
     FeeReceiptForm.updateValues();
   },
   updateValues: function() {

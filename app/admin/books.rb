@@ -16,8 +16,8 @@ ActiveAdmin.register Book do
       number_to_percentage(book.share * 100, precision: 0)
     end if current_admin_user.super_admin_or_partner?
     column :amount, sortable: :amount do |book|
-			number_to_currency(book.amount, unit: 'Rs. ', precision: 0)
-		end
+      number_to_currency(book.amount, unit: 'Rs. ', precision: 0)
+    end
 
     default_actions
   end
@@ -62,7 +62,7 @@ ActiveAdmin.register Book do
 
   form do |f|
     f.inputs do
-      f.input :course, collection: Course.get_all, input_html: { class: 'chosen-select' }
+      f.input :course, collection: Course.get_active, input_html: { class: 'chosen-select' }
       f.input :name
       f.input :amount
       f.input :share, required: false, step: 0.05, hint: 'If left empty will use books existing share value'

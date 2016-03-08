@@ -4,7 +4,7 @@ ActiveAdmin.register Session do
   filter :id
   filter :year
   filter :registration_fee
-  
+
   index do
     column 'ID', sortable: :id do |session|
       link_to(session.id, admin_session_path(session))
@@ -19,7 +19,7 @@ ActiveAdmin.register Session do
     column 'Registration Fee', sortable: :registration_fee do |session|
       number_to_currency(session.registration_fee, unit: 'Rs. ', precision: 0) rescue nil
     end
-    
+
     default_actions
   end
 
@@ -33,7 +33,7 @@ ActiveAdmin.register Session do
 
     f.buttons
   end
-  
+
   show title: :title do
     panel 'Session Details' do
       attributes_table_for session do
@@ -45,7 +45,7 @@ ActiveAdmin.register Session do
         row(:courses) { session.courses.count.to_s }
       end
     end
-    
+
     panel 'Courses' do
       table_for session.courses do |t|
         t.column(:id) { |course| link_to(course.id, admin_course_path(course)) }
@@ -64,7 +64,7 @@ ActiveAdmin.register Session do
 
   controller do
     before_filter :check_authorization
-    
+
     def check_authorization
       unless current_admin_user.super_admin_or_partner?
         flash[:error] = 'You are not authorized to perform this action'

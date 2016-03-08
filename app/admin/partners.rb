@@ -1,11 +1,11 @@
 ActiveAdmin.register Partner do
- 	menu priority: 2, if: proc { current_admin_user.super_admin_or_partner? }
-  
+   menu priority: 2, if: proc { current_admin_user.super_admin_or_partner? }
+
   filter :id
   filter :name
   filter :email
   filter :share
-  
+
   index do
     column 'ID' do |partner|
       link_to(partner.id, admin_partner_path(partner))
@@ -17,7 +17,7 @@ ActiveAdmin.register Partner do
     end
     column 'Contact Number' do |partner|
       if partner.phone_numbers.present?
-        partner.phone_numbers.each { |number| div number.label } 
+        partner.phone_numbers.each { |number| div number.label }
       else
         'No Phone Numbers Present'
       end
@@ -43,7 +43,7 @@ ActiveAdmin.register Partner do
 
     f.buttons
   end
-  
+
   show title: :name do
     panel 'Partner Details' do
       attributes_table_for partner do
@@ -52,7 +52,7 @@ ActiveAdmin.register Partner do
         row(:email) { partner.email }
         row(:share) { number_to_percentage(partner.share * 100, precision: 0) }
         row(:phone_numbers) do
-          if partner.phone_numbers.present? 
+          if partner.phone_numbers.present?
             partner.phone_numbers.each do |number|
               div do
                 span number.label
@@ -100,7 +100,7 @@ ActiveAdmin.register Partner do
 
   controller do
     before_filter :check_authorization
-    
+
     def check_authorization
       unless current_admin_user.super_admin_or_partner?
         flash[:error] = 'You are not authorized to perform this action'

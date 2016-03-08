@@ -59,7 +59,7 @@ class ActionRequest < ActiveRecord::Base
   def state_label
     state
   end
-  
+
   def state_tag
     case state
       when 'pending'

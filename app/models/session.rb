@@ -25,7 +25,7 @@ class Session < ActiveRecord::Base
   MAY_JUNE, OCT_NOV = 0, 1
 
   before_validation :set_status
-  
+
   validates :period, presence: true, inclusion: { in: [MAY_JUNE, OCT_NOV] }, uniqueness: { scope: :year }
   validates :status, presence: true, inclusion: { in: [NOT_STARTED, IN_PROGRESS, COMPLETED, CANCELLED] }
   validates :year, presence: true, numericality: { only_integer: true }
@@ -36,7 +36,7 @@ class Session < ActiveRecord::Base
   scope :in_progress, where(status: IN_PROGRESS)
   scope :completed, where(status: COMPLETED)
   scope :cancelled, where(status: CANCELLED)
-  
+
   def active?
     year >= Time.current.to_date.year
   end
@@ -46,7 +46,7 @@ class Session < ActiveRecord::Base
   end
 
   def update_status
-    if courses.active.present? 
+    if courses.active.present?
       if courses.in_progress.present?
         self.status = IN_PROGRESS
       else
@@ -64,7 +64,7 @@ class Session < ActiveRecord::Base
   def started?
     status == IN_PROGRESS
   end
-  
+
   def completed?
     status == COMPLETED
   end
@@ -72,17 +72,17 @@ class Session < ActiveRecord::Base
   def cancelled?
     status == CANCELLED
   end
- 
+
   ### Class Methods ###
 
   def self.periods
     [["May/June", MAY_JUNE], ["Oct/Nov", OCT_NOV]]
   end
-  
+
   def self.years
     (Time.current.to_date.year..(Time.current.to_date + 5.years).year).to_a
   end
-  
+
   def self.get_all
     Session.all.collect { |s| [s.label, s.id] }
   end
@@ -94,13 +94,13 @@ class Session < ActiveRecord::Base
   def self.statuses
     [['Not Started', NOT_STARTED], ['In Progress', IN_PROGRESS], ['Completed', COMPLETED], ['Cancelled', CANCELLED]]
   end
-  
+
   ### View Helpers ###
-  
+
   def title
     label
   end
-  
+
   def label
     result = ""
     case period
@@ -109,11 +109,11 @@ class Session < ActiveRecord::Base
       when OCT_NOV
         result << 'Oct/Nov'
     end
-    
+
     result << " #{year}"
     result
   end
-  
+
   def period_label
     case period
       when MAY_JUNE

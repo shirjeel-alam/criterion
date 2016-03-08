@@ -1,9 +1,9 @@
 ActiveAdmin.register AdminUser do
   menu priority: 2, if: proc { current_admin_user.super_admin_or_partner? }
-  
+
   filter :id
   filter :email
-  
+
   index do
     column 'ID', sortable: :id do |admin|
       link_to(admin.id, admin_admin_user_path(admin))
@@ -30,7 +30,7 @@ ActiveAdmin.register AdminUser do
     column :current_sign_in_at
     column :last_sign_in_at
     column :sign_in_count
-    
+
     default_actions
   end
 
@@ -41,7 +41,7 @@ ActiveAdmin.register AdminUser do
       f.input :role, as: :select, collection: AdminUser.roles, include_blank: false, required: true, input_html: { class: 'chosen-select' }
       f.input :status, as: :select, collection: AdminUser.statuses, include_blank: false, required: true, input_html: { class: 'chosen-select' }
     end
-    
+
     f.buttons
   end
 
@@ -54,7 +54,7 @@ ActiveAdmin.register AdminUser do
     if @admin_user.update_with_password(params[:admin_user])
       flash[:notice] = 'Password changed successfully'
       sign_in @admin_user, bypass: true
-      redirect_to admin_dashboard_path  
+      redirect_to admin_dashboard_path
     else
       render :change_password
     end

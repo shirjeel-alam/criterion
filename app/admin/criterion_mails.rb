@@ -43,7 +43,7 @@ ActiveAdmin.register CriterionMail do
     active_admin_config.clear_action_items!
 
     before_filter :check_authorization
-    
+
     def check_authorization
       if current_admin_user.all_other?
         if %w[index show edit update destroy].include?(action_name)

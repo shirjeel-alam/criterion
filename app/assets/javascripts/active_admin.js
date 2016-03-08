@@ -45,7 +45,7 @@ $(document).ready(function() {
   /*** END ***/
 
   /*** Best In-Place ***/
-  
+
   $('.best_in_place').best_in_place();
 
   /*** END ***/
@@ -56,8 +56,8 @@ $(document).ready(function() {
   $('.chosen-select-deselect').chosen({allow_single_deselect: true});
 
   $('.button').live('click', function() {
-		$('.chosen-select').chosen();
-		$('.datepicker').datepicker({dateFormat: 'dd-mm-yy'});
+    $('.chosen-select').chosen();
+    $('.datepicker').datepicker({dateFormat: 'dd-mm-yy'});
   });
 
   /*** END ***/
@@ -96,7 +96,7 @@ $(document).ready(function() {
   $('#criterion_sms_message').on('keyup', function() {
     var msg_length = $(this).val().length;
     var remaining_characters = 160 - msg_length;
-    
+
     var str = remaining_characters.toString();
     str += ' characters remaining';
 
@@ -112,7 +112,7 @@ $(document).ready(function() {
       // form.find('input[type="submit"]').prop('disabled', false)
     }
   });
-  
+
   /*** END ***/
 
   /*** Internal Payments ***/
@@ -120,7 +120,7 @@ $(document).ready(function() {
   if(!$('#payment_payment_method_2').is(':checked')) {
     $('#payment_other_account_input').hide();
   }
-  
+
   // CASH
   $('#payment_payment_method_0').on('click', function(){
     $('#payment_other_account_input').hide();
@@ -158,7 +158,7 @@ $(document).ready(function() {
   /*** Current Date and Time ***/
 
   setInterval(function() {
-    updateTime();  
+    updateTime();
   }, 1000);
 
   $('#titlebar_right').prepend("<h3></h3>");
@@ -168,7 +168,7 @@ $(document).ready(function() {
 
   /*** Menu Ordering ***/
 
-  $('#criterion').swap($('#more_menus'));  
+  $('#criterion').swap($('#more_menus'));
   $('#account_actions').swap($('#criterion'));
 
   /*** END ***/

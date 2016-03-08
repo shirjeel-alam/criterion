@@ -22,23 +22,23 @@ class CriterionSms < ActiveRecord::Base
   USERNAME = ENV['SMS_USERNAME']
   PASSWORD = ENV['SMS_PASSWORD']
 
-	DEFAULT_VALID_MOBILE_NUMBER = ENV['DEFAULT_VALID_MOBILE_NUMBER']
+  DEFAULT_VALID_MOBILE_NUMBER = ENV['DEFAULT_VALID_MOBILE_NUMBER']
 
-	belongs_to :sender, polymorphic: true
-	belongs_to :receiver, polymorphic: true
+  belongs_to :sender, polymorphic: true
+  belongs_to :receiver, polymorphic: true
 
-	before_validation :strip_to
-	before_create :associate_receiver
-	after_create :send_sms
+  before_validation :strip_to
+  before_create :associate_receiver
+  after_create :send_sms
 
-	validates :message, presence: true
+  validates :message, presence: true
 
   scope :sent, where(status: true)
   scope :failed, where(status: false)
 
-	def successful?
-		status
-	end
+  def successful?
+    status
+  end
 
   def number
     '92' + to[1..-1]
@@ -98,12 +98,12 @@ class CriterionSms < ActiveRecord::Base
     status ? :ok : :error
   end
 
-	private
-	def strip_to
-		self.to = to.strip
-	end
+  private
+  def strip_to
+    self.to = to.strip
+  end
 
-	def associate_receiver
+  def associate_receiver
     self.receiver = (PhoneNumber.find_by_number(to).contactable rescue nil) unless receiver.present?
-	end
+  end
 end

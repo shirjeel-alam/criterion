@@ -18,44 +18,44 @@ class CriterionReport < ActiveRecord::Base
 
   has_many :criterion_report_dates, dependent: :destroy
 
-	before_create :build_criterion_report_date, :calc_report_data
+  before_create :build_criterion_report_date, :calc_report_data
 
   scope :open, where(closed: false)
   scope :closed, where(closed: true)
 
-	def calc_report_data
+  def calc_report_data
     self.gross_revenue = calc_gross_revenue
     self.discounts = calc_discounts
-		self.net_revenue = calc_net_revenue
-		self.expenditure = calc_expenditure
-		self.balance = calc_balance
-	end
+    self.net_revenue = calc_net_revenue
+    self.expenditure = calc_expenditure
+    self.balance = calc_balance
+  end
 
-	def calc_gross_revenue
+  def calc_gross_revenue
     payments(AccountEntry::DEBIT, [Payment::CASH, Payment::CHEQUE]).sum(:amount)
-	end
+  end
 
-	def calc_discounts
-		payments(AccountEntry::DEBIT, [Payment::CASH, Payment::CHEQUE]).sum(:discount)
-	end
+  def calc_discounts
+    payments(AccountEntry::DEBIT, [Payment::CASH, Payment::CHEQUE]).sum(:discount)
+  end
 
-	def calc_net_revenue
-		gross_revenue - discounts
-	end
+  def calc_net_revenue
+    gross_revenue - discounts
+  end
 
-	def calc_expenditure
+  def calc_expenditure
     payments(AccountEntry::CREDIT, [Payment::CASH]).collect(&:net_amount).sum
-	end
+  end
 
-	def calc_balance
-		net_revenue - expenditure
-	end
+  def calc_balance
+    net_revenue - expenditure
+  end
 
-	def update_report_data
-		calc_report_data
-		self.attributes = { updated_at: Time.now }
-		save
-	end
+  def update_report_data
+    calc_report_data
+    self.attributes = { updated_at: Time.now }
+    save
+  end
 
   def close!
     calc_report_data
@@ -71,7 +71,7 @@ class CriterionReport < ActiveRecord::Base
     CriterionReport.create(report_date: (CriterionReportDate.order('report_date desc').first.report_date + 1.day))
   end
 
-	### View Helpers ###
+  ### View Helpers ###
 
   def balance_tag
     balance >= 0 ? :ok : :error
@@ -87,7 +87,7 @@ class CriterionReport < ActiveRecord::Base
 
   def title
     report_dates = criterion_report_dates.collect(&:report_date).sort
-  	"Criterion Report: #{report_dates.first.strftime('%d %B, %Y')} - #{report_dates.last.strftime('%d %B, %Y')}"
+    "Criterion Report: #{report_dates.first.strftime('%d %B, %Y')} - #{report_dates.last.strftime('%d %B, %Y')}"
   end
 
   def payments(entry_type, payment_method)
