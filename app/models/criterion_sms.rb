@@ -71,10 +71,10 @@ class CriterionSms < ActiveRecord::Base
     bulk = false
     if !bulk
       number = '923222463936'
-      url = "http://sendpk.com/api/sms.php?username=#{USERNAME}&password=#{PASSWORD}&sender=Criterion&mobile=#{number}&message=#{message}"
+      url = "http://sendpk.com/api/sms.php?username=#{ENV['SMS_USERNAME']}&password=#{ENV['SMS_PASSWORD']}&sender=Criterion&mobile=#{number}&message=#{message}"
     else
       number = '923222463936,923129089081'
-      url = "http://sendpk.com/api/bulksms.php?username=#{USERNAME}&password=#{PASSWORD}&sender=Criterion&mobile=#{number}&message=#{message}"
+      url = "http://sendpk.com/api/bulksms.php?username=#{ENV['SMS_USERNAME']}&password=#{ENV['SMS_PASSWORD']}&sender=Criterion&mobile=#{number}&message=#{message}"
     end
 
     encoded_url = URI.encode(url)
