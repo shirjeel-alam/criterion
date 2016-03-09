@@ -62,12 +62,31 @@ ActiveAdmin.register Book do
 
   form do |f|
     f.inputs do
-      f.input :course, collection: Course.get_active, input_html: { class: 'chosen-select' }
+      f.input :course, as: :select, multiple: true, collection: Course.get_active, label: 'Course(s)', input_html: { class: 'chosen-select' }
       f.input :name
       f.input :amount
       f.input :share, required: false, step: 0.05, hint: 'If left empty will use books existing share value'
     end
 
     f.buttons
+  end
+
+  controller do
+    def create
+      courses_ids = params[:book][:course_id].flatten.reject(&:blank?)
+      @book = Book.new(params[:book].update(course_id: '1'))
+
+      if @book.valid?
+        courses_ids.each do |course_id|
+          params[:book].update(course_id: course_id)
+          Book.create(params[:book])
+        end
+
+        flash[:notice] = 'Books created successfully'
+        redirect_to admin_books_path
+      else
+        render :new
+      end
+    end
   end
 end
