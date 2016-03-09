@@ -75,9 +75,7 @@ class Course < ActiveRecord::Base
   end
 
   def create_payments
-    enrollments.each do |enrollment|
-      enrollment.map(&:save)
-    end if started?
+    enrollments.map(&:save) if started?
   end
 
   def calculate_revenue
