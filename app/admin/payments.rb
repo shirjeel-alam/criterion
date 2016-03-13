@@ -161,26 +161,30 @@ ActiveAdmin.register Payment do
   end
 
   collection_action :paid_cumulative, method: :post do
-    @payments = Payment.where('status in (?) AND id in (?)', [Payment::DUE, Payment::REFUNDED], session[:payment_ids])
-    @student = @payments.first.payable.student
+    if session[:payment_ids].present?
+      @payments = Payment.where('status in (?) AND id in (?)', [Payment::DUE, Payment::REFUNDED], session[:payment_ids])
+      @student = @payments.first.payable.student
 
-    successful_payment_ids = []
-    count = 0
-    @payments.each do |payment|
-      if payment.due?
-        payment.attributes = params[:payment]
-        if payment.save
-          payment.create_account_entry
-          successful_payment_ids << payment.id
-          count += 1
+      successful_payment_ids = []
+      count = 0
+      @payments.each do |payment|
+        if payment.due?
+          payment.attributes = params[:payment]
+          if payment.save
+            payment.create_account_entry
+            successful_payment_ids << payment.id
+            count += 1
+          end
         end
       end
+
+      SmsJob.perform_async(1, successful_payment_ids) if successful_payment_ids.present?
+
+      flash[:notice] = "#{count} of #{@payments.count} payment(s) successfully made."
+      redirect_to admin_student_path(@student)
+    else
+      redirect_to_back
     end
-
-    SmsJob.perform_async(1, successful_payment_ids) if successful_payment_ids.present?
-
-    flash[:notice] = "#{count} of #{@payments.count} payment(s) successfully made."
-    redirect_to admin_student_path(@student)
   end
 
   controller do
