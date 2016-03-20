@@ -24,6 +24,7 @@ gem 'fancybox-rails'
 gem 'momentjs-rails'
 gem 'haml-rails'
 gem 'aasm'
+gem 'pry-rails'
 
 gem 'daemons'
 gem 'clockwork'
@@ -38,9 +39,8 @@ group :assets do
 end
 
 group :development, :test do
-  gem 'pry-rails'
   gem 'annotate', '2.6.10'
-  gem 'unicorn-rails'
+  gem 'puma'
   gem 'mailcatcher'
 end
 
