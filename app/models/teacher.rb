@@ -74,4 +74,8 @@ class Teacher < ActiveRecord::Base
   def balance_tag
     balance >= 0 ? :ok : :error
   end
+
+  def teacher_balance_tag
+    teacher_balance >= 0 ? :ok : :error
+  end
 end
