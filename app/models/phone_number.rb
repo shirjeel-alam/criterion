@@ -14,16 +14,17 @@
 
 class PhoneNumber < ActiveRecord::Base
   MOBILE, LANDLINE = 0, 1
-  STUDENT, FATHER, MOTHER = 0, 1, 2
+  STUDENT, FATHER, MOTHER, TEACHER = 0, 1, 2, 3
 
   belongs_to :contactable, polymorphic: true
 
   before_validation :strip_number
+  before_validation :set_belongs_to
 
   validates :number, presence: true, uniqueness: true, numericality: true
   validates :number, format: { with: /^03\d{9}$/ }, if: :mobile?
   validates :category, presence: true, inclusion: { in: [MOBILE, LANDLINE] }
-  validates :belongs_to, presence: true, inclusion: { in: [STUDENT, FATHER, MOTHER] }
+  validates :belongs_to, presence: true, inclusion: { in: [STUDENT, FATHER, MOTHER, TEACHER] }
 
   scope :mobile, where(category: MOBILE)
 
@@ -76,11 +77,18 @@ class PhoneNumber < ActiveRecord::Base
       'Father'
     when MOTHER
       'Mother'
+    when TEACHER
+      'Teacher'
     end
   end
 
   private
-  def strip_number
-    self.number = number.strip
-  end
+
+    def strip_number
+      self.number = number.strip
+    end
+
+    def set_belongs_to
+      self.belongs_to ||= TEACHER if contactable_type == 'Teacher'
+    end
 end
