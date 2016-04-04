@@ -63,16 +63,16 @@ Criterion::Application.configure do
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
 
-  config.action_mailer.default_url_options = {:host => '198.211.100.110/criterion'}
+  config.action_mailer.default_url_options = { host: 'criterionman.xyz' }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    :address              => "smtp.gmail.com",
-    :port                 => 587,
-    :domain               => 'gmail.com',
-    :user_name            => 'criterion.edu@gmail.com',
-    :password             => 'Criterion786',
-    :authentication       => 'login',
-    :enable_starttls_auto => true
+    address: "smtp.gmail.com",
+    port: 587,
+    domain: 'gmail.com',
+    user_name: 'criterion.edu@gmail.com',
+    password: 'Criterion786',
+    authentication: 'login',
+    enable_starttls_auto: true
   }
 
   config.time_zone = 'Karachi'
