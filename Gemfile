@@ -51,9 +51,8 @@ group :development do
   gem 'quiet_assets'
 
   gem 'capistrano-rails'
-  gem 'capistrano-passenger'
+  gem 'capistrano3-puma'
   gem 'capistrano-clockwork'
   gem 'capistrano-rails-console'
   gem 'airbrussh', require: false
-  gem 'capistrano-puma'
 end
