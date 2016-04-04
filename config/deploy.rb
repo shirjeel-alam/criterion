@@ -9,7 +9,7 @@ set :ssh_options, {
 }
 
 ## rbenv
-set :rbenv_ruby, '2.3.0'
+set :rbenv_ruby, '2.2.4'
 
 ## puma
 set :puma_threads, [4, 16]

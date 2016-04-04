@@ -198,12 +198,13 @@ GEM
     mysql2 (0.3.20)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
-    net-ssh (3.1.1)
+    net-ssh (2.9.4)
     object_regex (1.0.1)
     orm_adapter (0.5.0)
     polyamorous (0.5.0)
       activerecord (~> 3.0)
     polyglot (0.3.5)
+    power_assert (0.2.7)
     pry (0.10.1)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -270,6 +271,8 @@ GEM
       net-ssh (>= 2.8.0)
     sucker_punch (2.0.0)
       concurrent-ruby (~> 1.0.0)
+    test-unit (3.1.8)
+      power_assert
     thin (1.5.1)
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
@@ -331,6 +334,7 @@ DEPENDENCIES
   ruby-hmac
   sass-rails (= 3.2.5)
   sucker_punch
+  test-unit (~> 3.0)
   uglifier
   validates_timeliness
 
