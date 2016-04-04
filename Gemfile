@@ -33,6 +33,8 @@ gem 'sucker_punch'
 gem 'ruby-hmac'
 gem 'hash_syntax'
 
+gem 'puma'
+
 group :assets do
   gem 'coffee-rails'
   gem 'uglifier'
@@ -40,7 +42,6 @@ end
 
 group :development, :test do
   gem 'annotate', '2.6.10'
-  gem 'puma'
   gem 'mailcatcher'
 end
 
@@ -54,4 +55,5 @@ group :development do
   gem 'capistrano-clockwork'
   gem 'capistrano-rails-console'
   gem 'airbrussh', require: false
+  gem 'capistrano-puma'
 end
