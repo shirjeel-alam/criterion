@@ -15,14 +15,14 @@ Criterion::Application.configure do
   config.assets.compress = true
 
   # Don't fallback to assets pipeline if a precompiled asset is missed
-  config.assets.compile = false
+  config.assets.compile = true
 
   # Generate digests for assets URLs
   config.assets.digest = true
 
   config.assets.debug = true
 
-  config.relative_url_root = "/criterion"
+  # config.relative_url_root = "/criterion"
 
   # Defaults to Rails.root.join("public/assets")
   # config.assets.manifest = YOUR_PATH
@@ -72,7 +72,7 @@ Criterion::Application.configure do
     :user_name            => 'criterion.edu@gmail.com',
     :password             => 'Criterion786',
     :authentication       => 'login',
-    :enable_starttls_auto => true  
+    :enable_starttls_auto => true
   }
 
   config.time_zone = 'Karachi'
