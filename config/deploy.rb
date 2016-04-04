@@ -9,6 +9,8 @@ set :ssh_options, {
   forward_agent: true
 }
 
+set :rbenv_ruby, '2.3.0'
+
 namespace :deploy do
   desc 'Restart application'
   task :restart do

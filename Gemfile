@@ -51,6 +51,7 @@ group :development do
   gem 'quiet_assets'
 
   gem 'capistrano-rails'
+  gem 'capistrano-rbenv'
   gem 'capistrano3-puma'
   gem 'capistrano-clockwork'
   gem 'capistrano-rails-console'
