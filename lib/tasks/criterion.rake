@@ -69,4 +69,21 @@ namespace :criterion do
       end
     end
   end
+
+  desc "Criterion Account CSV"
+  task criterion_account_csv: :environment do
+    require 'csv'
+
+    CSV.open("criterion-account-#{Time.now}.csv", 'w') do |csv|
+      csv << ['ID', 'Date', 'Particular', 'Payment', 'Debit', 'Credit', 'Balance']
+
+      criterion_account = CriterionAccount.criterion_account
+      criterion_account.account_entries.each do |account_entry|
+        debit = account_entry.debit? ? account_entry.amount : nil
+        credit = account_entry.credit? ? account_entry.amount : nil
+        running_balance = criterion_account.running_balance(account_entry.id)
+        csv << [account_entry.id, account_entry.created_at.strftime('%d %B, %Y'), account_entry.payment.particular_extended, account_entry.payment_id, debit, credit, running_balance]
+      end
+    end
+  end
 end
