@@ -86,4 +86,17 @@ namespace :criterion do
       end
     end
   end
+
+  desc "Criterion Account Balances CSV"
+  task criterion_account_balances_csv: :environment do
+    require 'csv'
+
+    CSV.open("criterion-account-balances-#{Time.now}.csv", 'w') do |csv|
+      csv << ['Account Holder', 'Balance']
+
+      CriterionAccount.find_each do |account|
+        csv << [(account.admin_user.user.name rescue nil), account.balance]
+      end
+    end
+  end
 end
