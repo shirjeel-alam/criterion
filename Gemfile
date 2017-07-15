@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+ruby '2.2.4'
 
 gem 'rails', '3.2.22'
 gem 'mysql2', '0.3.20'
@@ -57,3 +58,6 @@ group :development do
   gem 'capistrano-rails-console'
   gem 'airbrussh', require: false
 end
+
+gem 'rails_12factor', group: :production
+gem 'thin'
